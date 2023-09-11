@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'Profile.dart';
 import 'Find.dart';
@@ -14,11 +16,16 @@ void main() {
 }
 
 ThemeData appTheme = ThemeData(
-    primaryColor: Color.fromRGBO(255, 241, 89, 1),
+    primaryColor: Color.fromARGB(255, 255, 241, 89),
+    focusColor: Color.fromARGB(255, 37, 34, 31),
+    cardColor:Color.fromARGB(255, 248, 248, 248),
+    unselectedWidgetColor:Color.fromARGB(255,162, 174, 187),
+    hintColor:Color.fromARGB(255, 33, 150, 243),
+
     /* Colors.tealAccent,*/
     secondaryHeaderColor: const Color.fromRGBO(255, 195, 113, 0.88) /* Colors.teal*/
     // fontFamily:
-    );
+  );
 
 
 
@@ -39,51 +46,51 @@ class _BottomNavState extends State<BottomNav> {
     items.add(BottomNavigationBarItem(
         activeIcon: Icon(
           Icons.home,
-          color: appTheme.primaryColor,
+          color: appTheme.focusColor,
         ),
         icon: Icon(
           Icons.home,
-          color: Colors.black,
+          color: appTheme.unselectedWidgetColor,
         ),
         label: "Inicio"));
     items.add(BottomNavigationBarItem(
         activeIcon: Icon(
           Icons.search,
-          color: appTheme.primaryColor,
+          color: appTheme.focusColor,
         ),
         icon: Icon(
           Icons.search,
-          color: Colors.black,
+          color: appTheme.unselectedWidgetColor,
         ),
         label: "Encontrar"));
     items.add(BottomNavigationBarItem(
         activeIcon: Icon(
           Icons.add_circle,
-          color: appTheme.primaryColor,
+          color: appTheme.focusColor,
         ),
         icon: Icon(
           Icons.add_circle,
-          color: Colors.black,
+          color: appTheme.unselectedWidgetColor,
         ),
         label: "Crear"));
     items.add(BottomNavigationBarItem(
         activeIcon: Icon(
           Icons.calendar_month,
-          color: appTheme.primaryColor,
+          color: appTheme.focusColor,
         ),
         icon: Icon(
           Icons.calendar_month,
-          color: Colors.black,
+          color: appTheme.unselectedWidgetColor,
         ),
         label: "Calendario"));
     items.add(BottomNavigationBarItem(
         activeIcon: Icon(
           Icons.account_circle,
-          color: appTheme.primaryColor,
+          color: appTheme.focusColor,
         ),
         icon: Icon(
           Icons.account_circle,
-          color: Colors.black,
+          color: appTheme.unselectedWidgetColor,
         ),
         label: "Perfil"));
     return items;
@@ -96,7 +103,7 @@ class _BottomNavState extends State<BottomNav> {
         bottomNavigationBar: BottomNavigationBar(
           items: createItems(),
           unselectedItemColor: Colors.black,
-          selectedItemColor: appTheme.primaryColor,
+          selectedItemColor: appTheme.focusColor,
           type: BottomNavigationBarType.shifting,
           showUnselectedLabels: false,
           showSelectedLabels: true,
