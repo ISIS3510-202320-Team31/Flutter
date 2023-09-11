@@ -1,6 +1,7 @@
 import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:hive_app/Login.dart';
 import 'Profile.dart';
 import 'Find.dart';
 import 'Calendar.dart';
@@ -12,6 +13,9 @@ void main() {
     home: BottomNav(),
     theme: appTheme,
     title: "HIVE",
+    initialRoute: '/Login',
+    routes: {'/Login': (BuildContext context ) => Login() },
+    
   ));
 }
 
@@ -24,6 +28,8 @@ ThemeData appTheme = ThemeData(
 
     /* Colors.tealAccent,*/
     secondaryHeaderColor: const Color.fromRGBO(255, 195, 113, 0.88) /* Colors.teal*/
+    
+
     // fontFamily:
   );
 
@@ -126,8 +132,6 @@ class HomeScreen extends StatelessWidget {
 
     width = MediaQuery.of(context).size.shortestSide;
     height = MediaQuery.of(context).size.longestSide;
-    double h = 50;
-    double w = 50;
     return Scaffold(
       // bottomNavigationBar: /*NavigationTest()*/Navigation(),
       
@@ -154,7 +158,6 @@ class _HomeTop extends State<HomeTop> {
     return Stack(
       children: <Widget>[
         ClipPath(
-          clipper: Clipper08(),
           child: Container(
             height: height! * .65 < 450 ? height! * .65 : 500, //400
             //color: Colors.tealAccent,
@@ -234,76 +237,6 @@ class _HomeTop extends State<HomeTop> {
   }
 }
 
-class Clipper08 extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final Path path = Path();
-    path.lineTo(0.0, size.height);
-    // ignore: non_constant_identifier_names
-    var End = Offset(size.width / 2, size.height - 30.0);
-    // ignore: non_constant_identifier_names
-    var Control = Offset(size.width / 5, size.height - 50.0);
-
-    path.quadraticBezierTo(Control.dx, Control.dy, End.dx, End.dy);
-    // ignore: non_constant_identifier_names
-    var End2 = Offset(size.width, size.height - 80.0);
-    // ignore: non_constant_identifier_names
-    var Control2 = Offset(size.width * .75, size.height - 10.0);
-
-    path.quadraticBezierTo(Control2.dx, Control2.dy, End2.dx, End2.dy);
-    path.lineTo(size.width, 0.0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper oldClipper) {
-    return true;
-  }
-}
-
-class Choice08 extends StatefulWidget {
-  final IconData? icon;
-  final String? text;
-  final bool? selected;
-  Choice08({this.icon, this.text, this.selected});
-  @override
-  _Choice08State createState() => _Choice08State();
-}
-
-class _Choice08State extends State<Choice08>
-    with SingleTickerProviderStateMixin {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-      decoration: widget.selected!
-          ? BoxDecoration(
-              color: Colors.white.withOpacity(.30),
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-            )
-          : null,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Icon(
-            widget.icon,
-            size: 20,
-            color: Colors.white,
-          ),
-          SizedBox(
-            width: width! * .025,
-          ),
-          Text(
-            widget.text!,
-            style: TextStyle(color: Colors.white, fontSize: 16),
-          )
-        ],
-      ),
-    );
-  }
-}
 
 var viewallstyle =
     TextStyle(fontSize: 14, color: appTheme.primaryColor //Colors.teal
@@ -389,42 +322,9 @@ class City extends StatelessWidget {
                         //   color: Colors.black.withOpacity(.4),
                         //  borderRadius: BorderRadius.all(Radius.circular(10))
                         // ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              name!,
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            ),
-                            Text(
-                              monthyear!,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white),
-                            ),
-                          ],
-                        ),
+                        
                       ),
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        child: Text(
-                          discount! + "%",
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black),
-                        ),
-                      )
+                      
                     ],
                   ),
                   left: 10,

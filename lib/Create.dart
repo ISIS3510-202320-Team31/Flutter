@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_app/main.dart';
 
 class Create extends StatelessWidget {
   @override
@@ -9,7 +10,7 @@ class Create extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "VISTA DE CREAR EVENTO",
+            "VISTA DEL CREATE",
             style: TextStyle(
               fontSize: 30, // Tamaño de fuente deseado
               fontFamily: "Arial", // Fuente deseada
@@ -27,3 +28,5 @@ class Create extends StatelessWidget {
     );
   }
 }
+
+
