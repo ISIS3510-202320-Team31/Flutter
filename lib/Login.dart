@@ -12,34 +12,20 @@ class Login extends StatelessWidget {
               colors: [appTheme.primaryColor, appTheme.secondaryHeaderColor],
             ),
           ),
+        ),
+        Center(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 16,
-              ),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: 100,
-                      height: 100,
-                    ),
-                    Spacer(),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 16,
-              ),
-              Image.asset('assets/images/HIVE_LOGO_small.png'), // Agrega la imagen aquí
-              Text(
-                'HIVE',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  color: Colors.black,
-                ),
-                textAlign: TextAlign.center,
+              const SizedBox(height: 50),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BottomNav()),
+                  );
+                },
+                child: const Text('Iniciar sesión'),
               ),
             ],
           ),
@@ -48,4 +34,5 @@ class Login extends StatelessWidget {
     );
   }
 }
+
 
