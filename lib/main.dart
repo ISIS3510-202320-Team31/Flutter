@@ -27,8 +27,8 @@ ThemeData appTheme = ThemeData(
     unselectedWidgetColor:Color.fromARGB(255,162, 174, 187),
     hintColor:Color.fromARGB(255, 33, 150, 243),
 
-    /* Colors.tealAccent,*/
-    secondaryHeaderColor: Color.fromARGB(223, 255, 195, 113) /* Colors.teal*/
+    /* Background */
+    secondaryHeaderColor: Color.fromARGB(223, 255, 195, 113) /* Orage color just for background*/
     
 
     // fontFamily:

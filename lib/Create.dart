@@ -18,11 +18,10 @@ class Create extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "VISTA DEL CREATE",
+                "VISTA DE CREAR",
                 style: TextStyle(
                   fontSize: 30, // Tamaño de fuente deseado
-                  fontFamily: "Arial", // Fuente deseada
-                  fontWeight: FontWeight.bold, // Peso de la fuente 
+                  fontFamily: "Montserrat", // Fuente deseada
                   color: Colors.black, // Color del texto (opcional)
                 ),
               ),
@@ -38,7 +37,6 @@ class Create extends StatelessWidget {
     );
   }
 }
-
 
 
 

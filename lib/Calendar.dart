@@ -21,8 +21,8 @@ class Calendar extends StatelessWidget {
                 "VISTA DEL CALENDAR",
                 style: TextStyle(
                   fontSize: 30, // Tamaño de fuente deseado
-                  fontFamily: "Arial", // Fuente deseada
-                  fontWeight: FontWeight.bold, // Peso de la fuente 
+                  fontFamily: "Jost", // Fuente deseada
+                  fontWeight: FontWeight.bold, // Peso de la fuente en negrita
                   color: Colors.black, // Color del texto (opcional)
                 ),
               ),

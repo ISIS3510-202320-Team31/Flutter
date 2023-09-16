@@ -21,8 +21,7 @@ class Find extends StatelessWidget {
                 "VISTA DE ENCONTRAR",
                 style: TextStyle(
                   fontSize: 30, // Tamaño de fuente deseado
-                  fontFamily: "Arial", // Fuente deseada
-                  fontWeight: FontWeight.bold, // Peso de la fuente 
+                  fontFamily: "Montserrat", // Fuente deseada
                   color: Colors.black, // Color del texto (opcional)
                 ),
               ),

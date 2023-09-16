@@ -21,8 +21,7 @@ class Profile extends StatelessWidget {
                 "VISTA DEL PERFIL",
                 style: TextStyle(
                   fontSize: 30, // Tamaño de fuente deseado
-                  fontFamily: "Arial", // Fuente deseada
-                  fontWeight: FontWeight.bold, // Peso de la fuente 
+                  fontFamily: "Jost", // Fuente deseada
                   color: Colors.black, // Color del texto (opcional)
                 ),
               ),
