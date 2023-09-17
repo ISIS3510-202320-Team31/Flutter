@@ -20,16 +20,6 @@ class Navigation extends StatelessWidget {
         label: "Inicio"));
     items.add(BottomNavigationBarItem(
         activeIcon: Icon(
-          Icons.search,
-          color: appTheme.primaryColor,
-        ),
-        icon: Icon(
-          Icons.search,
-          color: Colors.black,
-        ),
-        label: "Encontrar"));
-    items.add(BottomNavigationBarItem(
-        activeIcon: Icon(
           Icons.add_circle,
           color: appTheme.primaryColor,
         ),

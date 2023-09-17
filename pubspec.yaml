@@ -39,7 +39,7 @@ flutter:
         - asset: assets/fonts/Jost-Regular.ttf
           style: normal
         - asset: assets/fonts/Jost-Bold.ttf
-          weight: 700
+          weight: 400
          
     - family: Poppins
       fonts:
