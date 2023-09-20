@@ -23,6 +23,20 @@ class UserModel {
 }
 
 class User {
+  String? id;
+  String? icon;
+  String? login;
+  String? password;
+  String? name;
+  String? email;
+  bool? verificated;
+  String? role;
+  String? career;
+  DateTime? birthdate;
+  List<User>? friends;
+  List<Event>? events;
+  List<Tag>? tags;
+  
   User({
     this.id,
     this.icon,
@@ -39,19 +53,7 @@ class User {
     this.tags
   });
 
-  String? id;
-  String? icon;
-  String? login;
-  String? password;
-  String? name;
-  String? email;
-  bool? verificated;
-  String? role;
-  String? career;
-  DateTime? birthdate;
-  List<User>? friends;
-  List<Event>? events;
-  List<Tag>? tags;
+ 
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
