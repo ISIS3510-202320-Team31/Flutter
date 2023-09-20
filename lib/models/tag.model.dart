@@ -27,31 +27,13 @@ class Tag {
     required this.name,
   });
 
-  Tag copyWith({
-    int? id,
-    String? name,
-  }) {
-    return Tag(
-      id: id ?? this.id,
-      name: name ?? this.name,
-    );
-  }
+  factory Tag.fromJson(Map<String, dynamic> json) => Tag(
+        id: json["id"],
+        name: json["name"],
+      );
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-    };
-  }
-
-  factory Tag.fromMap(Map<String, dynamic> map) {
-    return Tag(
-      id: map['id'] ?? 0,
-      name: map['name'] ?? '',
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Tag.fromJson(String source) => Tag.fromMap(json.decode(source));
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+      };
 }
