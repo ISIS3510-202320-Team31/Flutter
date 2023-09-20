@@ -34,7 +34,7 @@ class User {
     this.role,
     this.career,
     this.birthdate,
-    this.friends
+    this.friends,
     this.events,
     this.tags
   });
