@@ -19,12 +19,12 @@ class TagModel {
 }
 
 class Tag {
-  int id;
-  String name;
+  int? id;
+  String? name;
 
   Tag({
-    required this.id,
-    required this.name,
+    this.id,
+    this.name,
   });
 
   factory Tag.fromJson(Map<String, dynamic> json) => Tag(
