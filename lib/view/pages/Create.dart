@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hive_app/main.dart';
+import 'package:hive_app/utils/ColorPalette.dart';
 
 class Create extends StatelessWidget {
   @override

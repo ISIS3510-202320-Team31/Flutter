@@ -1,8 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:hive_app/main.dart';
-import 'dart:convert';
+import 'package:hive_app/utils/ColorPalette.dart';
 
+import 'package:hive_app/view/widgets/NavBar.dart';
 
 class Login extends StatelessWidget {
   @override
