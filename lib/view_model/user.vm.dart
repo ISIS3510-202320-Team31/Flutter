@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_app/data/remote/response/ApiResponse.dart';
 import 'package:hive_app/models/user.model.dart';
 import 'package:hive_app/repository/user.repo.dart';
 
