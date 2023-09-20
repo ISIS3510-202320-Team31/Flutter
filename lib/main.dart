@@ -1,10 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:hive_app/Login.dart';
-import 'Profile.dart';
-import 'Calendar.dart';
-import 'Create.dart';
+import 'package:hive_app/view/pages/Login.dart';
+import 'view/pages/Profile.dart';
+import 'view/pages/Calendar.dart';
+import 'view/pages/Create.dart';
 
 void main() {
   runApp(MaterialApp(
