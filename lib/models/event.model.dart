@@ -12,9 +12,14 @@ class EventModel {
 
   List<Event> events;
 
-  factory EventModel.fromJson(Map<String, dynamic> json) => EventModel(
-        events: List<Event>.from(json["events"].map((x) => Event.fromJson(x))),
-      );
+  // factory EventModel.fromJson(Map<String, dynamic> json) => EventModel(
+  //       events: List<Event>.from(json["events"].map((x) => Event.fromJson(x))),
+  //     );
+
+  factory EventModel.fromJson(List<dynamic> json) {
+    List<Event> events = json.map((eventData) => Event.fromJson(eventData)).toList();
+    return EventModel(events: events);
+  }
 
   Map<String, dynamic> toJson() => {
         "events": List<dynamic>.from(events.map((x) => x.toJson())),
@@ -34,8 +39,8 @@ class Event {
   bool? state;
   int? duration;
   User? creator;
-  List<User>? participants;
-  List<Tag>? tags;
+  // List<User>? participants;
+  // List<Tag>? tags;
 
   Event({
     this.id,
@@ -50,8 +55,8 @@ class Event {
     this.state,
     this.duration,
     this.creator,
-    this.participants,
-    this.tags,
+    // this.participants,
+    // this.tags,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) => Event(
@@ -66,9 +71,9 @@ class Event {
         category: json["category"],
         state: json["state"],
         duration: json["duration"],
-        creator: User.fromJson(json["creator"]),
-        participants: List<User>.from(json["participants"].map((x) => User.fromJson(x))),
-        tags: List<Tag>.from(json["tags"].map((x) => Tag.fromJson(x)))
+        // creator: User.fromJson(json["creator"]),
+        // participants: List<User>.from(json["participants"].map((x) => User.fromJson(x))),
+        // tags: List<Tag>.from(json["tags"].map((x) => Tag.fromJson(x)))
       );
   
   Map<String, dynamic> toJson() => {
@@ -84,8 +89,8 @@ class Event {
         "state": state,
         "duration": duration,
         "creator": creator!.toJson(),
-        "participants": List<dynamic>.from(participants!.map((x) => x.toJson())),
-        "tags": List<dynamic>.from(tags!.map((x) => x.toJson()))
+        // "participants": List<dynamic>.from(participants!.map((x) => x.toJson())),
+        // "tags": List<dynamic>.from(tags!.map((x) => x.toJson()))
       };
 
 }

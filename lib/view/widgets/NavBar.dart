@@ -3,11 +3,11 @@ import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/pages/Profile.dart';
 import 'package:hive_app/view/pages/Calendar.dart';
 import 'package:hive_app/view/pages/Create.dart';
-import 'package:hive_app/view/pages/HomeScreen.dart';
+import 'package:hive_app/view/pages/Feed.dart';
 
 int sel = 0;
 
-final bodies = [HomeScreen(), Create(), Calendar(), Profile()];
+final bodies = [Feed(), Create(), Calendar(), Profile()];
 
 class BottomNav extends StatefulWidget {
   BottomNav({Key? key}) : super(key: key);
@@ -63,9 +63,7 @@ class _BottomNavState extends State<BottomNav> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: bodies.elementAt(sel),
-        bottomNavigationBar: BottomNavigationBar(
+    return BottomNavigationBar(
           items: createItems(),
           unselectedItemColor: Colors.black,
           selectedItemColor: appTheme.focusColor,
@@ -80,7 +78,7 @@ class _BottomNavState extends State<BottomNav> {
                 sel = index;
               });
           },
-        ));
+        );
   }
 }
 

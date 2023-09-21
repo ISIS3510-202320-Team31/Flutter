@@ -12,6 +12,8 @@ class EventCard extends StatelessWidget {
       margin: EdgeInsets.all(8.0),
       child: ListTile(
         title: Text(event.name ?? "Sin nombre"),
+        subtitle: Text(event.description ?? "Sin descripción"),
+        leading: Icon(Icons.event)
         // You can add more info here
       ),
     );
