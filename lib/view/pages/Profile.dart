@@ -1,48 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
+import 'package:hive_app/view/pages/ViewsHeader.dart';
+import 'package:hive_app/utils/time_calculator.dart';
 
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [appTheme.primaryColor, appTheme.secondaryHeaderColor],
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: Padding(
-            padding: EdgeInsets.only(top: 75), // 75 Pixeles de distancia hasta arriba
-            child: Container(
-              width: double.infinity, // Establece el ancho del contenedor al ancho máximo posible
-              padding: EdgeInsets.symmetric(horizontal: 30), // Agrega 30 píxeles de espacio en cada lado
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Perfil",
-                    style: TextStyle(
-                      fontSize: 40, // Tamaño de fuente deseado
-                      fontFamily: "Montserrat", // Fuente deseada
-                      fontWeight: FontWeight.bold, // Peso de la fuente en negrita
-                      color: Colors.black, // Color del texto (opcional)
+    return FutureBuilder<Duration>(
+      future: calculateTimeSinceInstallation(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Muestra un indicador de carga mientras se obtiene el tiempo.
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          // Maneja los errores si los hubiera.
+          return Text('Error: ${snapshot.error}');
+        } else {
+          final timeSinceInstallation = snapshot.data;
+
+          return Stack(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [appTheme.primaryColor, appTheme.secondaryHeaderColor],
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 75),
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    child: Column(
+                      children: [
+                        ViewsHeader(
+                          titleText: "Tiempo desde la instalación",
+                        ),
+                        Text(
+                          'Tiempo desde la instalación: ${formatTime(timeSinceInstallation!)}', //Supongo que no es Nulo, por eso el "!".
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        // Otros elementos de perfil...
+                      ],
                     ),
                   ),
-                  Image.asset(
-                  'assets/images/HIVE_LOGO_small.png',
-                  width: 65, // Establece el ancho de la imagen en 70 píxeles
-                  height: 65, // Establece la altura de la imagen en 70 píxeles
                 ),
-                ],
               ),
-            ),
-          ),
-        ),
-      ],
+            ],
+          );
+        }
+      },
     );
   }
 }
