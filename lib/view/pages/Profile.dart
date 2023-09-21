@@ -40,7 +40,8 @@ class Profile extends StatelessWidget {
                           titleText: "Tiempo desde la instalación",
                         ),
                         Text(
-                          'Tiempo desde la instalación: ${formatTime(timeSinceInstallation!)}', //Supongo que no es Nulo, por eso el "!".
+                          'corregir esto',
+                          // 'Tiempo desde la instalación: ${formatTime(timeSinceInstallation!)}', //Supongo que no es Nulo, por eso el "!".
                           style: TextStyle(fontSize: 18),
                         ),
                         // Otros elementos de perfil...
