@@ -22,7 +22,7 @@ class EventModel {
 }
 
 class Event {
-  int? id;
+  String? id;
   String? image;
   String? name;
   String? place;

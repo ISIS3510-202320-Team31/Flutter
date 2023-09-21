@@ -13,9 +13,14 @@ class UserModel {
 
   List<User> users;
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        users: List<User>.from(json["users"].map((x) => User.fromJson(x))),
-      );
+  // factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+  //       users: List<User>.from(json["users"].map((x) => User.fromJson(x))),
+  //     );
+
+  factory UserModel.fromJson(List<dynamic> json) {
+    List<User> users = json.map((userData) => User.fromJson(userData)).toList();
+    return UserModel(users: users);
+  }
 
   Map<String, dynamic> toJson() => {
         "users": List<dynamic>.from(users.map((x) => x.toJson())),
@@ -33,9 +38,9 @@ class User {
   String? role;
   String? career;
   DateTime? birthdate;
-  List<User>? friends;
-  List<Event>? events;
-  List<Tag>? tags;
+  // List<User>? friends;
+  // List<Event>? events;
+  // List<Tag>? tags;
 
   User(
       {this.id,
@@ -48,9 +53,10 @@ class User {
       this.role,
       this.career,
       this.birthdate,
-      this.friends,
-      this.events,
-      this.tags});
+      // this.friends,
+      // this.events,
+      // this.tags
+      });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
       id: json["id"],
@@ -63,9 +69,10 @@ class User {
       role: json["role"],
       career: json["career"],
       birthdate: DateTime.parse(json["birthdate"]),
-      friends: List<User>.from(json["friends"].map((x) => User.fromJson(x))),
-      events: List<Event>.from(json["events"].map((x) => Event.fromJson(x))),
-      tags: List<Tag>.from(json["tags"].map((x) => Tag.fromJson(x))));
+      // friends: List<User>.from(json["friends"].map((x) => User.fromJson(x))),
+      // events: List<Event>.from(json["events"].map((x) => Event.fromJson(x))),
+      // tags: List<Tag>.from(json["tags"].map((x) => Tag.fromJson(x)))
+      );
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -78,8 +85,8 @@ class User {
         "role": role,
         "career": career,
         "birthdate": birthdate!.toIso8601String(),
-        "friends": List<dynamic>.from(friends!.map((x) => x.toJson())),
-        "events": List<dynamic>.from(events!.map((x) => x.toJson())),
-        "tags": List<dynamic>.from(tags!.map((x) => x.toJson()))
+        // "friends": List<dynamic>.from(friends!.map((x) => x.toJson())),
+        // "events": List<dynamic>.from(events!.map((x) => x.toJson())),
+        // "tags": List<dynamic>.from(tags!.map((x) => x.toJson()))
       };
 }

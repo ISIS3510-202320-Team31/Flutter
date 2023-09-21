@@ -19,7 +19,7 @@ class TagModel {
 }
 
 class Tag {
-  int? id;
+  String? id;
   String? name;
 
   Tag({

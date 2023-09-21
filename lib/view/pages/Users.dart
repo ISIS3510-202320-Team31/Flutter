@@ -16,11 +16,11 @@ class Users extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<Users> {
-  final UserVM viewModel = UserVM();
+  final UserVM userVM = UserVM();
 
   @override
   void initState() {
-    viewModel.fetchUserData();
+    userVM.fetchUserData();
     super.initState();
   }
 
@@ -32,7 +32,7 @@ class _UsersScreenState extends State<Users> {
         backgroundColor: appTheme.primaryColor,
       ),
       body: ChangeNotifierProvider<UserVM>(
-        create: (BuildContext context) => viewModel,
+        create: (BuildContext context) => userVM,
         child: Consumer<UserVM>(builder: (context, viewModel, _) {
           switch (viewModel.userModel.status) {
             case Status.LOADING:
@@ -51,55 +51,24 @@ class _UsersScreenState extends State<Users> {
               );
             case Status.COMPLETED:
               print("Log :: COMPLETED");
-              return Container(
-                child: Center(
-                  child: Text("Loaded"),
-                ),
-              );
+              return _getUsersListView(viewModel.userModel.data?.users);
               // return _getUsersListView(viewModel.userModel.data?.users);
             default:
+              return Container();
           }
-          return Container();
         }),
       ),
     );
   }
 
-  // Widget _getUsersListView(List<User>? users) {
-  //   return ListView.builder(
-  //       itemCount: users?.length,
-  //       itemBuilder: (context, position) {
-  //         return _getUserListItem(users![position]);
-  //       });
-  // }
+  Widget _getUsersListView(List<User>? users) {
+    return ListView.builder(
+        itemCount: users?.length,
+        itemBuilder: (context, position) {
+          return UserCard(
+            name: users?[position].career ?? "",
+          );
+        });
+  }
 
-  // Widget _getUserListItem(User item) {
-  //   return Card(
-  //     shape: RoundedRectangleBorder(
-  //         side: BorderSide(color: Colors.grey, width: 1.0),
-  //         borderRadius: BorderRadius.all(Radius.circular(10))),
-  //     child: ListTile(
-
-  //       title: MyTextView(label: item.name ?? "NA"),
-  //       subtitle: Column(children: [
-  //         Align(
-  //           alignment: Alignment.centerLeft,
-  //           child: MyTextView(label: item.note ?? "NA"),
-  //         ),
-  //         Align(
-  //           alignment: Alignment.centerLeft,
-  //           child: MyTextView(label: item.phone ?? "NA"),
-  //         ),
-  //       ]),
-  //       onTap: () {
-  //         _goToDetailScreen(context, item);
-  //       },
-  //     ),
-  //     elevation: context.resources.dimension.lightElevation,
-  //   );
-  // }
-
-  // void _goToDetailScreen(BuildContext context, User item) {
-  //   Navigator.pushNamed(context, UserDetailsScreen.id, arguments: item);
-  // }
 }

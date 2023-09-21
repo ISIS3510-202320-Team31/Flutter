@@ -19,7 +19,7 @@ class LinkModel {
 }
 
 class Link {
-  int? id;
+  String? id;
   String? url;
 
   Link({
