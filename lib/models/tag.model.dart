@@ -5,7 +5,7 @@ String tagModelToJson(TagModel data) => json.encode(data.toJson());
 class TagModel {
   TagModel({
     this.tags = const [],
-  }) {}
+  }) ;
 
   List<Tag> tags = <Tag>[];
 

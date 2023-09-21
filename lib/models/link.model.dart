@@ -5,7 +5,7 @@ String tagModelToJson(LinkModel data) => json.encode(data.toJson());
 class LinkModel {
   LinkModel({
     this.links = const [],
-  }) {}
+  }) ;
 
   List<Link> links = <Link>[];
 
