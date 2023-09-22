@@ -37,14 +37,21 @@ class Profile extends StatelessWidget {
                     child: Column(
                       children: [
                         ViewsHeader(
-                          titleText: "Tiempo desde la instalación",
+                          titleText: "Perfil",
                         ),
                         Text(
-                          'corregir esto',
-                          // 'Tiempo desde la instalación: ${formatTime(timeSinceInstallation!)}', //Supongo que no es Nulo, por eso el "!".
-                          style: TextStyle(fontSize: 18),
+                          'Correo:\n' // Texto 1
+                          'correo@uniandes.edu.co.\n\n'
+                          'Tiempo usado en la App:\n' // Texto 2
+                          '${formatTime(timeSinceInstallation!)}\n\n' 
+                          'Eventos a los que perteneces:\n' // Texto 3
+                          '6 eventos.\n\n\n', 
+                          style: TextStyle(fontSize: 20),
                         ),
-                        // Otros elementos de perfil...
+                        ElevatedButton(
+                        onPressed: handleLogOut,
+                        child: Text('Cerrar sesion'),
+                      ),
                       ],
                     ),
                   ),
@@ -57,3 +64,14 @@ class Profile extends StatelessWidget {
     );
   }
 }
+
+String formatTime(Duration duration) {
+  final hours = duration.inHours;
+  final minutes = duration.inMinutes.remainder(60);
+  return '$hours horas, $minutes minutos';
+}
+
+void handleLogOut() {
+  // TODO
+    print('Se oprimio el boton de cerrar sesión');
+  }
