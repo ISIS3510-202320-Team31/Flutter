@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../main.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 
 //Unused

@@ -24,8 +24,7 @@ class _EventsScreenState extends State<Feed> {
   @override
   Widget build(BuildContext context) {
     return
-    Scaffold(
-     body: Container(
+     Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [appTheme.primaryColor, appTheme.secondaryHeaderColor],
@@ -38,10 +37,7 @@ class _EventsScreenState extends State<Feed> {
           EventList(),
         ],
       ),
-    ),
-    bottomNavigationBar: BottomNav(),
     );
-    
   }
 }
 

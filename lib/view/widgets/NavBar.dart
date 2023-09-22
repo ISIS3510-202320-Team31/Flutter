@@ -5,17 +5,19 @@ import 'package:hive_app/view/pages/Calendar.dart';
 import 'package:hive_app/view/pages/Create.dart';
 import 'package:hive_app/view/pages/Feed.dart';
 
-int sel = 0;
+
 
 final bodies = [Feed(), Create(), Calendar(), Profile()];
 
-class BottomNav extends StatefulWidget {
-  BottomNav({Key? key}) : super(key: key);
+class NavBar extends StatefulWidget {
+  NavBar({Key? key}) : super(key: key);
 
   _BottomNavState createState() => _BottomNavState();
 }
 
-class _BottomNavState extends State<BottomNav> {
+class _BottomNavState extends State<NavBar> {
+  int sel = 0;
+  
   List<BottomNavigationBarItem> createItems() {
     List<BottomNavigationBarItem> items = [];
     items.add(BottomNavigationBarItem(
