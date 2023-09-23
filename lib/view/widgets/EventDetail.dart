@@ -89,7 +89,9 @@ class EventDetail extends StatelessWidget {
                   style: ButtonStyle(
                     foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context); // Cierra el diálogo y vuelve a la vista anterior
+                  },
                   child: Text('Cancelar'),
                 ),
               ),
