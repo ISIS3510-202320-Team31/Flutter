@@ -7,10 +7,10 @@ import 'package:hive_app/view/widgets/EventCard.dart';
 
 class EventList extends StatefulWidget {
   @override
-  _EventsScreenState createState() => _EventsScreenState();
+  _EventListState createState() => _EventListState();
 }
 
-class _EventsScreenState extends State<EventList> {
+class _EventListState extends State<EventList> {
   final EventVM eventVM = EventVM();
 
   @override
@@ -52,17 +52,14 @@ class _EventsScreenState extends State<EventList> {
   }
 
   Widget _buildEventListView(List<Event>? events) {
-  return Container(
-    child: ListView(
-      shrinkWrap: true,
-      children: [
-        for (final event in events ?? [])
-          EventCard(
-            event: event,
-          ),
-      ],
-    ),
-  );
-}
-
+    return ListView.builder(
+      itemCount: events?.length ?? 0,
+      itemBuilder: (context, index) {
+        final event = events![index];
+        return EventCard(
+          event: event,
+        );
+      },
+    );
+  }
 }
