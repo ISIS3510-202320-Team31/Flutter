@@ -12,6 +12,8 @@ class _CreateState extends State<Create> {
   TextEditingController textController1 = TextEditingController();
   TextEditingController textController2 = TextEditingController();
   TextEditingController textController3 = TextEditingController();
+  String selectedCategory = 'Conferencia'; // Valor predeterminado para el primer DropdownButton
+  String selectedParticipants = 'Estudiante'; // Valor predeterminado para el segundo DropdownButton
 
   @override
   void dispose() {
@@ -46,12 +48,13 @@ class _CreateState extends State<Create> {
                   ),
                   TextFormField(
                     controller: textController1,
-                    decoration: InputDecoration(labelText: 'Campo 1'),
+                    decoration: InputDecoration(labelText: 'Titulo del evento:'),
                   ),
                   TextFormField(
                     controller: textController2,
-                    decoration: InputDecoration(labelText: 'Campo 2'),
+                    decoration: InputDecoration(labelText: 'Lugar del evento:'),
                   ),
+                  SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {
                       final DateTime? dateTime = await showDatePicker(
@@ -66,18 +69,42 @@ class _CreateState extends State<Create> {
                         });
                       }
                     },
-                    child: Text('Seleccionar Fecha'),
+                    child: Text('Seleccionar fecha del evento:'),
+                  ),
+                  DropdownButton<String>(
+                    value: selectedCategory,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedCategory = newValue!;
+                      });
+                    },
+                    items: <String>['Conferencia', 'Charla', 'Grupo']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text('Seleccionar categoria: $value'),
+                      );
+                    }).toList(),
+                  ),
+                  DropdownButton<String>(
+                    value: selectedParticipants,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedParticipants = newValue!;
+                      });
+                    },
+                    items: <String>['Estudiante', 'Personal', 'Profesor']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text('Seleccionar participantes: $value'),
+                      );
+                    }).toList(),
                   ),
                   TextFormField(
-                    controller: textController3,
-                    decoration: InputDecoration(labelText: 'Campo 3'),
+                    decoration: InputDecoration(labelText: 'Agrega links de interes:'),
                   ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Campo 4'),
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Campo 5'),
-                  ),
+                  SizedBox(height: 40),
                   ElevatedButton(
                     onPressed: () {
                       // Lógica para manejar el botón aquí
