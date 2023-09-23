@@ -41,7 +41,7 @@ class Profile extends StatelessWidget {
                         ),
                         Text(
                           'Correo:\n' // Texto 1
-                          'correo@uniandes.edu.co.\n\n'
+                          'ne.rueda@uniandes.edu.co\n\n'
                           'Tiempo usado en la App:\n' // Texto 2
                           '${formatTime(timeSinceInstallation!)}\n\n' 
                           'Eventos a los que perteneces:\n' // Texto 3
