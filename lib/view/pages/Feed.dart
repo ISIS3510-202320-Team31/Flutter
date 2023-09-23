@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/widgets/EventList.dart';
 import 'package:hive_app/view_model/event.vm.dart';
-import 'package:hive_app/view/widgets/NavBar.dart';
 
 
 class Feed extends StatefulWidget {

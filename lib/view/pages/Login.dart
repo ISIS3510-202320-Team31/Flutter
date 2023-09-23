@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive_app/utils/ColorPalette.dart';
-
-import 'package:hive_app/view/widgets/NavBar.dart';
+import 'package:hive_app/view/pages/Home.dart';
 
 class Login extends StatelessWidget {
   @override
@@ -119,7 +118,7 @@ class _LoginFormState extends State<LoginForm> {
                         }
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => BottomNav()),
+                          MaterialPageRoute(builder: (context) => Home()),
                         );
                       },
                       child: Text('Iniciar Sesión'),

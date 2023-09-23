@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:hive_app/models/event.model.dart';
 import 'package:hive_app/view_model/event.vm.dart';
 import 'package:hive_app/data/remote/response/Status.dart';
-import 'package:hive_app/view/widgets/EventCard.dart'; 
+import 'package:hive_app/view/widgets/EventCard.dart';
 
 class EventList extends StatefulWidget {
   @override
@@ -42,7 +42,7 @@ class _EventsScreenState extends State<EventList> {
               );
             case Status.COMPLETED:
               print("Log :: COMPLETED");
-              return _getEventsListView(viewModel.eventModel.data?.events);
+              return _buildEventListView(viewModel.eventModel.data?.events);
             default:
               return Container();
           }
@@ -50,18 +50,20 @@ class _EventsScreenState extends State<EventList> {
       ),
     );
   }
-}
 
-Widget _getEventsListView(List<Event>? events) {
-  return SingleChildScrollView(
+  Widget _buildEventListView(List<Event>? events) {
+  return Container(
+    height: MediaQuery.of(context).size.height*0.7615, // Asigna un tamaño fijo o usa restricciones adecuadas
     child: ListView(
+      shrinkWrap: true,
       children: [
         for (final event in events ?? [])
           EventCard(
             event: event,
           ),
       ],
-      scrollDirection: Axis.vertical,
     ),
   );
+}
+
 }
