@@ -3,6 +3,7 @@ import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/utils/time_calculator.dart';
 import 'package:hive_app/view/pages/Feed.dart';
 import 'package:hive_app/view/pages/Home.dart';
+import 'package:hive_app/view/pages/Login.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -10,10 +11,11 @@ void main() {
     home: Home(),
     theme: appTheme,
     title: "HIVE",
-    initialRoute: '/Feed', // '/Users',
+    initialRoute: '/Login', // '/Users',
     routes: {
-      '/Feed': (BuildContext context) => Home()
-    }, // {'/Login': (BuildContext context ) => Login() },
+      '/Feed': (BuildContext context) => Home(),
+      '/Login': (BuildContext context) => Login()
+    },
   ));
   tiempo();
 }
