@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/utils/time_calculator.dart';
-import 'package:hive_app/view/pages/Feed.dart';
 import 'package:hive_app/view/pages/Home.dart';
 import 'package:hive_app/view/pages/Login.dart';
+import 'package:flutter/services.dart';
+
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).
+  then((_) => 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: Home(),
@@ -16,7 +20,7 @@ void main() {
       '/Feed': (BuildContext context) => Home(),
       '/Login': (BuildContext context) => Login()
     },
-  ));
+  )));
   tiempo();
 }
 
