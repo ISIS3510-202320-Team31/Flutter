@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_app/view/pages/ViewsHeader.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
+import 'package:hive_app/view/widgets/EventList.dart';
 
 class Calendar extends StatefulWidget {
   @override
@@ -54,6 +55,8 @@ class _CalendarState extends State<Calendar> {
                       }
                     },
                   ),
+                  Expanded(child: EventList())
+                  ,
                 ],
               ),
             ),
