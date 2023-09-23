@@ -33,7 +33,6 @@ class _EventsScreenState extends State<Feed> {
       child: Column(
         children: <Widget>[
           Search(),
-          SizedBox(height: 30),
           EventList(),
         ],
       ),

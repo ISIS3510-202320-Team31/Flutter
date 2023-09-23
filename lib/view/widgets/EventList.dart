@@ -54,13 +54,14 @@ class _EventsScreenState extends State<EventList> {
 
 Widget _getEventsListView(List<Event>? events) {
   return SingleChildScrollView(
-    child: Column(
+    child: ListView(
       children: [
         for (final event in events ?? [])
           EventCard(
             event: event,
           ),
       ],
+      scrollDirection: Axis.vertical,
     ),
   );
 }

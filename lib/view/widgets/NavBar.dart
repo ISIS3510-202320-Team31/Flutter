@@ -10,58 +10,72 @@ import 'package:hive_app/view/pages/Feed.dart';
 final bodies = [Feed(), Create(), Calendar(), Profile()];
 
 class NavBar extends StatefulWidget {
-  NavBar({Key? key}) : super(key: key);
+  const NavBar({super.key});
 
-  _BottomNavState createState() => _BottomNavState();
+  @override
+State<NavBar> createState() =>_NavBarState();
 }
 
-class _BottomNavState extends State<NavBar> {
-  int sel = 0;
-  
-  List<BottomNavigationBarItem> createItems() {
-    List<BottomNavigationBarItem> items = [];
-    items.add(BottomNavigationBarItem(
-        activeIcon: Icon(
-          Icons.home,
-          color: appTheme.focusColor,
-        ),
-        icon: Icon(
-          Icons.home,
-          color: appTheme.unselectedWidgetColor,
-        ),
-        label: "Inicio"));
-    items.add(BottomNavigationBarItem(
-        activeIcon: Icon(
-          Icons.add_circle,
-          color: appTheme.focusColor,
-        ),
-        icon: Icon(
-          Icons.add_circle,
-          color: appTheme.unselectedWidgetColor,
-        ),
-        label: "Crear"));
-    items.add(BottomNavigationBarItem(
-        activeIcon: Icon(
-          Icons.calendar_month,
-          color: appTheme.focusColor,
-        ),
-        icon: Icon(
-          Icons.calendar_month,
-          color: appTheme.unselectedWidgetColor,
-        ),
-        label: "Calendario"));
-    items.add(BottomNavigationBarItem(
-        activeIcon: Icon(
-          Icons.account_circle,
-          color: appTheme.focusColor,
-        ),
-        icon: Icon(
-          Icons.account_circle,
-          color: appTheme.unselectedWidgetColor,
-        ),
-        label: "Perfil"));
-    return items;
+class _NavBarState extends State<NavBar> {
+  int _selectedIndex = 0;
+
+  List<Widget> _widgetOptions = <Widget>[
+    Feed(),
+    Create(),
+    Calendar(),
+    Profile(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
+
+  // List<BottomNavigationBarItem> createItems() {
+  //   List<BottomNavigationBarItem> items = [];
+  //   items.add(BottomNavigationBarItem(
+  //       activeIcon: Icon(
+  //         Icons.home,
+  //         color: appTheme.focusColor,
+  //       ),
+  //       icon: Icon(
+  //         Icons.home,
+  //         color: appTheme.unselectedWidgetColor,
+  //       ),
+  //       label: "Inicio"));
+  //   items.add(BottomNavigationBarItem(
+  //       activeIcon: Icon(
+  //         Icons.add_circle,
+  //         color: appTheme.focusColor,
+  //       ),
+  //       icon: Icon(
+  //         Icons.add_circle,
+  //         color: appTheme.unselectedWidgetColor,
+  //       ),
+  //       label: "Crear"));
+  //   items.add(BottomNavigationBarItem(
+  //       activeIcon: Icon(
+  //         Icons.calendar_month,
+  //         color: appTheme.focusColor,
+  //       ),
+  //       icon: Icon(
+  //         Icons.calendar_month,
+  //         color: appTheme.unselectedWidgetColor,
+  //       ),
+  //       label: "Calendario"));
+  //   items.add(BottomNavigationBarItem(
+  //       activeIcon: Icon(
+  //         Icons.account_circle,
+  //         color: appTheme.focusColor,
+  //       ),
+  //       icon: Icon(
+  //         Icons.account_circle,
+  //         color: appTheme.unselectedWidgetColor,
+  //       ),
+  //       label: "Perfil"));
+  //   return items;
+  // }
 
   @override
   Widget build(BuildContext context) {
