@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:hive_app/view/pages/ViewsHeader.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 
-class Calendar extends StatelessWidget {
+class Calendar extends StatefulWidget {
+  @override
+  _CalendarState createState() => _CalendarState();
+}
+
+class _CalendarState extends State<Calendar> {
+  DateTime selectedDate = DateTime.now();
+  TimeOfDay selectedTime = TimeOfDay.now();
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -16,27 +25,53 @@ class Calendar extends StatelessWidget {
         Align(
           alignment: Alignment.topCenter,
           child: Padding(
-            padding: EdgeInsets.only(top: 75), // 75 Pixeles de distancia hasta arriba
+            padding: EdgeInsets.only(top: 75),
             child: Container(
-              width: double.infinity, // Establece el ancho del contenedor al ancho máximo posible
-              padding: EdgeInsets.symmetric(horizontal: 30), // Agrega 30 píxeles de espacio en cada lado
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
                 children: [
-                  Text(
-                    "Calendario",
-                    style: TextStyle(
-                      fontSize: 40, // Tamaño de fuente deseado
-                      fontFamily: "Montserrat", // Fuente deseada
-                      fontWeight: FontWeight.bold, // Peso de la fuente en negrita
-                      color: Colors.black, // Color del texto (opcional)
-                    ),
+                  ViewsHeader(
+                    titleText: "Lista eventos",
                   ),
-                  Image.asset(
-                  'assets/images/HIVE_LOGO_small.png',
-                  width: 65, // Establece el ancho de la imagen en 70 píxeles
-                  height: 65, // Establece la altura de la imagen en 70 píxeles
-                ),
+                  Text(
+                    "${selectedDate.day} - ${selectedDate.month} - ${selectedDate.year}",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  ElevatedButton(
+                    child: const Text("Elige una fecha"),
+                    onPressed: () async {
+                      final DateTime? dateTime = await showDatePicker(
+                        context: context,
+                        initialDate: selectedDate,
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                      );
+                      if (dateTime != null) {
+                        setState(() {
+                          selectedDate = dateTime;
+                        });
+                      }
+                    },
+                  ),
+                  Text(
+                    "${selectedTime.hour}:${selectedTime.minute}",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  ElevatedButton(
+                    child: const Text("Elige una hora"),
+                    onPressed: () async {
+                      final TimeOfDay? timeOfDay = await showTimePicker(
+                        context: context,
+                        initialTime: selectedTime,
+                      );
+                      if (timeOfDay != null) {
+                        setState(() {
+                          selectedTime = timeOfDay;
+                        });
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
