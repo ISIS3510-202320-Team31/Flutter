@@ -53,7 +53,6 @@ class _EventsScreenState extends State<EventList> {
 
   Widget _buildEventListView(List<Event>? events) {
   return Container(
-    height: MediaQuery.of(context).size.height*0.7615, // Asigna un tamaño fijo o usa restricciones adecuadas
     child: ListView(
       shrinkWrap: true,
       children: [
