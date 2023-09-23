@@ -35,28 +35,8 @@ class _CalendarState extends State<Calendar> {
                   ViewsHeader(
                     titleText: "Lista eventos",
                   ),
-                  Text(
-                    "${selectedDate.day} - ${selectedDate.month} - ${selectedDate.year}",
-                    style: TextStyle(fontSize: 18),
+                    Expanded(child: EventList()
                   ),
-                  ElevatedButton(
-                    child: const Text("Elige una fecha"),
-                    onPressed: () async {
-                      final DateTime? dateTime = await showDatePicker(
-                        context: context,
-                        initialDate: selectedDate,
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2101),
-                      );
-                      if (dateTime != null) {
-                        setState(() {
-                          selectedDate = dateTime;
-                        });
-                      }
-                    },
-                  ),
-                  Expanded(child: EventList())
-                  ,
                 ],
               ),
             ),
