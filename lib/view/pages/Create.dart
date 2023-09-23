@@ -78,7 +78,7 @@ class _CreateState extends State<Create> {
                         selectedCategory = newValue!;
                       });
                     },
-                    items: <String>['Conferencia', 'Evento2', 'Evento3']
+                    items: <String>['Conferencia', 'Charla', 'Grupo']
                         .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
@@ -93,7 +93,7 @@ class _CreateState extends State<Create> {
                         selectedParticipants = newValue!;
                       });
                     },
-                    items: <String>['Estudiante', 'Personas2', 'Personas3']
+                    items: <String>['Estudiante', 'Personal', 'Profesor']
                         .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
