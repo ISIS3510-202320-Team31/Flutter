@@ -10,13 +10,14 @@ void main() {
     home: Home(),
     theme: appTheme,
     title: "HIVE",
-    initialRoute: '/Feed', // '/Users',  
-    routes: {'/Feed': (BuildContext context ) => Home() }, // {'/Login': (BuildContext context ) => Login() },   
-     
+    initialRoute: '/Feed', // '/Users',
+    routes: {
+      '/Feed': (BuildContext context) => Home()
+    }, // {'/Login': (BuildContext context ) => Login() },
   ));
   tiempo();
 }
 
-void tiempo() async{
+void tiempo() async {
   await saveInstallationTime();
 }

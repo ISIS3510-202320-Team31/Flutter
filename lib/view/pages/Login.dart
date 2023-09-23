@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive_app/utils/ColorPalette.dart';
-import 'package:hive_app/utils/time_calculator.dart';
-import 'package:hive_app/view/widgets/NavBar.dart';
+import 'package:hive_app/view/pages/Home.dart';
 
 class Login extends StatelessWidget {
   @override
@@ -32,7 +31,10 @@ class _LoginFormState extends State<LoginForm> {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [appTheme.primaryColor, appTheme.secondaryHeaderColor], // Cambia estos colores según tus preferencias
+                colors: [
+                  appTheme.primaryColor,
+                  appTheme.secondaryHeaderColor
+                ], // Cambia estos colores según tus preferencias
               ),
             ),
           ),
@@ -45,28 +47,31 @@ class _LoginFormState extends State<LoginForm> {
                 width: 100,
                 child: Image.asset('assets/images/HIVE_LOGO_small.png'),
               ),
-            Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 20), // Esto agrega un margen inferior de 20 píxeles
-              child: Text(
-                "HIVE!",
-                style: TextStyle(
-                  shadows: [
-                    Shadow(
-                      color: Colors.black.withOpacity(0.7),
-                      offset: Offset(2, 3),
-                      blurRadius: 12,
-                    )
-                  ],
-                  fontSize: 50, // Tamaño de fuente deseado
-                  fontFamily: "Jost", // Fuente deseada
-                  fontWeight: FontWeight.bold, // Peso de la fuente en negrita
-                  color: Colors.black, // Color del texto (opcional)
+              Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      bottom:
+                          20), // Esto agrega un margen inferior de 20 píxeles
+                  child: Text(
+                    "HIVE!",
+                    style: TextStyle(
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.7),
+                          offset: Offset(2, 3),
+                          blurRadius: 12,
+                        )
+                      ],
+                      fontSize: 50, // Tamaño de fuente deseado
+                      fontFamily: "Jost", // Fuente deseada
+                      fontWeight:
+                          FontWeight.bold, // Peso de la fuente en negrita
+                      color: Colors.black, // Color del texto (opcional)
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
               SizedBox(height: 20),
               Form(
                 key: _formKey,
@@ -100,7 +105,8 @@ class _LoginFormState extends State<LoginForm> {
                           // Aquí puedes realizar la autenticación o procesar los datos del formulario
                           String email = _emailController.text;
                           String password = _passwordController.text;
-                          var url = Uri.parse('http://34.125.226.119:8080/users/');
+                          var url =
+                              Uri.parse('http://34.125.226.119:8080/users/');
                           final Map<String, dynamic> datos = {
                             'icon': 'icon',
                             'login': 'login',

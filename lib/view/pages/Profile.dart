@@ -23,7 +23,10 @@ class Profile extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [appTheme.primaryColor, appTheme.secondaryHeaderColor],
+                    colors: [
+                      appTheme.primaryColor,
+                      appTheme.secondaryHeaderColor
+                    ],
                   ),
                 ),
               ),
@@ -39,19 +42,29 @@ class Profile extends StatelessWidget {
                         ViewsHeader(
                           titleText: "Perfil",
                         ),
+                        // Imagen
+                        (Image.asset(
+                          'assets/images/Profile.jpg',
+                          width: 200,
+                          height: 200,
+                        )),
+                        // Espacio entre la imagen y el texto
+                        (SizedBox(
+                          height: 30,
+                        )),
                         Text(
                           'Correo:\n' // Texto 1
                           'ne.rueda@uniandes.edu.co\n\n'
                           'Tiempo usado en la App:\n' // Texto 2
-                          '${formatTime(timeSinceInstallation!)}\n\n' 
+                          '${formatTime(timeSinceInstallation!)}\n\n'
                           'Eventos a los que perteneces:\n' // Texto 3
-                          '6 eventos.\n\n\n', 
+                          '6 eventos.\n\n\n',
                           style: TextStyle(fontSize: 20),
                         ),
                         ElevatedButton(
-                        onPressed: handleLogOut,
-                        child: Text('Cerrar sesion'),
-                      ),
+                          onPressed: handleLogOut,
+                          child: Text('Cerrar sesion'),
+                        ),
                       ],
                     ),
                   ),
@@ -73,5 +86,5 @@ String formatTime(Duration duration) {
 
 void handleLogOut() {
   // TODO
-    print('Se oprimio el boton de cerrar sesión');
-  }
+  print('Se oprimio el boton de cerrar sesión');
+}
