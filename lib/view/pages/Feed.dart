@@ -8,10 +8,10 @@ class Feed extends StatefulWidget {
   static const String id = "feed_screen";
 
   @override
-  _EventsScreenState createState() => _EventsScreenState();
+  _FeedState createState() => _FeedState();
 }
 
-class _EventsScreenState extends State<Feed> {
+class _FeedState extends State<Feed> {
   final EventVM eventVM = EventVM();
 
   @override
@@ -22,17 +22,18 @@ class _EventsScreenState extends State<Feed> {
 
   @override
   Widget build(BuildContext context) {
-    return
-     Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [appTheme.primaryColor, appTheme.secondaryHeaderColor],
-            ),
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [appTheme.primaryColor, appTheme.secondaryHeaderColor],
+        ),
+      ),
       child: Column(
         children: <Widget>[
           Search(),
-          EventList(),
+          Expanded(
+            child: EventList(), // Aquí incluye el EventList
+          ),
         ],
       ),
     );
