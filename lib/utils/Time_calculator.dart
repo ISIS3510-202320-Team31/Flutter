@@ -14,10 +14,8 @@ Future<DateTime> getInstallationTime() async {
 
 Future<Duration> calculateTimeSinceInstallation() async {
   final installationTime = await getInstallationTime();
-
   final currentTime = DateTime.now();
   final timeSinceInstallation = currentTime.difference(installationTime);
-
   return timeSinceInstallation;
 }
 
