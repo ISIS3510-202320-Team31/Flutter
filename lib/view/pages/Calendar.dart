@@ -54,24 +54,6 @@ class _CalendarState extends State<Calendar> {
                       }
                     },
                   ),
-                  Text(
-                    "${selectedTime.hour}:${selectedTime.minute}",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  ElevatedButton(
-                    child: const Text("Elige una hora"),
-                    onPressed: () async {
-                      final TimeOfDay? timeOfDay = await showTimePicker(
-                        context: context,
-                        initialTime: selectedTime,
-                      );
-                      if (timeOfDay != null) {
-                        setState(() {
-                          selectedTime = timeOfDay;
-                        });
-                      }
-                    },
-                  ),
                 ],
               ),
             ),
