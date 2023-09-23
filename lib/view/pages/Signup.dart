@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/pages/Home.dart';
-import 'package:hive_app/view/pages/Signup.dart';
+import 'package:hive_app/view/pages/Login.dart';
 
-class Login extends StatelessWidget {
+class Signup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginForm(),
+      home: SignupForm(),
     );
   }
 }
 
-class LoginForm extends StatefulWidget {
+class SignupForm extends StatefulWidget {
   @override
-  _LoginFormState createState() => _LoginFormState();
+  _SignupFormState createState() => _SignupFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _SignupFormState extends State<SignupForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -81,6 +81,16 @@ class _LoginFormState extends State<LoginForm> {
                   children: <Widget>[
                     TextFormField(
                       controller: _emailController,
+                      decoration: InputDecoration(labelText: 'Username'),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Por favor, ingrese su usuario';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: _emailController,
                       decoration: InputDecoration(labelText: 'Email'),
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -103,28 +113,6 @@ class _LoginFormState extends State<LoginForm> {
                     SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          // Aquí puedes realizar la autenticación o procesar los datos del formulario
-                          String email = _emailController.text;
-                          String password = _passwordController.text;
-                          var url =
-                              Uri.parse('http://34.125.226.119:8080/users/');
-                          final Map<String, dynamic> datos = {
-                            'icon': 'icon',
-                            'login': 'login',
-                            'name': 'nombre',
-                            'verificated': true,
-                            'role': 'STUDENT',
-                            'career': 'DERECHO',
-                            'birthdate': '2002-12-27',
-                            'email': email,
-                            'password': password,
-                          };
-                          final jsonData = jsonEncode(datos);
-                          var response = await http.post(url, body: jsonData);
-                          // Lógica de autenticación aquí
-                          print(response);
-                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => Home()),
@@ -133,15 +121,14 @@ class _LoginFormState extends State<LoginForm> {
                       child: Text('Iniciar Sesión'),
                     ),
                     SizedBox(height: 20),
-                    // other kind of button
                     TextButton(
                       onPressed: () async {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Signup()),
+                          MaterialPageRoute(builder: (context) => Login()),
                         );
                       },
-                      child: Text('¿No tienes una cuenta? Regístrate'),
+                      child: Text('¿Ya tienes una cuenta? Inicia sesión'),
                     ),
                   ],
                 ),
