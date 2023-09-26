@@ -34,13 +34,14 @@ class Event {
   DateTime? date;
   String? description;
   int? numParticipants;
-  String? links;
   String? category;
   bool? state;
   int? duration;
-  User? creator;
-  // List<User>? participants;
-  // List<Tag>? tags;
+  String? creatorId;
+  String? creator;
+  List<String>? participants;
+  List<String>? tags;
+  List<String>?links;
 
   Event({
     this.id,
@@ -50,32 +51,34 @@ class Event {
     this.date,
     this.description,
     this.numParticipants,
-    this.links,
     this.category,
     this.state,
     this.duration,
+    this.creatorId,
     this.creator,
-    // this.participants,
-    // this.tags,
+    this.participants,
+    this.tags,
+    this.links,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) => Event(
-        id: json["id"],
-        image: json["image"],
-        name: json["name"],
-        place: json["place"],
-        date: DateTime.parse(json["date"]),
-        description: json["description"],
-        numParticipants: json["numParticipants"],
-        links: json["links"],
-        category: json["category"],
-        state: json["state"],
-        duration: json["duration"],
-        // creator: User.fromJson(json["creator"]),
-        // participants: List<User>.from(json["participants"].map((x) => User.fromJson(x))),
-        // tags: List<Tag>.from(json["tags"].map((x) => Tag.fromJson(x)))
-      );
-  
+    id: json["id"],
+    image: json["image"],
+    name: json["name"],
+    place: json["place"],
+    date: DateTime.parse(json["date"]),
+    description: json["description"],
+    numParticipants: json["numParticipants"],
+    category: json["category"],
+    state: json["state"],
+    duration: json["duration"],
+    creatorId: json["creatorId"],
+    creator: json["creator"],
+    participants: List<String>.from(json["participants"] ?? []),
+    tags: List<String>.from(json["tags"] ?? []),
+    links: List<String>.from(json["links"] ?? []),
+    );
+
   Map<String, dynamic> toJson() => {
         "id": id,
         "image": image,
@@ -84,13 +87,14 @@ class Event {
         "date": date!.toIso8601String(),
         "description": description,
         "numParticipants": numParticipants,
-        "links": links,
         "category": category,
         "state": state,
         "duration": duration,
-        "creator": creator!.toJson(),
-        // "participants": List<dynamic>.from(participants!.map((x) => x.toJson())),
-        // "tags": List<dynamic>.from(tags!.map((x) => x.toJson()))
+        "creatorId": creatorId,
+        "creator": creator,
+        "participants": participants,
+        "tags": tags,
+        "links": links,
       };
 
 }

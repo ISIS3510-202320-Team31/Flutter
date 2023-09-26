@@ -47,7 +47,7 @@ class EventDetail extends StatelessWidget {
               Expanded( // Distribuye el espacio disponible uniformemente entre las columnas
                 child: Column(
                   children: [
-                    Text('${event.creator?.name ?? 'Sin creador'}'),
+                    Text('${event.creator ?? 'Sin creador'}'),
                     Text('$formattedDate')
                   ],
                 ),
