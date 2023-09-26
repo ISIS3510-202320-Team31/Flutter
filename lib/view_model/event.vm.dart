@@ -7,10 +7,17 @@ class EventVM extends ChangeNotifier {
   final _myRepo = EventRepoImpl();
 
   ApiResponse<EventModel> eventModel = ApiResponse.loading();
+  ApiResponse<Event> event = ApiResponse.loading();
 
   void _setEventMain(ApiResponse<EventModel> response) {
     print("Response: $response");
     eventModel = response;
+    notifyListeners();
+  }
+
+  void _setEvent(ApiResponse<Event> response) {
+    print("Response: $response");
+    event = response;
     notifyListeners();
   }
 
@@ -21,4 +28,13 @@ class EventVM extends ChangeNotifier {
         .then((value) => _setEventMain(ApiResponse.completed(value)))
         .onError((error, stackTrace) => _setEventMain(ApiResponse.error(error.toString())));
   }
+
+  Future<void> fetchEventById(String eventId) async {
+    _setEvent(ApiResponse.loading());
+    _myRepo
+        .getEventById(eventId)
+        .then((value) => _setEvent(ApiResponse.completed(value)))
+        .onError((error, stackTrace) => _setEvent(ApiResponse.error(error.toString())));
+  }
+
 }
