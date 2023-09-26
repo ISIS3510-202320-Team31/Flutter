@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_app/view/pages/ViewsHeader.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/widgets/EventList.dart';
+import 'package:hive_app/view_model/event.vm.dart';
 
 class Calendar extends StatefulWidget {
   @override
@@ -11,6 +12,13 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> {
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
+  final EventVM eventVM = EventVM();
+
+  @override
+  void initState() {
+    eventVM.fetchEventData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +43,8 @@ class _CalendarState extends State<Calendar> {
                   ViewsHeader(
                     titleText: "Lista eventos",
                   ),
-                    Expanded(child: EventList()
-                  ),
+                  //   Expanded(child: EventList(eventList: viewModel.eventModel.data!.events)
+                  // ), TODO
                 ],
               ),
             ),
