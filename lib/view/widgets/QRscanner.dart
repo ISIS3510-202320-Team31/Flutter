@@ -37,8 +37,8 @@ class _QrCodeScannerWidgetState extends State<QRscanner> {
             eventVM.fetchEventById(result!.code!);
             qrSeen = true;
             controller.stopCamera();
-            _showDetailEvent(context);
             Navigator.pop(context);
+            _showDetailEvent(context);
           }
         });
       },
