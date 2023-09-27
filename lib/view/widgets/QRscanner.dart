@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_app/view/pages/Home.dart';
+import 'package:camera/camera.dart';
 import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:hive_app/view/widgets/EventDetail.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -23,6 +24,13 @@ class _QrCodeScannerWidgetState extends State<QRscanner> {
   Widget build(BuildContext context) {
     return QRView(
       key: qrKey,
+      overlay: QrScannerOverlayShape(
+        borderRadius: 10,
+        borderColor: Colors.white,
+        borderLength: 30,
+        borderWidth: 10,
+        cutOutSize: MediaQuery.of(context).size.width * 0.8,
+      ),
       onQRViewCreated: (QRViewController controller) {
         setState(() {
           _controller = controller;
@@ -48,6 +56,8 @@ class _QrCodeScannerWidgetState extends State<QRscanner> {
   Future<void> _showDetailEvent(BuildContext context) async {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
       builder: (context) {
         // Muestra el detalle del evento y permite que el usuario vuelva a la vista Home
         return ChangeNotifierProvider<EventVM>(
@@ -62,7 +72,7 @@ class _QrCodeScannerWidgetState extends State<QRscanner> {
                         child: CircularProgressIndicator(
                         ),
                       ),
-                      height: MediaQuery.of(context).size.height*0.7,
+                      height: MediaQuery.of(context).size.height,
                     );
                   case Status.ERROR:
                     print("Log :: ERROR");
@@ -74,7 +84,7 @@ class _QrCodeScannerWidgetState extends State<QRscanner> {
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
                     return
-                    Expanded(child: EventDetail(event: viewModel.event.data!)
+                    EventDetail(event: viewModel.event.data!
                     );
                   default:
                     return Container();

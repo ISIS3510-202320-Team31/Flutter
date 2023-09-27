@@ -19,6 +19,8 @@ dependencies:
   intl: ^0.18.1
   qr_code_scanner: ^1.0.1
   qr_flutter: ^4.1.0
+  camera: ^0.9.4+5
+
   
 
 dev_dependencies:
