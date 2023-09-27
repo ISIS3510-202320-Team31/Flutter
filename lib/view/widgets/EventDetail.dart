@@ -166,7 +166,7 @@ class EventDetail extends StatelessWidget {
                 },
               ),
             ),
-            if (event.participants != null && event.participants!.length>0)
+            if (event.numParticipants != null && event.participants!=null)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
