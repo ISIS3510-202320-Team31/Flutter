@@ -2,11 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_app/models/event.model.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class EventDetail extends StatelessWidget {
   final Event event;
 
   EventDetail({required this.event});
+
+  Future<void> _abrirEnlace(String url) async {
+    Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'No se pudo abrir el enlace: $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +43,28 @@ class EventDetail extends StatelessWidget {
                 child: Text(
                   event.name ?? 'Sin nombre',
                   style: TextStyle(
-                    fontSize: 20.0,
+                    fontSize: 22.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
-          SizedBox(height: 30.0),
+            SizedBox(height: 10.0),
+            Row(
+              children: [
+                SizedBox(width: 20.0),
+                Text('${event.state != null && event.state! ? 'Activo' : 'Cancelado'}',style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold)),                
+                SizedBox(width: 15.0),
+                Icon(
+                Icons.location_on,
+                size: 25.0,
+                color: appTheme.focusColor,
+                ),
+                Text('${event.place ?? ''}')
+
+              ],
+            ),
+          SizedBox(height: 20.0),
             Center(
               child: Icon(
                 Icons.event,
@@ -62,7 +88,18 @@ class EventDetail extends StatelessWidget {
                 Expanded( // Distribuye el espacio disponible uniformemente entre las columnas
                   child: Column(
                     children: [
-                      Text('Categoria: ${event.category ?? 'Sin categoria'}'),
+                      Container(
+                        padding: EdgeInsets.all(5.0),
+                        decoration: BoxDecoration(
+                          color: appTheme.unselectedWidgetColor ,
+                          border: Border.all(
+                            color: appTheme.unselectedWidgetColor,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: Text('${event.category ?? 'Sin categoria'}',style: TextStyle(color: appTheme.cardColor )),
+                      ),
                       SizedBox(height: 10.0),
                       Text('${event.duration ?? 'Sin duración'} min')
                     ],
@@ -77,48 +114,78 @@ class EventDetail extends StatelessWidget {
               color: Color.fromARGB(150, 255, 241, 89),
               child: Text('${event.description ?? 'Sin descripción'}',style:TextStyle(fontSize: 13)),
             ),
-            SizedBox(height: 20.0),
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                  child:Column(
-                    children: [
-                      Center(
-                      child: Text('Lugar: ${event.place ?? 'Sin lugar'}'),
-                      ),
-                      SizedBox(height: 5.0),
-                      Center(
-                        child: Text('Participantes: ${event.numParticipants ?? 0}'),
-                      ),
-                      SizedBox(height: 5.0),
-                      Center(
-                        child: Text('Enlaces: ${event.links ?? 'Sin enlaces'}'),
-                      ),
-                      SizedBox(height: 5.0),
-                      Center(
-                        child: Text('Estado: ${event.state ?? false ? 'Activo' : 'Inactivo'}'),
-                      ),
-                    ],
-                  )
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 20.0, right: 20.0,bottom: 30.0),
+            SizedBox(height: 5.0),
+            Center(
+            child: Container(
+                        padding: EdgeInsets.only(bottom: 5.0,top: 5.0,left: 30.0,right: 30.0),
+                        decoration: BoxDecoration(
+                          color: appTheme.unselectedWidgetColor ,
+                          border: Border.all(
+                            color: appTheme.unselectedWidgetColor,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: Text('Links de interes',style: TextStyle(color: appTheme.cardColor )),
+                      )
+            ),
+            Center(
+            child:Container(
+              width: MediaQuery.of(context).size.width,
                   child:IconButton(
                   icon: Icon(
                     Icons.qr_code,
                     color: Colors.black,
-                    size: 60.0,
+                    size: 100.0,
                   ),
                   onPressed: () {
                     // Acción que deseas ejecutar cuando se presiona el botón izquierdo
                   },
-                  color: appTheme.hintColor
                 )
-                )
-              ],
+              )
             ),
-            SizedBox(height: 20.0),
+            SizedBox(height: 60.0),
+            if (event.links != null && event.links!.isNotEmpty)
+              Container(
+              constraints: BoxConstraints(
+                maxHeight: 100.0, // Establece la altura máxima según tus necesidades
+              ),
+              child: ListView.builder(
+                itemCount: event.links!.length,
+                shrinkWrap: true, // Permite que el ListView se ajuste automáticamente
+                physics: ClampingScrollPhysics(), // Desactiva el desplazamiento del ListView
+                itemBuilder: (context, index) {
+                  final link = event.links![index];
+                  return ListTile(
+                    leading: Icon(Icons.link),
+                    title: Text(link),
+                    onTap: () {
+                      _abrirEnlace(link);
+                    },
+                  );
+                },
+              ),
+            ),
+            if (event.participants != null && event.participants!.length>0)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                    Icons.group,
+                    color: Colors.black,
+                    size: 20.0,
+                  ),
+                SizedBox(width: 10.0),
+                Text(
+                  '${event.participants?.length}/${event.numParticipants} asistentes',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ), 
+            SizedBox(height: 10.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // Centra los botones horizontalmente
               children: [

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hive_app/view/pages/Home.dart';
-import 'package:camera/camera.dart';
+import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:hive_app/view/widgets/EventDetail.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -76,11 +75,35 @@ class _QrCodeScannerWidgetState extends State<QRscanner> {
                     );
                   case Status.ERROR:
                     print("Log :: ERROR");
-                    return Container(
-                      child: Center(
-                        child: Text("Error"),
+                    return Dialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      backgroundColor: appTheme.cardColor,
+                      child: IntrinsicHeight(
+                        child: Column(
+                          children: [
+                            SizedBox(height: 30.0), // Espaciado opcional
+                            Text("Evento no encontrado"),
+                            SizedBox(height: 20.0), // Espaciado opcional
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                backgroundColor: appTheme.hintColor,
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context); // Cierra el diálogo y vuelve a la vista anterior
+                              },
+                              child: Text('Regresar', style: TextStyle(color: appTheme.cardColor),),
+                            ),
+                            SizedBox(height: 30.0),
+                          ],
+                        ),
                       ),
                     );
+
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
                     return
