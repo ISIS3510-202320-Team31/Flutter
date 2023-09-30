@@ -3,7 +3,7 @@ import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_app/models/event.model.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:qr_flutter/qr_flutter.dart';
 
 class EventDetail extends StatelessWidget {
   final Event event;
@@ -18,6 +18,25 @@ class EventDetail extends StatelessWidget {
       throw 'No se pudo abrir el enlace: $url';
     }
   }
+  
+  void _showQRCodeDialog(BuildContext context, String qrData) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+        child:
+        Expanded(
+          child:QrImageView(
+          data: qrData,
+          version: QrVersions.auto,
+          size: MediaQuery.of(context).size.width *0.8,
+        ),
+        )
+        
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -130,21 +149,22 @@ class EventDetail extends StatelessWidget {
                       )
             ),
             Center(
-            child:Container(
-              width: MediaQuery.of(context).size.width,
-                  child:IconButton(
-                  icon: Icon(
+              child: Container(
+                width: 100.0, // Establece el ancho deseado
+                height: 100.0, // Establece la altura deseada
+                child: InkWell(
+                  onTap: () {
+                    _showQRCodeDialog(context, event.id.toString());
+                  },
+                  child: Icon(
                     Icons.qr_code,
                     color: Colors.black,
                     size: 100.0,
                   ),
-                  onPressed: () {
-                    // Acción que deseas ejecutar cuando se presiona el botón izquierdo
-                  },
-                )
-              )
+                ),
+              ),
             ),
-            SizedBox(height: 60.0),
+            SizedBox(height: 5.0),
             if (event.links != null && event.links!.isNotEmpty)
               Container(
               constraints: BoxConstraints(
