@@ -107,7 +107,7 @@ class _QrCodeScannerWidgetState extends State<QRscanner> {
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
                     return
-                    EventDetail(event: viewModel.event.data!
+                    EventDetail(eventId: viewModel.event.data!.id
                     );
                   default:
                     return Container();

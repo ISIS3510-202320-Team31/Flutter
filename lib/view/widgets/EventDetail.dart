@@ -4,52 +4,116 @@ import 'package:intl/intl.dart';
 import 'package:hive_app/models/event.model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:hive_app/data/remote/response/Status.dart';
+import 'package:hive_app/view_model/user.vm.dart';
+import 'package:hive_app/view_model/event.vm.dart';
 
-class EventDetail extends StatelessWidget {
-  final Event event;
 
-  EventDetail({required this.event});
+
+class EventDetail extends StatefulWidget {
+  final eventId;
+  EventDetail({required this.eventId});
+
+  @override
+  _EventDetailState createState() => _EventDetailState(eventId);
+}
+
+class _EventDetailState extends State<EventDetail> {
+  final eventId;
+  late final userId;
+  final EventVM eventVM = EventVM();
+  final UserVM userVM = UserVM();
+  bool isUserParticipant = false;
+   
+  _EventDetailState(this.eventId);
+
+  @override
+  void initState() {
+    eventVM.fetchEventById(eventId);
+    userId = userVM.getUserid();
+    super.initState();
+  }
 
   Future<void> _abrirEnlace(String url) async {
     Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
+      await launchUrl(uri,mode: LaunchMode.inAppWebView);
     } else {
       throw 'No se pudo abrir el enlace: $url';
     }
   }
   
-  void _showQRCodeDialog(BuildContext context, String qrData) {
+  _showQRCodeDialog(BuildContext context, String qrData) {
   showDialog(
     context: context,
     builder: (context) {
       return Dialog(
         child:
-        Expanded(
+        Container(
           child:QrImageView(
           data: qrData,
           version: QrVersions.auto,
           size: MediaQuery.of(context).size.width *0.8,
         ),
         )
-        
       );
     },
   );
-}
+  }
 
   @override
   Widget build(BuildContext context) {
-    String formattedDate = event.date != null
-        ? DateFormat('dd/MM/yyyy').format(event.date!)
-        : 'Sin fecha';
-
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0),
       ),
       backgroundColor: appTheme.cardColor,
-      child: ClipRRect(
+      child: ChangeNotifierProvider<EventVM>(
+            create: (BuildContext context) => eventVM,
+            child: Consumer<EventVM>(
+              builder: (context, viewModel, _) {
+                switch (viewModel.event.status) {
+                  case Status.LOADING:
+                    print("Log :: LOADING");
+                    return Container(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                        ),
+                      ),
+                      height: MediaQuery.of(context).size.height*0.7,
+                    );
+                  case Status.ERROR:
+                    print("Log :: ERROR");
+                    return Container(
+                      child: Center(
+                        child: Text("Error"),
+                      ),
+                    );
+                  case Status.COMPLETED:
+                    print("Log :: COMPLETED");
+                    final event = viewModel.event.data!;
+                    bool isUserParticipant = event.participants!.contains(userId);
+                    return
+                    Container(child: showEventDetail(context, event, userId, isUserParticipant)
+                    );
+                  default:
+                    return Container();
+                }
+              },
+            ),
+          )
+    );
+  }
+
+  // Función para mostrar el cuadro de diálogo de detalles del evento
+  showEventDetail(BuildContext context, Event event, String userId, bool isUserParticipant) {
+
+    String formattedDate = event.date != null
+        ? DateFormat('dd/MM/yyyy').format(event.date!)
+        : 'Sin fecha';
+
+        return ClipRRect(
         borderRadius: BorderRadius.circular(30.0), // Ajusta el radio para bordes redondeados del Dialog
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -221,40 +285,39 @@ class EventDetail extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context); // Cierra el diálogo y vuelve a la vista anterior
                     },
-                    child: Text('Cancelar', style: TextStyle(color:appTheme.cardColor),),
+                    child: Text('Volver', style: TextStyle(color:appTheme.cardColor),),
                   ),
                 ),
                 SizedBox(width: 30.0),
-                Expanded( // Distribuye el espacio disponible uniformemente entre los botones
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      backgroundColor: appTheme.hintColor,
+                Expanded(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
                     ),
-                    onPressed: () {
-                    },
-                    child: Text('Unirse', style: TextStyle(color:appTheme.cardColor),),
+                    backgroundColor: isUserParticipant
+                        ? Colors.red // Usuario ya es participante, botón rojo
+                        : Colors.blue, // Usuario no es participante, botón azul
+                  ),
+                  onPressed: () {
+                    if (isUserParticipant) {
+                      eventVM.removeParticipant(eventId, userId);
+                    } else {
+                      eventVM.addParticipant(eventId, userId);
+                    }
+                  },
+                  child: Text(
+                    isUserParticipant ? 'No asistiré' : 'Unirse',
+                    style: TextStyle(color: appTheme.cardColor),
                   ),
                 ),
+              ),
                 SizedBox(width: 30.0),
               ],
             ),
             SizedBox(height: 20.0),
           ],
         )
-      )
-    );
-  }
-
-  // Función para mostrar el cuadro de diálogo de detalles del evento
-  static void showEventDetail(BuildContext context, Event event) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return EventDetail(event: event);
-      },
-    );
+      );
   }
 }

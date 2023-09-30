@@ -16,7 +16,7 @@ class EventCard extends StatelessWidget {
         : 'Sin fecha';
 
     return GestureDetector(
-      onTap: () =>{showDialog(context: context, builder: (BuildContext context) => EventDetail(event: event))},
+      onTap: () =>{showDialog(context: context, builder: (BuildContext context) => EventDetail(eventId: event.id))},
       child:Card(
       margin: EdgeInsets.only(left:8.0,right:8.0,bottom:10,top:10),
       shape: RoundedRectangleBorder(

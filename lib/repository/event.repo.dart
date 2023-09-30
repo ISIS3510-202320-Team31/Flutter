@@ -51,9 +51,23 @@ class EventRepoImpl extends EventRepo {
   Future<Event> addParticipant(String eventId, String participantId) async {
     try {
       // Construye la URL completa para agregar un participante a un evento
-      final endpoint = ApiEndPoints().usersEndPoint + '$participantId/events/$eventId';
+      final endpoint = ApiEndPoints().usersEndPoint + '$participantId/events/$eventId/';
       
       dynamic response = await _apiService.postResponse(endpoint, null);
+      print("Log: $response");
+      final jsonData = Event.fromJson(response);
+      return jsonData;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Event> removeParticipant(String eventId, String participantId) async {
+    try {
+      // Construye la URL completa para eliminar un participante de un evento
+      final endpoint = ApiEndPoints().usersEndPoint + '$participantId/events/$eventId/';
+      
+      dynamic response = await _apiService.deleteResponse(endpoint);
       print("Log: $response");
       final jsonData = Event.fromJson(response);
       return jsonData;
