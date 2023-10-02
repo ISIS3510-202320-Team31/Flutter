@@ -22,6 +22,18 @@ class EventRepoImpl extends EventRepo {
     }
   }
 
+  Future<EventModel?> getEventsForUser(String userId) async {
+    try {
+      dynamic response =
+          await _apiService.getResponse(ApiEndPoints().eventsEndPoint+'users/$userId/');
+      print("Log: $response");
+      final jsonData = EventModel.fromJson(response);
+      return jsonData;
+    } catch (e) {
+      throw e;
+    }
+  }
+
   Future<Event> getEventById(String eventId) async {
     try {
       // Construye la URL completa para obtener un evento por ID

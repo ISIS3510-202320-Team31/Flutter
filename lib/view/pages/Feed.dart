@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_app/view_model/user.vm.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/widgets/EventList.dart';
 import 'package:hive_app/view_model/event.vm.dart';
@@ -16,10 +17,13 @@ class Feed extends StatefulWidget {
 
 class _FeedState extends State<Feed> {
   final EventVM eventVM = EventVM();
+  final UserVM userVM = UserVM();
+  late final userId;
 
   @override
   void initState() {
-    eventVM.fetchEventData();
+    userId = userVM.getUserid();
+    eventVM.fetchEventsForUser(userId);
     super.initState();
   }
 

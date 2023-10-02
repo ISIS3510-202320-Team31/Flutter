@@ -29,6 +29,14 @@ class EventVM extends ChangeNotifier {
         .onError((error, stackTrace) => _setEventMain(ApiResponse.error(error.toString())));
   }
 
+  Future<void> fetchEventsForUser(String userId) async {
+    _setEventMain(ApiResponse.loading());
+    _myRepo
+        .getEventsForUser(userId)
+        .then((value) => _setEventMain(ApiResponse.completed(value)))
+        .onError((error, stackTrace) => _setEventMain(ApiResponse.error(error.toString())));
+  }
+
   Future<void> fetchEventById(String eventId) async {
     _setEvent(ApiResponse.loading());
     _myRepo
