@@ -23,12 +23,15 @@ class _CalendarState extends State<Calendar> {
   final EventVM eventVM = EventVM();
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
-  bool isButtonPressed = false; 
   String orderFuture = "1";
   String textChanger = "Futuros";
   String actualDate = ''; 
   late final uuidUser;
   final UserVM userVM = UserVM();
+  List<bool> isSelected = [
+    false,
+    true,
+  ];
 
 
   @override
@@ -59,9 +62,33 @@ class _CalendarState extends State<Calendar> {
               ),
             ),
           ),
-          ElevatedButton(
-            onPressed: buttonPressed,
-            child: Text(isButtonPressed ? 'Cambiar: Eventos Futuros' : 'Cambiar: Eventos Pasados'), // Cambiar el texto del botón
+          ToggleButtons(
+            children: [
+              Container(
+                width: 100,
+                child: Center(child: Text("Pasado")),
+              ),
+              Container(
+                width: 100,
+                child: Center(child: Text("Futuro")),
+              ),
+            ],
+            isSelected: isSelected,
+            onPressed: (int index) {
+              if(index == 0){
+                buttonPressed("0");
+                textChanger = "Pasados";
+              }
+              else{
+                buttonPressed("1");
+                textChanger = "Futuros";
+              }
+              setState(() {
+                for (int i = 0; i < isSelected.length; i++) {
+                  isSelected[i] = (i == index); // Activa solo el ícono seleccionado
+                }
+              });
+            },
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.02),
           ChangeNotifierProvider<EventVM>(
@@ -100,59 +127,10 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
-  void buttonPressed() async {
+  void buttonPressed(String orderFuture) async {
     setState(() {
-      orderFuture = isButtonPressed ? "1" : "0"; 
-      textChanger = isButtonPressed ? "Futuros" : "Pasados"; 
-      isButtonPressed = !isButtonPressed;
-      handleNotification();
       eventVM.fetchEventListByUser(actualDate, uuidUser, orderFuture);
     });
-  }
-
-  void handleNotification() async{
-    _getCurrentLocation().then((value){
-      lat = '${value.latitude}';
-      long = '${value.longitude}';
-      _liveLocation();
-    });
-    await initNotifications();
-    await showNotification(5); 
-  }
-
-  void _liveLocation(){
-    LocationSettings locationSettings = const LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 50,
-    );
-
-    Geolocator.getPositionStream(locationSettings: locationSettings)
-        .listen((Position position) {
-      lat = position.latitude.toString();
-      long = position.longitude.toString();
-    });
-  }
-
-  Future<Position> _getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled){
-      return Future.error('Location services are disabled.');
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if(permission == LocationPermission.denied){
-      permission = await Geolocator.requestPermission();
-      if(permission == LocationPermission.denied){
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if(permission == LocationPermission.deniedForever){
-      return Future.error(
-        'Location permissions are permanently denied, we cannot request permission.'
-      );
-    }
-    return await Geolocator.getCurrentPosition();
   }
 }
 
