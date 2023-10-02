@@ -75,7 +75,16 @@ class _SignupFormState extends State<SignupForm> {
                 ),
               ),
               SizedBox(height: 20),
-              Form(
+              Card(
+              margin: EdgeInsets.only(
+                    left: 10.0, right: 10.0, bottom: 10, top: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+              elevation: 8,
+              child: Padding(
+              padding: EdgeInsets.all(20),
+              child:Form(
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
@@ -110,8 +119,13 @@ class _SignupFormState extends State<SignupForm> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 30),
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0), // Ajusta el valor de acuerdo a tu preferencia
+                            ),
+                          ),
                       onPressed: () async {
                         Navigator.push(
                           context,
@@ -120,7 +134,7 @@ class _SignupFormState extends State<SignupForm> {
                       },
                       child: Text('Iniciar Sesión'),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     TextButton(
                       onPressed: () async {
                         Navigator.push(
@@ -132,7 +146,9 @@ class _SignupFormState extends State<SignupForm> {
                     ),
                   ],
                 ),
-              ),
+              )
+              )
+            ),
             ],
           ),
         ],

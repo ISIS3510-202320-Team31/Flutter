@@ -82,6 +82,9 @@ class _LoginFormState extends State<LoginForm> {
                     borderRadius: BorderRadius.circular(25.0),
                   ),
                   elevation: 8,
+                  child: 
+                  Padding(
+                    padding: EdgeInsets.all(25),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -107,8 +110,13 @@ class _LoginFormState extends State<LoginForm> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 30),
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0), // Ajusta el valor de acuerdo a tu preferencia
+                            ),
+                          ),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               // Aquí puedes realizar la autenticación o procesar los datos del formulario
@@ -138,9 +146,9 @@ class _LoginFormState extends State<LoginForm> {
                               MaterialPageRoute(builder: (context) => Home()),
                             );
                           },
-                          child: Text('Iniciar Sesión'),
+                          child: Text('Iniciar Sesión',style: TextStyle(fontSize: 16)),
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 10),
                         // other kind of button
                         TextButton(
                           onPressed: () async {
@@ -153,7 +161,9 @@ class _LoginFormState extends State<LoginForm> {
                         ),
                       ],
                     ),
-                  ))
+                  )
+                  )
+                )
             ],
           ),
         ],
