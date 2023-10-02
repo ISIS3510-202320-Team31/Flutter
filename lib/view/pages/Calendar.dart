@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/widgets/EventList.dart';
 import 'package:hive_app/view_model/event.vm.dart';
@@ -6,6 +7,8 @@ import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:hive_app/view/pages/ViewsHeader.dart';
 import 'package:hive_app/services/notification_services.dart';
 import 'package:provider/provider.dart';
+
+import '../../view_model/user.vm.dart';
 
 class Calendar extends StatefulWidget {
   static const String id = "calendar_screen";
@@ -15,20 +18,26 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
+  late String lat = "0";
+  late String long= "0";
   final EventVM eventVM = EventVM();
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
   bool isButtonPressed = false; 
   String orderFuture = "1";
   String textChanger = "Futuros";
+  String actualDate = ''; 
+  late final uuidUser;
+  final UserVM userVM = UserVM();
+
 
   @override
   void initState() {
-    String date = "01:10:2023";
-        // eventVM.getUUID? Como extraigo el uuid??
-    String uuidUser = "1";
+    uuidUser = userVM.getUserid();
     super.initState();
-    eventVM.fetchEventListByUser(date, uuidUser, orderFuture);
+    super.initState();
+    actualDate = selectedDate.toLocal().toString().split(' ')[0];
+    eventVM.fetchEventListByUser(actualDate, uuidUser, orderFuture);
   }
 
   @override
@@ -66,7 +75,7 @@ class _CalendarState extends State<Calendar> {
                       child: Center(
                         child: CircularProgressIndicator(),
                       ),
-                      height: MediaQuery.of(context).size.height*0.7,
+                      height: MediaQuery.of(context).size.height*0.5,
                     );
                   case Status.ERROR:
                     print("Log :: ERROR");
@@ -97,11 +106,53 @@ class _CalendarState extends State<Calendar> {
       textChanger = isButtonPressed ? "Futuros" : "Pasados"; 
       isButtonPressed = !isButtonPressed;
       handleNotification();
+      eventVM.fetchEventListByUser(actualDate, uuidUser, orderFuture);
     });
   }
 
   void handleNotification() async{
+    _getCurrentLocation().then((value){
+      lat = '${value.latitude}';
+      long = '${value.longitude}';
+      _liveLocation();
+    });
     await initNotifications();
     await showNotification(5); 
   }
+
+  void _liveLocation(){
+    LocationSettings locationSettings = const LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 50,
+    );
+
+    Geolocator.getPositionStream(locationSettings: locationSettings)
+        .listen((Position position) {
+      lat = position.latitude.toString();
+      long = position.longitude.toString();
+    });
+  }
+
+  Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled){
+      return Future.error('Location services are disabled.');
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if(permission == LocationPermission.denied){
+      permission = await Geolocator.requestPermission();
+      if(permission == LocationPermission.denied){
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if(permission == LocationPermission.deniedForever){
+      return Future.error(
+        'Location permissions are permanently denied, we cannot request permission.'
+      );
+    }
+    return await Geolocator.getCurrentPosition();
+  }
 }
+

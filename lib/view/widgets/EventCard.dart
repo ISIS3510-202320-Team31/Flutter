@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Importa la biblioteca intl
+import 'package:intl/intl.dart'; 
 import 'package:hive_app/models/event.model.dart';
 import 'package:hive_app/view/widgets/EventDetail.dart';
 
