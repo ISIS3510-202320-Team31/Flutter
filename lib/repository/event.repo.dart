@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:hive_app/models/event.model.dart';
 import 'package:hive_app/data/remote/network/NetworkApiService.dart';
 import 'package:hive_app/data/remote/network/ApiEndPoints.dart';
@@ -24,8 +26,8 @@ class EventRepoImpl extends EventRepo {
 
   Future<EventModel?> getEventsForUser(String userId) async {
     try {
-      dynamic response =
-          await _apiService.getResponse(ApiEndPoints().eventsEndPoint+'users/$userId/');
+      dynamic response = await _apiService
+          .getResponse(ApiEndPoints().eventsEndPoint + 'users/$userId/');
       print("Log: $response");
       final jsonData = EventModel.fromJson(response);
       return jsonData;
@@ -38,7 +40,7 @@ class EventRepoImpl extends EventRepo {
     try {
       // Construye la URL completa para obtener un evento por ID
       final endpoint = ApiEndPoints().eventsEndPoint + '$eventId';
-      
+
       dynamic response = await _apiService.getResponse(endpoint);
       print("Log: $response");
       final jsonData = Event.fromJson(response);
@@ -51,7 +53,7 @@ class EventRepoImpl extends EventRepo {
   Future<Event> createEvent(Event event) async {
     try {
       dynamic response = await _apiService.postResponse(
-          ApiEndPoints().eventsEndPoint, event.toJson());
+          ApiEndPoints().eventsEndPoint, jsonEncode(event.toJson()));
       print("Log: $response");
       final jsonData = Event.fromJson(response);
       return jsonData;
@@ -63,8 +65,9 @@ class EventRepoImpl extends EventRepo {
   Future<Event> addParticipant(String eventId, String participantId) async {
     try {
       // Construye la URL completa para agregar un participante a un evento
-      final endpoint = ApiEndPoints().usersEndPoint + '$participantId/events/$eventId/';
-      
+      final endpoint =
+          ApiEndPoints().usersEndPoint + '$participantId/events/$eventId/';
+
       dynamic response = await _apiService.postResponse(endpoint, null);
       print("Log: $response");
       final jsonData = Event.fromJson(response);
@@ -77,8 +80,9 @@ class EventRepoImpl extends EventRepo {
   Future<Event> removeParticipant(String eventId, String participantId) async {
     try {
       // Construye la URL completa para eliminar un participante de un evento
-      final endpoint = ApiEndPoints().usersEndPoint + '$participantId/events/$eventId/';
-      
+      final endpoint =
+          ApiEndPoints().usersEndPoint + '$participantId/events/$eventId/';
+
       dynamic response = await _apiService.deleteResponse(endpoint);
       print("Log: $response");
       final jsonData = Event.fromJson(response);
@@ -87,5 +91,4 @@ class EventRepoImpl extends EventRepo {
       throw e;
     }
   }
-
 }

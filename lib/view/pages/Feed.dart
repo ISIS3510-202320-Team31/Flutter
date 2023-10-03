@@ -3,10 +3,9 @@ import 'package:hive_app/view_model/user.vm.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/widgets/EventList.dart';
 import 'package:hive_app/view_model/event.vm.dart';
+import 'package:hive_app/view/widgets/SearchBar.dart';
 import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:provider/provider.dart';
-import 'package:hive_app/view/widgets/SearchBar.dart';
-
 
 class Feed extends StatefulWidget {
   static const String id = "feed_screen";
@@ -37,9 +36,9 @@ class _FeedState extends State<Feed> {
       ),
       child: Column(
         children: <Widget>[
-          SizedBox(height: MediaQuery.of(context).size.height*0.05),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
           Search(),
-          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           ChangeNotifierProvider<EventVM>(
             create: (BuildContext context) => eventVM,
             child: Consumer<EventVM>(
@@ -49,10 +48,9 @@ class _FeedState extends State<Feed> {
                     print("Log :: LOADING");
                     return Container(
                       child: Center(
-                        child: CircularProgressIndicator(
-                        ),
+                        child: CircularProgressIndicator(),
                       ),
-                      height: MediaQuery.of(context).size.height*0.7,
+                      height: MediaQuery.of(context).size.height * 0.7,
                     );
                   case Status.ERROR:
                     print("Log :: ERROR");
@@ -63,18 +61,17 @@ class _FeedState extends State<Feed> {
                     );
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
-                    return
-                    Expanded(child: EventList(eventList: viewModel.eventModel.data!.events)
-                    );
+                    return Expanded(
+                        child: EventList(
+                            eventList: viewModel.eventModel.data!.events));
                   default:
                     return Container();
                 }
               },
             ),
-          )// Aquí incluye el EventList
+          ) // Aquí incluye el EventList
         ],
       ),
     );
   }
 }
-
