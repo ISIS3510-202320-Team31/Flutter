@@ -6,15 +6,21 @@ import 'package:hive_app/view/pages/Home.dart';
 import 'package:hive_app/view/pages/Signup.dart';
 
 class Login extends StatelessWidget {
+  final String? redirection;
+  const Login({this.redirection});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginForm(),
+      home: LoginForm(redirection: redirection),
     );
   }
 }
 
 class LoginForm extends StatefulWidget {
+  final String? redirection;
+  const LoginForm({this.redirection});
+
   @override
   _LoginFormState createState() => _LoginFormState();
 }
@@ -26,6 +32,7 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    print("Redirection: ${widget.redirection}");
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -74,7 +81,43 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              // if redirected from signup, show a success message
+              if (widget.redirection == 'signup')
+                Container(
+                    child: Text(
+                      '¡Registro exitoso!',
+                      style: TextStyle(
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withOpacity(0.3),
+                            offset: Offset(2, 3),
+                            blurRadius: 12,
+                          )
+                        ],
+                        fontSize: 18, // Tamaño de fuente deseado
+                        fontFamily: "Jost", // Fuente deseada
+                        fontWeight:
+                            FontWeight.bold, // Peso de la fuente en negrita
+                        color: Colors.black, // Color del texto (opcional)
+                      ),
+                    ),
+                    alignment: Alignment.center),
+
+              // if redirected from signup, show a success message
+              if (widget.redirection == 'signup')
+                Container(
+                    child: Text(
+                      'Ingresa tus credenciales',
+                      style: TextStyle(
+                        fontSize: 14, // Tamaño de fuente deseado
+                        fontFamily: "Jost", // Fuente deseada
+                        fontWeight:
+                            FontWeight.bold, // Peso de la fuente en negrita
+                        color: Colors.black, // Color del texto (opcional)
+                      ),
+                    ),
+                    alignment: Alignment.center),
+              SizedBox(height: 10),
               Card(
                   margin: EdgeInsets.only(
                       left: 10.0, right: 10.0, bottom: 10, top: 10),

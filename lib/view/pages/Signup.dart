@@ -308,13 +308,22 @@ class _SignupFormState extends State<SignupForm> {
                                         ),
                                       );
                                     case Status.COMPLETED:
-                                      // TODO: Problema de que no termina de renderizado
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Login()),
+                                      return Builder(
+                                        builder: (context) {
+                                          Future.delayed(
+                                                  Duration(milliseconds: 100))
+                                              .then((_) {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => Login(
+                                                        redirection: "signup",
+                                                      )),
+                                            );
+                                          });
+                                          return Container();
+                                        },
                                       );
-                                      return Container();
                                     default:
                                       return Container(
                                         width: double.infinity,
@@ -410,10 +419,9 @@ class _SignupFormState extends State<SignupForm> {
                             TextButton(
                               onPressed: () async {
                                 Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Login()),
-                                );
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Login()));
                               },
                               child:
                                   Text('¿Ya tienes una cuenta? Inicia sesión'),
