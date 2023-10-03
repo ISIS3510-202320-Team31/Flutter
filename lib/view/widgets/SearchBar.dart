@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/widgets/QRscanner.dart';
 
-
 class Search extends StatelessWidget {
+  final String userId;
+  const Search({required this.userId});
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(width: MediaQuery.of(context).size.width*0.02),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
         // Icono de filtro a la izquierda
         IconButton(
           icon: Icon(
@@ -17,14 +19,16 @@ class Search extends StatelessWidget {
             size: 30.0,
           ),
           onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => QRscanner()),
-          );
-        },
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => QRscanner(userId: userId)),
+            );
+          },
         ),
-        SizedBox(width: MediaQuery.of(context).size.width*0.25),
-        Text('HIVE!', style: TextStyle(fontSize: 30.0,fontWeight: FontWeight.bold)),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.25),
+        Text('HIVE!',
+            style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold)),
         // Expanded(
         //   child: Container(
         //     padding: EdgeInsets.only(left: 10, right: 10),
@@ -72,7 +76,7 @@ class Search extends StatelessWidget {
         //   },
         //   color: appTheme.hintColor
         // ),
-        SizedBox(width: MediaQuery.of(context).size.width*0.02),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
       ],
     );
   }
