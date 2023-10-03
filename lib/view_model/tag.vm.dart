@@ -6,7 +6,7 @@ import 'package:hive_app/repository/tag.repo.dart';
 class TagVM extends ChangeNotifier {
   final _myRepo = TagRepoImpl();
 
-  ApiResponse<TagModel> tagModel = ApiResponse.loading();
+  ApiResponse<TagModel> tagModel = ApiResponse.none();
 
   void _setTagMain(ApiResponse<TagModel> response) {
     print("Response: $response");
@@ -19,6 +19,7 @@ class TagVM extends ChangeNotifier {
     _myRepo
         .getTagData()
         .then((value) => _setTagMain(ApiResponse.completed(value)))
-        .onError((error, stackTrace) => _setTagMain(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) =>
+            _setTagMain(ApiResponse.error(error.toString())));
   }
 }

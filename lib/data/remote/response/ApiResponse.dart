@@ -1,12 +1,13 @@
 import 'package:hive_app/data/remote/response/Status.dart';
 
 class ApiResponse<T> {
-
   Status? status;
   T? data;
   String? message;
 
-  ApiResponse(this.status,this.data,this.message);
+  ApiResponse(this.status, this.data, this.message);
+
+  ApiResponse.none() : status = Status.NONE;
 
   ApiResponse.loading() : status = Status.LOADING;
 

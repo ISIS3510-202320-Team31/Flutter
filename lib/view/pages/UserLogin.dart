@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
-
 class UserLogin extends StatefulWidget {
   @override
   _UserLoginState createState() => _UserLoginState();
@@ -63,4 +61,3 @@ class _UserLoginState extends State<UserLogin> {
     super.dispose();
   }
 }
-
