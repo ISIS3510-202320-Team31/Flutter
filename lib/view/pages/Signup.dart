@@ -406,12 +406,6 @@ class _SignupFormState extends State<SignupForm> {
                                   _career,
                                   _selectedDate!,
                                 );
-                                // 6. If answer is success, go to login page
-                                /*Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Home()),
-                                );*/
                               },
                               child: Text('REGISTRATE'),
                             ),

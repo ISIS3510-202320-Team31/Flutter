@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/pages/Home.dart';
 import 'package:hive_app/view/pages/Signup.dart';
+import 'package:hive_app/view_model/user.vm.dart';
+import 'package:provider/provider.dart';
+import 'package:hive_app/data/remote/response/Status.dart';
 
 class Login extends StatelessWidget {
   final String? redirection;
@@ -27,8 +29,11 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _emailController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  String _validationError = "";
+
+  final UserVM userVM = UserVM();
 
   @override
   Widget build(BuildContext context) {
@@ -132,11 +137,12 @@ class _LoginFormState extends State<LoginForm> {
                         child: Column(
                           children: <Widget>[
                             TextFormField(
-                              controller: _emailController,
-                              decoration: InputDecoration(labelText: 'Email'),
+                              controller: _usernameController,
+                              decoration: InputDecoration(
+                                  labelText: 'Nombre de usuario'),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'Por favor, ingrese su email';
+                                  return 'Por favor, ingresa tu nombre de usuario';
                                 }
                                 return null;
                               },
@@ -153,46 +159,87 @@ class _LoginFormState extends State<LoginForm> {
                                 return null;
                               },
                             ),
-                            SizedBox(height: 30),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      20.0), // Ajusta el valor de acuerdo a tu preferencia
-                                ),
+                            SizedBox(height: 20),
+                            ChangeNotifierProvider<UserVM>(
+                              create: (BuildContext context) => userVM,
+                              child: Consumer<UserVM>(
+                                builder: (context, viewModel, _) {
+                                  switch (viewModel.user.status) {
+                                    case Status.LOADING:
+                                      print("Log :: LOADING");
+                                      return Container(
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                      );
+                                    case Status.ERROR:
+                                      print("Log :: ERROR");
+                                      return Container(
+                                        width: double.infinity,
+                                        child: Text(
+                                          jsonDecode(viewModel.user.message!)[
+                                              "message"],
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      );
+                                    case Status.COMPLETED:
+                                      return Builder(
+                                        builder: (context) {
+                                          Future.delayed(
+                                                  Duration(milliseconds: 100))
+                                              .then((_) {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => Home()),
+                                            );
+                                          });
+                                          return Container();
+                                        },
+                                      );
+                                    default:
+                                      return Container(
+                                        width: double.infinity,
+                                        child: Text(
+                                          _validationError,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: _validationError == ""
+                                                ? Colors.white
+                                                : Colors.red,
+                                          ),
+                                        ),
+                                      );
+                                  }
+                                },
                               ),
+                            ),
+                            SizedBox(height: 10),
+                            ElevatedButton(
                               onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  // Aquí puedes realizar la autenticación o procesar los datos del formulario
-                                  String email = _emailController.text;
-                                  String password = _passwordController.text;
-                                  var url = Uri.parse(
-                                      'http://34.125.226.119:8080/users/');
-                                  final Map<String, dynamic> datos = {
-                                    'icon': 'icon',
-                                    'login': 'login',
-                                    'name': 'nombre',
-                                    'verificated': true,
-                                    'role': 'STUDENT',
-                                    'career': 'DERECHO',
-                                    'birthdate': '2002-12-27',
-                                    'email': email,
-                                    'password': password,
-                                  };
-                                  final jsonData = jsonEncode(datos);
-                                  var response =
-                                      await http.post(url, body: jsonData);
-                                  // Lógica de autenticación aquí
-                                  print(response);
+                                // Validation Step
+                                // 1. Check that all fields are filled
+                                if (!_formKey.currentState!.validate()) {
+                                  setState(() {
+                                    _validationError = "";
+                                  });
+                                  return;
                                 }
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Home()),
-                                );
+                                // 2. Send to backend and wait for response, if response is error, show error message
+                                setState(() {
+                                  _validationError = "";
+                                });
+                                await userVM.login(_usernameController.text,
+                                    _passwordController.text);
                               },
-                              child: Text('Iniciar Sesión',
-                                  style: TextStyle(fontSize: 16)),
+                              child: Text('INICIAR SESIÓN',
+                                  style: TextStyle(fontSize: 15)),
                             ),
                             SizedBox(height: 10),
                             // other kind of button

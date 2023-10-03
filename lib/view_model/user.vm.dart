@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_app/data/remote/response/ApiResponse.dart';
 import 'package:hive_app/models/user.model.dart';
 import 'package:hive_app/models/requests/user-register.model.dart';
+import 'package:hive_app/models/requests/user-login.model.dart';
 import 'package:hive_app/repository/user.repo.dart';
 
 class UserVM extends ChangeNotifier {
@@ -58,6 +59,20 @@ class UserVM extends ChangeNotifier {
     _setUser(ApiResponse.loading());
     _myRepo
         .registerUser(userReg)
+        .then((value) => _setUser(ApiResponse.completed(value)))
+        .onError((error, stackTrace) =>
+            _setUser(ApiResponse.error(error.toString())));
+  }
+
+  Future<void> login(String login, String password) async {
+    UserLogin userLogin = UserLogin(
+      login: login,
+      password: password,
+    );
+
+    _setUser(ApiResponse.loading());
+    _myRepo
+        .login(userLogin)
         .then((value) => _setUser(ApiResponse.completed(value)))
         .onError((error, stackTrace) =>
             _setUser(ApiResponse.error(error.toString())));
