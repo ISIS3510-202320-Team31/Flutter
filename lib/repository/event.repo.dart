@@ -91,4 +91,17 @@ class EventRepoImpl extends EventRepo {
       throw e;
     }
   }
+
+  Future<EventModel?> fetchEventListByUser(String date, String uuidUser, String orderFuture) async {
+    try {
+      dynamic response =
+          await _apiService.getResponse(ApiEndPoints().eventsEndPoint+'date/$date/user/$uuidUser/order/$orderFuture');
+      print("Log: $response");
+      final jsonData = EventModel.fromJson(response);
+      return jsonData;
+    } catch (e) {
+      throw e;
+    }
+  }
+
 }

@@ -10,14 +10,11 @@ class Profile extends StatelessWidget {
       future: calculateTimeSinceInstallation(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // Muestra un indicador de carga mientras se obtiene el tiempo.
           return CircularProgressIndicator();
         } else if (snapshot.hasError) {
-          // Maneja los errores si los hubiera.
           return Text('Error: ${snapshot.error}');
         } else {
           final timeSinceInstallation = snapshot.data;
-
           return Stack(
             children: <Widget>[
               Container(
@@ -53,11 +50,11 @@ class Profile extends StatelessWidget {
                           height: 30,
                         )),
                         Text(
-                          'Correo:\n' // Texto 1
+                          'Correo:\n' 
                           'ne.rueda@uniandes.edu.co\n\n'
-                          'Tiempo usado en la App:\n' // Texto 2
+                          'Tiempo usado en la App:\n' 
                           '${formatTime(timeSinceInstallation!)}\n\n'
-                          'Eventos a los que perteneces:\n' // Texto 3
+                          'Eventos a los que perteneces:\n' 
                           '6 eventos.\n\n\n',
                           style: TextStyle(fontSize: 20),
                         ),
@@ -84,7 +81,7 @@ String formatTime(Duration duration) {
   return '$hours horas, $minutes minutos';
 }
 
-void handleLogOut() {
-  // TODO
-  print('Se oprimio el boton de cerrar sesión');
+void handleLogOut() async {
+  //TODO
+  print('Se oprimió el botón de cerrar sesión');
 }

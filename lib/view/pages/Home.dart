@@ -93,4 +93,3 @@ class _NavState extends State<Home> {
     );
   }
 }
-
