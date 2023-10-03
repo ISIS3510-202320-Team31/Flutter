@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:hive_app/services/notification_services.dart';
+import 'package:http/http.dart' as http;
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/pages/Home.dart';
 import 'package:hive_app/view/pages/Signup.dart';
@@ -31,6 +34,8 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final SecureStorage secureStorage = SecureStorage();
 
+  String lat = '';
+  String long = '';
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -269,5 +274,59 @@ class _LoginFormState extends State<LoginForm> {
         ],
       ),
     );
+  }
+
+  void handleNotification() async {
+    _getCurrentLocation().then((value) {
+      lat = '${value.latitude}';
+      long = '${value.longitude}';
+      _liveLocation();
+      double latDouble = double.tryParse(lat) ?? 0.0;
+      double longDouble = double.tryParse(lat) ?? 0.0;
+      if (latDouble < 4.605 &&
+          latDouble > 4.598 &&
+          longDouble > -74.06 &&
+          longDouble < -74.0677) {
+        initNotifications();
+        showNotification("en la Universidad de Los Andes,");
+      } else {
+        initNotifications();
+        showNotification("por fuera de UniAndes, pero");
+      }
+    });
+  }
+
+  void _liveLocation() {
+    LocationSettings locationSettings = const LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 50,
+    );
+
+    Geolocator.getPositionStream(locationSettings: locationSettings)
+        .listen((Position position) {
+      lat = position.latitude.toString();
+      long = position.longitude.toString();
+    });
+  }
+
+  Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permission.');
+    }
+    return await Geolocator.getCurrentPosition();
   }
 }
