@@ -6,8 +6,8 @@ import 'package:hive_app/view/pages/EventCreate.dart';
 import 'package:hive_app/view/pages/Feed.dart';
 
 class Home extends StatefulWidget {
-  final String? userId;
-  const Home({super.key, this.userId});
+  final String userId;
+  const Home({super.key, required this.userId});
 
   @override
   State<Home> createState() => _HomeState();
@@ -22,9 +22,9 @@ class _HomeState extends State<Home> {
   void initState() {
     _navOptions = [
       Feed(userId: widget.userId),
-      EventCreate(),
-      Calendar(),
-      Profile()
+      EventCreate(userId: widget.userId),
+      Calendar(userId: widget.userId),
+      Profile(userId: widget.userId)
     ];
     super.initState();
   }

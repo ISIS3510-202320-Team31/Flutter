@@ -10,8 +10,9 @@ import 'package:hive_app/view_model/user.vm.dart';
 import 'package:hive_app/view_model/event.vm.dart';
 
 class EventDetail extends StatefulWidget {
-  final eventId;
-  EventDetail({required this.eventId});
+  final String userId;
+  final String eventId;
+  EventDetail({required this.userId, required this.eventId});
 
   @override
   _EventDetailState createState() => _EventDetailState(eventId);
@@ -19,7 +20,6 @@ class EventDetail extends StatefulWidget {
 
 class _EventDetailState extends State<EventDetail> {
   final eventId;
-  late final userId;
   final EventVM eventVM = EventVM();
   final UserVM userVM = UserVM();
   bool isUserParticipant = false;
@@ -28,8 +28,7 @@ class _EventDetailState extends State<EventDetail> {
 
   @override
   void initState() {
-    eventVM.fetchEventById(eventId);
-    userId = userVM.getUserId();
+    eventVM.fetchEventById(widget.eventId);
     super.initState();
   }
 
@@ -88,10 +87,11 @@ class _EventDetailState extends State<EventDetail> {
                 case Status.COMPLETED:
                   print("Log :: COMPLETED");
                   final event = viewModel.event.data!;
-                  bool isUserParticipant = event.participants!.contains(userId);
+                  bool isUserParticipant =
+                      event.participants!.contains(widget.userId);
                   return Container(
                       child: showEventDetail(
-                          context, event, userId, isUserParticipant));
+                          context, event, widget.userId, isUserParticipant));
                 default:
                   return Container();
               }

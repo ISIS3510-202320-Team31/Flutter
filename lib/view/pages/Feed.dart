@@ -9,8 +9,8 @@ import 'package:provider/provider.dart';
 class Feed extends StatefulWidget {
   static const String id = "feed_screen";
 
-  final String? userId;
-  const Feed({this.userId});
+  final String userId;
+  const Feed({required this.userId});
 
   @override
   _FeedState createState() => _FeedState();
@@ -21,7 +21,7 @@ class _FeedState extends State<Feed> {
 
   @override
   void initState() {
-    eventVM.fetchEventsForUser(widget.userId!);
+    eventVM.fetchEventsForUser(widget.userId);
     super.initState();
   }
 
@@ -36,7 +36,7 @@ class _FeedState extends State<Feed> {
       child: Column(
         children: <Widget>[
           SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-          Search(),
+          Search(userId: widget.userId),
           SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           ChangeNotifierProvider<EventVM>(
             create: (BuildContext context) => eventVM,
@@ -62,6 +62,7 @@ class _FeedState extends State<Feed> {
                     print("Log :: COMPLETED");
                     return Expanded(
                         child: EventList(
+                            userId: widget.userId,
                             eventList: viewModel.eventModel.data!.events));
                   default:
                     return Container();

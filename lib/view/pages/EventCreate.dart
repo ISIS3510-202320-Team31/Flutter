@@ -3,6 +3,9 @@ import 'package:hive_app/view/pages/ViewsHeader.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 
 class EventCreate extends StatefulWidget {
+  final String userId;
+  const EventCreate({required this.userId});
+
   @override
   _EventCreateState createState() => _EventCreateState();
 }

@@ -13,6 +13,9 @@ import '../../view_model/user.vm.dart';
 class Calendar extends StatefulWidget {
   static const String id = "calendar_screen";
 
+  final String userId;
+  Calendar({required this.userId});
+
   @override
   _CalendarState createState() => _CalendarState();
 }
@@ -26,7 +29,6 @@ class _CalendarState extends State<Calendar> {
   String orderFuture = "1";
   String textChanger = "Futuros";
   String actualDate = '';
-  late final uuidUser;
   final UserVM userVM = UserVM();
   List<bool> isSelected = [
     false,
@@ -35,11 +37,10 @@ class _CalendarState extends State<Calendar> {
 
   @override
   void initState() {
-    uuidUser = userVM.getUserId();
     super.initState();
     super.initState();
     actualDate = selectedDate.toLocal().toString().split(' ')[0];
-    eventVM.fetchEventListByUser(actualDate, uuidUser, orderFuture);
+    eventVM.fetchEventListByUser(actualDate, widget.userId, orderFuture);
   }
 
   @override
@@ -75,10 +76,10 @@ class _CalendarState extends State<Calendar> {
             isSelected: isSelected,
             onPressed: (int index) {
               if (index == 0) {
-                buttonPressed("0");
+                buttonPressed(widget.userId, "0");
                 textChanger = "Pasados";
               } else {
-                buttonPressed("1");
+                buttonPressed(widget.userId, "1");
                 textChanger = "Futuros";
               }
               setState(() {
@@ -114,6 +115,7 @@ class _CalendarState extends State<Calendar> {
                     print("Log :: COMPLETED");
                     return Expanded(
                       child: EventList(
+                          userId: widget.userId,
                           eventList: viewModel.eventModel.data!.events),
                     );
                   default:
@@ -127,9 +129,9 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
-  void buttonPressed(String orderFuture) async {
+  void buttonPressed(String uId, String orderFuture) async {
     setState(() {
-      eventVM.fetchEventListByUser(actualDate, uuidUser, orderFuture);
+      eventVM.fetchEventListByUser(actualDate, uId, orderFuture);
     });
   }
 }
