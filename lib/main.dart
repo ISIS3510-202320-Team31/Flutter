@@ -14,10 +14,7 @@ void main() {
             theme: appTheme,
             title: "HIVE",
             initialRoute: '/Login',
-            routes: {
-              '/Feed': (BuildContext context) => Home(),
-              '/Login': (BuildContext context) => Login()
-            },
+            routes: {'/Login': (BuildContext context) => Login()},
           )));
   tiempo();
 }

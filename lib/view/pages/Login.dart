@@ -203,7 +203,9 @@ class _LoginFormState extends State<LoginForm> {
                                             Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) => Home()),
+                                                  builder: (context) => Home(
+                                                      userId: viewModel
+                                                          .user.data!.id!)),
                                             );
                                           });
                                           return Container();

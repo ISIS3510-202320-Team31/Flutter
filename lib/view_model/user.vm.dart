@@ -10,10 +10,10 @@ class UserVM extends ChangeNotifier {
   final SecureStorage secureStorage = SecureStorage();
 
   final _myRepo = UserRepoImpl();
-  String? userId;
 
   ApiResponse<UserModel> userModel = ApiResponse.none();
   ApiResponse<User> user = ApiResponse.none();
+  ApiResponse<String> userId = ApiResponse.none();
 
   void _setUserMain(ApiResponse<UserModel> response) {
     print("Response: $response");
@@ -27,20 +27,19 @@ class UserVM extends ChangeNotifier {
     notifyListeners();
   }
 
+  void _setUserId(ApiResponse<String> response) {
+    print("Response: $response");
+    userId = response;
+    notifyListeners();
+  }
+
   getUserId() {
-    userId = '0f2dfb8a-df34-4026-a989-6607d2b399b7';
-    print("User: $userId");
-    secureStorage.readSecureData("userId").then((value) {
-      // TODO: Change userId to be asynchronous
-      print("UserId on Storage: $value");
-    });
-    return userId;
-    /*secureStorage.readSecureData("userId").then((value) {
-      if (value != null) {
-        userId = value;
-        print("UserId on Storage: $userId");
-      }
-    });*/
+    _setUserId(ApiResponse.loading());
+    secureStorage
+        .readSecureData("userId")
+        .then((value) => _setUserId(ApiResponse.completed(value)))
+        .onError((error, stackTrace) =>
+            _setUserId(ApiResponse.error(error.toString())));
   }
 
   Future<void> fetchUserData() async {
