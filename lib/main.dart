@@ -5,22 +5,20 @@ import 'package:hive_app/view/pages/Home.dart';
 import 'package:hive_app/view/pages/Login.dart';
 import 'package:flutter/services.dart';
 
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown]).
-  then((_) => 
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: Home(),
-    theme: appTheme,
-    title: "HIVE",
-    initialRoute: '/Login', // '/Users',
-    routes: {
-      '/Feed': (BuildContext context) => Home(),
-      '/Login': (BuildContext context) => Login()
-    },
-  )));
+  SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+      .then((_) => runApp(MaterialApp(
+            home: Home(),
+            theme: appTheme,
+            title: "HIVE",
+            initialRoute: '/Login',
+            routes: {
+              '/Feed': (BuildContext context) => Home(),
+              '/Login': (BuildContext context) => Login()
+            },
+          )));
   tiempo();
 }
 
