@@ -6,7 +6,7 @@ import 'package:hive_app/repository/link.repo.dart';
 class LinkVM extends ChangeNotifier {
   final _myRepo = LinkRepoImpl();
 
-  ApiResponse<LinkModel> linkModel = ApiResponse.loading();
+  ApiResponse<LinkModel> linkModel = ApiResponse.none();
 
   void _setLinkMain(ApiResponse<LinkModel> response) {
     print("Response: $response");
@@ -19,6 +19,7 @@ class LinkVM extends ChangeNotifier {
     _myRepo
         .getLinkData()
         .then((value) => _setLinkMain(ApiResponse.completed(value)))
-        .onError((error, stackTrace) => _setLinkMain(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) =>
+            _setLinkMain(ApiResponse.error(error.toString())));
   }
 }

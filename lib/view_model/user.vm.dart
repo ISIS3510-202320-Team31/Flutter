@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive_app/data/remote/response/ApiResponse.dart';
 import 'package:hive_app/models/user.model.dart';
+import 'package:hive_app/models/requests/user-register.model.dart';
 import 'package:hive_app/repository/user.repo.dart';
 
 class UserVM extends ChangeNotifier {
   final _myRepo = UserRepoImpl();
   var userId;
 
-  ApiResponse<UserModel> userModel = ApiResponse.loading();
-  ApiResponse<User> user = ApiResponse.loading();
+  ApiResponse<UserModel> userModel = ApiResponse.none();
+  ApiResponse<User> user = ApiResponse.none();
 
   void _setUserMain(ApiResponse<UserModel> response) {
     print("Response: $response");
@@ -45,36 +46,18 @@ class UserVM extends ChangeNotifier {
     String career,
     DateTime birthdate,
   ) async {
-    // User userRep = User.fromJson({
-    //   "id": "",
-    //   "icon": "",
-    //   "name": name,
-    //   "login": login,
-    //   "email": email,
-    //   "password": password,
-    //   "verificated": false,
-    //   "role": "STUDENT",
-    //   "career": career,
-    //   "birthdate": birthdate,
-    // });
-    User userRep = User.fromJson({
-      "id": "",
-      "icon": "",
-      "name": "aaaaaa",
-      "login": "aaaaaaaaaa",
-      "email": "a.a@a.a",
-      "password": "passwordA0",
-      "verificated": "false",
-      "role": "STUDENT",
-      "career": "FILOSOFIA",
-      "birthdate": "2002-12-27",
-    });
+    UserRegister userReg = UserRegister(
+      name: name,
+      login: login,
+      email: email,
+      password: password,
+      career: career,
+      birthdate: birthdate,
+    );
 
-    print("User: $userRep");
-
-    _setUserMain(ApiResponse.loading());
+    _setUser(ApiResponse.loading());
     _myRepo
-        .registerUser(userRep)
+        .registerUser(userReg)
         .then((value) => _setUser(ApiResponse.completed(value)))
         .onError((error, stackTrace) =>
             _setUser(ApiResponse.error(error.toString())));

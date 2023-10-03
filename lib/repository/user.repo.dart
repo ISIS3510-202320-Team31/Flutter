@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:hive_app/models/user.model.dart';
+import 'package:hive_app/models/requests/user-register.model.dart';
 import 'package:hive_app/data/remote/network/NetworkApiService.dart';
 import 'package:hive_app/data/remote/network/ApiEndPoints.dart';
 
@@ -22,11 +25,10 @@ class UserRepoImpl extends UserRepo {
     }
   }
 
-  // register user
-  Future<User?> registerUser(User user) async {
+  Future<User?> registerUser(UserRegister user) async {
     try {
       dynamic response = await _apiService.postResponse(
-          ApiEndPoints().registerEndPoint, user.toJson());
+          ApiEndPoints().registerEndPoint, jsonEncode(user.toJson()));
       print("Log: $response");
       final jsonData = User.fromJson(response);
       return jsonData;

@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:hive_app/models/user.model.dart';
-import 'package:hive_app/models/tag.model.dart';
 
-EventModel eventModelFromJson(String str) => EventModel.fromJson(json.decode(str));
+EventModel eventModelFromJson(String str) =>
+    EventModel.fromJson(json.decode(str));
 String eventModelToJson(EventModel data) => json.encode(data.toJson());
 
 class EventModel {
@@ -12,12 +12,9 @@ class EventModel {
 
   List<Event> events;
 
-  // factory EventModel.fromJson(Map<String, dynamic> json) => EventModel(
-  //       events: List<Event>.from(json["events"].map((x) => Event.fromJson(x))),
-  //     );
-
   factory EventModel.fromJson(List<dynamic> json) {
-    List<Event> events = json.map((eventData) => Event.fromJson(eventData)).toList();
+    List<Event> events =
+        json.map((eventData) => Event.fromJson(eventData)).toList();
     return EventModel(events: events);
   }
 
@@ -41,7 +38,7 @@ class Event {
   String? creator;
   List<String>? participants;
   List<String>? tags;
-  List<String>?links;
+  List<String>? links;
 
   Event({
     this.id,
@@ -62,22 +59,22 @@ class Event {
   });
 
   factory Event.fromJson(Map<String, dynamic> json) => Event(
-    id: json["id"],
-    image: json["image"],
-    name: json["name"],
-    place: json["place"],
-    date: DateTime.parse(json["date"]),
-    description: json["description"],
-    numParticipants: json["num_participants"],
-    category: json["category"],
-    state: json["state"],
-    duration: json["duration"],
-    creatorId: json["creator_id"],
-    creator: json["creator"],
-    participants: List<String>.from(json["participants"] ?? []),
-    tags: List<String>.from(json["tags"] ?? []),
-    links: List<String>.from(json["links"] ?? []),
-    );
+        id: json["id"],
+        image: json["image"],
+        name: json["name"],
+        place: json["place"],
+        date: DateTime.parse(json["date"]),
+        description: json["description"],
+        numParticipants: json["num_participants"],
+        category: json["category"],
+        state: json["state"],
+        duration: json["duration"],
+        creatorId: json["creator_id"],
+        creator: json["creator"],
+        participants: List<String>.from(json["participants"] ?? []),
+        tags: List<String>.from(json["tags"] ?? []),
+        links: List<String>.from(json["links"] ?? []),
+      );
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -96,5 +93,4 @@ class Event {
         "tags": tags,
         "links": links,
       };
-
 }

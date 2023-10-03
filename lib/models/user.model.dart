@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:hive_app/models/event.model.dart';
-import 'package:hive_app/models/tag.model.dart';
 
 UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
 
@@ -31,7 +30,7 @@ class User {
   String? id;
   String? icon;
   String? login;
-  String? password;
+  //String? password;
   String? name;
   String? email;
   bool? verificated;
@@ -46,7 +45,7 @@ class User {
     this.id,
     this.icon,
     this.login,
-    this.password,
+    //this.password,
     this.name,
     this.email,
     this.verificated,
@@ -62,10 +61,10 @@ class User {
         id: json["id"],
         icon: json["icon"],
         login: json["login"],
-        password: json["password"],
+        //password: json["password"],
         name: json["name"],
         email: json["email"],
-        verificated: json["verificated"] == 'true' ? true : false,
+        verificated: json["verificated"],
         role: json["role"],
         career: json["career"],
         birthdate: DateTime.parse(json["birthdate"]),
@@ -78,7 +77,7 @@ class User {
         "id": id,
         "icon": icon,
         "login": login,
-        "password": password,
+        //"password": password,
         "name": name,
         "email": email,
         "verificated": verificated,

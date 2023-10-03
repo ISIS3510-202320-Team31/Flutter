@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 //import 'package:http/http.dart' as http;
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/pages/Home.dart';
 import 'package:hive_app/view/pages/Login.dart';
 import 'package:hive_app/view_model/user.vm.dart';
+import 'package:provider/provider.dart';
+import 'package:hive_app/data/remote/response/Status.dart';
 
 // create a final object for the dropdown list
 final Map<String, String> _dropdownValues = {
@@ -109,10 +113,7 @@ class _SignupFormState extends State<SignupForm> {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  appTheme.primaryColor,
-                  appTheme.secondaryHeaderColor
-                ], // Cambia estos colores según tus preferencias
+                colors: [appTheme.primaryColor, appTheme.secondaryHeaderColor],
               ),
             ),
           ),
@@ -278,16 +279,57 @@ class _SignupFormState extends State<SignupForm> {
                               ),
                             ),
                             SizedBox(height: 20),
-                            Container(
-                              width: double.infinity,
-                              child: Text(
-                                textAlign: TextAlign.center,
-                                _validationError,
-                                style: TextStyle(
-                                  color: _validationError == ""
-                                      ? Colors.white
-                                      : Colors.red,
-                                ),
+                            ChangeNotifierProvider<UserVM>(
+                              create: (BuildContext context) => userVM,
+                              child: Consumer<UserVM>(
+                                builder: (context, viewModel, _) {
+                                  switch (viewModel.user.status) {
+                                    case Status.LOADING:
+                                      print("Log :: LOADING");
+                                      return Container(
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                      );
+                                    case Status.ERROR:
+                                      print("Log :: ERROR");
+                                      return Container(
+                                        width: double.infinity,
+                                        child: Text(
+                                          jsonDecode(viewModel.user.message!)[
+                                              "message"],
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      );
+                                    case Status.COMPLETED:
+                                      // TODO: Problema de que no termina de renderizado
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Login()),
+                                      );
+                                      return Container();
+                                    default:
+                                      return Container(
+                                        width: double.infinity,
+                                        child: Text(
+                                          _validationError,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: _validationError == ""
+                                                ? Colors.white
+                                                : Colors.red,
+                                          ),
+                                        ),
+                                      );
+                                  }
+                                },
                               ),
                             ),
                             SizedBox(height: 10),
@@ -295,7 +337,7 @@ class _SignupFormState extends State<SignupForm> {
                               onPressed: () async {
                                 // Validation Step
                                 // 1. Check that all fields are filled
-                                /*if (!_formKey.currentState!.validate()) {
+                                if (!_formKey.currentState!.validate()) {
                                   setState(() {
                                     _validationError = "";
                                   });
@@ -342,7 +384,7 @@ class _SignupFormState extends State<SignupForm> {
                                         "Las contraseñas no coinciden";
                                   });
                                   return;
-                                }*/
+                                }
                                 // 5. Send to backend and wait for response, if response is error, show error message
                                 setState(() {
                                   _validationError = "";
@@ -356,11 +398,11 @@ class _SignupFormState extends State<SignupForm> {
                                   _selectedDate!,
                                 );
                                 // 6. If answer is success, go to login page
-                                Navigator.push(
+                                /*Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => Home()),
-                                );
+                                );*/
                               },
                               child: Text('REGISTRATE'),
                             ),
