@@ -282,60 +282,68 @@ class _SignupFormState extends State<SignupForm> {
                             ChangeNotifierProvider<UserVM>(
                               create: (BuildContext context) => userVM,
                               child: Consumer<UserVM>(
-                                    builder: (context, viewModel, _) {
-                                      switch (viewModel.user.status) {
-                                        case Status.LOADING:
-                                          print("Log :: LOADING");
-                                          return Container(
-                                            child: Center(
-                                              child: CircularProgressIndicator(),
-                                            ),
-                                            height: MediaQuery.of(context).size.height * 0.05,
-                                          );
-                                        case Status.ERROR:
-                                          print("Log :: ERROR");
-                                          return Container(
-                                            width: double.infinity,
-                                            child: Text(
-                                              jsonDecode(viewModel.user.message!)["message"],
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          );
-                                        case Status.COMPLETED:
-                                          // TODO: Problema de que no termina de renderizado
-                                          return Builder(
-                                            builder: (context) {
-                                              Future.delayed(Duration(milliseconds: 100)).then((_) {
-                                                Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(builder: (context) => Login()),
-                                                );
-                                              });
-                                              return Container();
-                                            },
-                                          );
-                                        default:
-                                          return Container(
-                                            width: double.infinity,
-                                            child: Text(
-                                              _validationError,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: _validationError == "" ? Colors.white : Colors.red,
-                                              ),
-                                            ),
-                                          );
-                                      }
-                                    },
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    // Validation Step
+                                builder: (context, viewModel, _) {
+                                  switch (viewModel.user.status) {
+                                    case Status.LOADING:
+                                      print("Log :: LOADING");
+                                      return Container(
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                      );
+                                    case Status.ERROR:
+                                      print("Log :: ERROR");
+                                      return Container(
+                                        width: double.infinity,
+                                        child: Text(
+                                          jsonDecode(viewModel.user.message!)[
+                                              "message"],
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      );
+                                    case Status.COMPLETED:
+                                      return Builder(
+                                        builder: (context) {
+                                          Future.delayed(
+                                                  Duration(milliseconds: 100))
+                                              .then((_) {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Login()),
+                                            );
+                                          });
+                                          return Container();
+                                        },
+                                      );
+                                    default:
+                                      return Container(
+                                        width: double.infinity,
+                                        child: Text(
+                                          _validationError,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: _validationError == ""
+                                                ? Colors.white
+                                                : Colors.red,
+                                          ),
+                                        ),
+                                      );
+                                  }
+                                },
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            ElevatedButton(
+                              onPressed: () async {
+                                // Validation Step
                                 // 1. Check that all fields are filled
                                 if (!_formKey.currentState!.validate()) {
                                   setState(() {
