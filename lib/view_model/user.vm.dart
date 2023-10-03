@@ -4,10 +4,13 @@ import 'package:hive_app/models/user.model.dart';
 import 'package:hive_app/models/requests/user-register.model.dart';
 import 'package:hive_app/models/requests/user-login.model.dart';
 import 'package:hive_app/repository/user.repo.dart';
+import 'package:hive_app/utils/SecureStorage.dart';
 
 class UserVM extends ChangeNotifier {
+  final SecureStorage secureStorage = SecureStorage();
+
   final _myRepo = UserRepoImpl();
-  var userId;
+  String? userId;
 
   ApiResponse<UserModel> userModel = ApiResponse.none();
   ApiResponse<User> user = ApiResponse.none();
@@ -24,10 +27,20 @@ class UserVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  getUserid() {
+  getUserId() {
     userId = '0f2dfb8a-df34-4026-a989-6607d2b399b7';
     print("User: $userId");
+    secureStorage.readSecureData("userId").then((value) {
+      // TODO: Change userId to be asynchronous
+      print("UserId on Storage: $value");
+    });
     return userId;
+    /*secureStorage.readSecureData("userId").then((value) {
+      if (value != null) {
+        userId = value;
+        print("UserId on Storage: $userId");
+      }
+    });*/
   }
 
   Future<void> fetchUserData() async {

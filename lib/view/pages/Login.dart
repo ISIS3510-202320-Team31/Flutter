@@ -6,6 +6,7 @@ import 'package:hive_app/view/pages/Signup.dart';
 import 'package:hive_app/view_model/user.vm.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_app/data/remote/response/Status.dart';
+import 'package:hive_app/utils/SecureStorage.dart';
 
 class Login extends StatelessWidget {
   final String? redirection;
@@ -28,6 +29,8 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  final SecureStorage secureStorage = SecureStorage();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -194,6 +197,9 @@ class _LoginFormState extends State<LoginForm> {
                                           Future.delayed(
                                                   Duration(milliseconds: 100))
                                               .then((_) {
+                                            secureStorage.writeSecureData(
+                                                'userId',
+                                                viewModel.user.data!.id!);
                                             Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(

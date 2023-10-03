@@ -21,7 +21,7 @@ class _FeedState extends State<Feed> {
 
   @override
   void initState() {
-    userId = userVM.getUserid();
+    userId = userVM.getUserId();
     eventVM.fetchEventsForUser(userId);
     super.initState();
   }
