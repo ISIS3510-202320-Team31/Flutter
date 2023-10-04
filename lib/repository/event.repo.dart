@@ -1,6 +1,6 @@
 import 'dart:convert';
-
 import 'package:hive_app/models/event.model.dart';
+import 'package:hive_app/models/requests/event-create.model.dart';
 import 'package:hive_app/data/remote/network/NetworkApiService.dart';
 import 'package:hive_app/data/remote/network/ApiEndPoints.dart';
 
@@ -50,7 +50,7 @@ class EventRepoImpl extends EventRepo {
     }
   }
 
-  Future<Event> createEvent(Event event) async {
+  Future<Event> createEvent(EventCreate event) async {
     try {
       dynamic response = await _apiService.postResponse(
           ApiEndPoints().eventsEndPoint, jsonEncode(event.toJson()));
@@ -92,10 +92,12 @@ class EventRepoImpl extends EventRepo {
     }
   }
 
-  Future<EventModel?> fetchEventListByUser(String date, String uuidUser, String orderFuture) async {
+  Future<EventModel?> fetchEventListByUser(
+      String date, String uuidUser, String orderFuture) async {
     try {
-      dynamic response =
-          await _apiService.getResponse(ApiEndPoints().eventsEndPoint+'date/$date/user/$uuidUser/order/$orderFuture');
+      dynamic response = await _apiService.getResponse(
+          ApiEndPoints().eventsEndPoint +
+              'date/$date/user/$uuidUser/order/$orderFuture');
       print("Log: $response");
       final jsonData = EventModel.fromJson(response);
       return jsonData;
@@ -103,5 +105,4 @@ class EventRepoImpl extends EventRepo {
       throw e;
     }
   }
-
 }
