@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
-import 'package:hive_app/view/pages/ViewsHeader.dart';
+import 'package:hive_app/view/widgets/ViewsHeader.dart';
 import 'package:hive_app/utils/time_calculator.dart';
 
 class Profile extends StatelessWidget {
