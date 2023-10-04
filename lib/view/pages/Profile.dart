@@ -1,11 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
-import 'package:hive_app/view/pages/ViewsHeader.dart';
+import 'package:hive_app/view/widgets/ViewsHeader.dart';
 import 'package:hive_app/utils/time_calculator.dart';
+import 'package:hive_app/view_model/user.vm.dart';
+import 'package:provider/provider.dart';
+import 'package:hive_app/data/remote/response/Status.dart';
+import 'package:hive_app/utils/SecureStorage.dart';
+import 'package:hive_app/view/pages/Login.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   final String userId;
+
   const Profile({required this.userId});
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  final SecureStorage secureStorage = SecureStorage();
+
+  final UserVM _userVM = UserVM();
+
+  @override
+  void initState() {
+    _userVM.getUserById(widget.userId);
+    _userVM.getParticipationById(widget.userId);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,33 +58,70 @@ class Profile extends StatelessWidget {
                   padding: EdgeInsets.only(top: 75),
                   child: Container(
                     width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    child: Column(
+                    padding: EdgeInsets.symmetric(horizontal: 40),
+                    child: ListView(
                       children: [
                         ViewsHeader(
                           titleText: "Perfil",
                         ),
-                        // Imagen
-                        (Image.asset(
-                          'assets/images/Profile.jpg',
-                          width: 200,
-                          height: 200,
+                        // Icono de usuario, de 200x200
+                        (Icon(
+                          Icons.account_circle_rounded,
+                          size: 100,
                         )),
                         // Espacio entre la imagen y el texto
                         (SizedBox(
                           height: 30,
                         )),
-                        Text(
-                          'Correo:\n'
-                          'ne.rueda@uniandes.edu.co\n\n'
-                          'Tiempo usado en la App:\n'
-                          '${formatTime(timeSinceInstallation!)}\n\n'
-                          'Eventos a los que perteneces:\n'
-                          '6 eventos.\n\n\n',
-                          style: TextStyle(fontSize: 20),
+                        ChangeNotifierProvider(
+                          create: (context) => _userVM,
+                          child: Consumer<UserVM>(
+                              builder: (context, viewModel, _) {
+                            switch (viewModel.user.status) {
+                              case Status.LOADING:
+                                print("Log :: LOADING");
+                                return Container(
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.3,
+                                );
+                              case Status.COMPLETED:
+                                return Text(
+                                  'Nombre:\n'
+                                  '${viewModel.user.data!.name}\n\n'
+                                  'Correo:\n'
+                                  '${viewModel.user.data!.email}\n\n'
+                                  'Tiempo usado en la App:\n'
+                                  '${formatTime(timeSinceInstallation!)}\n\n'
+                                  'Eventos a los que perteneces:\n'
+                                  '${viewModel.participation.data} eventos.\n\n\n',
+                                  style: TextStyle(fontSize: 20),
+                                );
+                              case Status.ERROR:
+                                return Text(
+                                  'Error: ${viewModel.user.message}',
+                                  style: TextStyle(fontSize: 20),
+                                );
+                              default:
+                                return Text(
+                                  'Cargando...',
+                                  style: TextStyle(fontSize: 20),
+                                );
+                            }
+                          }),
                         ),
                         ElevatedButton(
-                          onPressed: handleLogOut,
+                          onPressed: () {
+                            secureStorage.deleteSecureData("userId");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Login(),
+                              ),
+                            );
+                          },
                           child: Text('Cerrar sesion'),
                         ),
                       ],
@@ -82,9 +141,4 @@ String formatTime(Duration duration) {
   final hours = duration.inHours;
   final minutes = duration.inMinutes.remainder(60);
   return '$hours horas, $minutes minutos';
-}
-
-void handleLogOut() async {
-  //TODO
-  print('Se oprimió el botón de cerrar sesión');
 }

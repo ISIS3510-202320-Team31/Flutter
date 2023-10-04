@@ -1,9 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-//import 'package:http/http.dart' as http;
 import 'package:hive_app/utils/ColorPalette.dart';
-import 'package:hive_app/view/pages/Home.dart';
 import 'package:hive_app/view/pages/Login.dart';
 import 'package:hive_app/view_model/user.vm.dart';
 import 'package:provider/provider.dart';

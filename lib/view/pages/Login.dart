@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive_app/services/notification_services.dart';
-import 'package:http/http.dart' as http;
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/pages/Home.dart';
 import 'package:hive_app/view/pages/Signup.dart';
@@ -202,6 +201,7 @@ class _LoginFormState extends State<LoginForm> {
                                           Future.delayed(
                                                   Duration(milliseconds: 100))
                                               .then((_) {
+                                            handleNotification();
                                             secureStorage.writeSecureData(
                                                 'userId',
                                                 viewModel.user.data!.id!);
