@@ -1,32 +1,3 @@
-import 'dart:convert';
-
-UserRegisterModel userModelFromJson(String str) =>
-    UserRegisterModel.fromJson(json.decode(str));
-
-String userModelToJson(UserRegisterModel data) => json.encode(data.toJson());
-
-class UserRegisterModel {
-  UserRegisterModel({
-    this.users = const [],
-  });
-
-  List<UserRegister> users;
-
-  // factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-  //       users: List<User>.from(json["users"].map((x) => User.fromJson(x))),
-  //     );
-
-  factory UserRegisterModel.fromJson(List<dynamic> json) {
-    List<UserRegister> users =
-        json.map((userData) => UserRegister.fromJson(userData)).toList();
-    return UserRegisterModel(users: users);
-  }
-
-  Map<String, dynamic> toJson() => {
-        "users": List<dynamic>.from(users.map((x) => x.toJson())),
-      };
-}
-
 class UserRegister {
   String? login;
   String? password;
