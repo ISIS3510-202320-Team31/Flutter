@@ -316,8 +316,9 @@ class _SignupFormState extends State<SignupForm> {
                                             Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Login()),
+                                                  builder: (context) => Login(
+                                                        redirection: "signup",
+                                                      )),
                                             );
                                           });
                                           return Container();
@@ -405,12 +406,6 @@ class _SignupFormState extends State<SignupForm> {
                                   _career,
                                   _selectedDate!,
                                 );
-                                // 6. If answer is success, go to login page
-                                /*Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Home()),
-                                );*/
                               },
                               child: Text('REGISTRATE'),
                             ),
@@ -418,10 +413,9 @@ class _SignupFormState extends State<SignupForm> {
                             TextButton(
                               onPressed: () async {
                                 Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Login()),
-                                );
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Login()));
                               },
                               child:
                                   Text('¿Ya tienes una cuenta? Inicia sesión'),

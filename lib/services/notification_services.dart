@@ -15,7 +15,7 @@ Future<void> initNotifications() async {
 
 }
 
-Future<void> showNotification(int eventCount) async {
+Future<void> showNotification(String location) async {
   const AndroidNotificationDetails androidNotificationDetails =
       AndroidNotificationDetails('HIVE', 'hive_channel',
           importance: Importance.max, priority: Priority.high);
@@ -26,9 +26,9 @@ Future<void> showNotification(int eventCount) async {
 
   // Crear el texto de la notificación con la variable X
   String notificationText =
-      'Hemos detectado que estás en la Universidad de Los Andes, actualmente hay $eventCount eventos cercanos';
+      'Hemos detectado que estás $location hay muchos eventos esperandote.';
 
-  await flutterLocalNotificationsPlugin.show(1, 'Eventos cercanos detectados.',
+  await flutterLocalNotificationsPlugin.show(1, '¡Eventos cercanos encontrados!',
       notificationText, notificationDetails);
       
 }

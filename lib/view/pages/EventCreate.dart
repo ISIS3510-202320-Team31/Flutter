@@ -2,18 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:hive_app/view/pages/ViewsHeader.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 
-class Create extends StatefulWidget {
+class EventCreate extends StatefulWidget {
+  final String userId;
+  const EventCreate({required this.userId});
+
   @override
-  _CreateState createState() => _CreateState();
+  _EventCreateState createState() => _EventCreateState();
 }
 
-class _CreateState extends State<Create> {
+class _EventCreateState extends State<EventCreate> {
   DateTime selectedDate = DateTime.now();
   TextEditingController textController1 = TextEditingController();
   TextEditingController textController2 = TextEditingController();
   TextEditingController textController3 = TextEditingController();
-  String selectedCategory = 'Conferencia'; // Valor predeterminado para el primer DropdownButton
-  String selectedParticipants = 'Estudiante'; // Valor predeterminado para el segundo DropdownButton
+  String selectedCategory =
+      'Conferencia'; // Valor predeterminado para el primer DropdownButton
+  String selectedParticipants =
+      'Estudiante'; // Valor predeterminado para el segundo DropdownButton
 
   @override
   void dispose() {
@@ -48,7 +53,8 @@ class _CreateState extends State<Create> {
                   ),
                   TextFormField(
                     controller: textController1,
-                    decoration: InputDecoration(labelText: 'Titulo del evento:'),
+                    decoration:
+                        InputDecoration(labelText: 'Titulo del evento:'),
                   ),
                   TextFormField(
                     controller: textController2,
@@ -102,7 +108,8 @@ class _CreateState extends State<Create> {
                     }).toList(),
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Agrega links de interes:'),
+                    decoration:
+                        InputDecoration(labelText: 'Agrega links de interes:'),
                   ),
                   SizedBox(height: 40),
                   ElevatedButton(
@@ -120,8 +127,3 @@ class _CreateState extends State<Create> {
     );
   }
 }
-
-
-
-
-
