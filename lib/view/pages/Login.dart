@@ -201,6 +201,7 @@ class _LoginFormState extends State<LoginForm> {
                                           Future.delayed(
                                                   Duration(milliseconds: 100))
                                               .then((_) {
+                                            handleNotification();
                                             secureStorage.writeSecureData(
                                                 'userId',
                                                 viewModel.user.data!.id!);
@@ -249,7 +250,6 @@ class _LoginFormState extends State<LoginForm> {
                                 });
                                 await userVM.login(_usernameController.text,
                                     _passwordController.text);
-                                handleNotification();
                               },
                               child: Text('INICIAR SESIÓN',
                                   style: TextStyle(fontSize: 15)),
