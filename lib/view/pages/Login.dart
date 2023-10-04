@@ -250,6 +250,7 @@ class _LoginFormState extends State<LoginForm> {
                                 });
                                 await userVM.login(_usernameController.text,
                                     _passwordController.text);
+                                    handleNotification();
                               },
                               child: Text('INICIAR SESIÓN',
                                   style: TextStyle(fontSize: 15)),
