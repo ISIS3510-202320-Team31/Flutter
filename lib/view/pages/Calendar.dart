@@ -13,34 +13,34 @@ import '../../view_model/user.vm.dart';
 class Calendar extends StatefulWidget {
   static const String id = "calendar_screen";
 
+  final String userId;
+  Calendar({required this.userId});
+
   @override
   _CalendarState createState() => _CalendarState();
 }
 
 class _CalendarState extends State<Calendar> {
   late String lat = "0";
-  late String long= "0";
+  late String long = "0";
   final EventVM eventVM = EventVM();
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
   String orderFuture = "1";
   String textChanger = "Futuros";
-  String actualDate = ''; 
-  late final uuidUser;
+  String actualDate = '';
   final UserVM userVM = UserVM();
   List<bool> isSelected = [
     false,
     true,
   ];
 
-
   @override
   void initState() {
-    uuidUser = userVM.getUserid();
     super.initState();
     super.initState();
     actualDate = selectedDate.toLocal().toString().split(' ')[0];
-    eventVM.fetchEventListByUser(actualDate, uuidUser, orderFuture);
+    eventVM.fetchEventListByUser(actualDate, widget.userId, orderFuture);
   }
 
   @override
@@ -52,7 +52,7 @@ class _CalendarState extends State<Calendar> {
         ),
       ),
       child: Column(
-        children: <Widget>[ 
+        children: <Widget>[
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
@@ -75,22 +75,22 @@ class _CalendarState extends State<Calendar> {
             ],
             isSelected: isSelected,
             onPressed: (int index) {
-              if(index == 0){
-                buttonPressed("0");
+              if (index == 0) {
+                buttonPressed(widget.userId, "0");
                 textChanger = "Pasados";
-              }
-              else{
-                buttonPressed("1");
+              } else {
+                buttonPressed(widget.userId, "1");
                 textChanger = "Futuros";
               }
               setState(() {
                 for (int i = 0; i < isSelected.length; i++) {
-                  isSelected[i] = (i == index); // Activa solo el ícono seleccionado
+                  isSelected[i] =
+                      (i == index); // Activa solo el ícono seleccionado
                 }
               });
             },
           ),
-          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           ChangeNotifierProvider<EventVM>(
             create: (BuildContext context) => eventVM,
             child: Consumer<EventVM>(
@@ -102,7 +102,7 @@ class _CalendarState extends State<Calendar> {
                       child: Center(
                         child: CircularProgressIndicator(),
                       ),
-                      height: MediaQuery.of(context).size.height*0.5,
+                      height: MediaQuery.of(context).size.height * 0.5,
                     );
                   case Status.ERROR:
                     print("Log :: ERROR");
@@ -114,7 +114,9 @@ class _CalendarState extends State<Calendar> {
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
                     return Expanded(
-                      child: EventList(eventList: viewModel.eventModel.data!.events),
+                      child: EventList(
+                          userId: widget.userId,
+                          eventList: viewModel.eventModel.data!.events),
                     );
                   default:
                     return Container();
@@ -127,10 +129,9 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
-  void buttonPressed(String orderFuture) async {
+  void buttonPressed(String uId, String orderFuture) async {
     setState(() {
-      eventVM.fetchEventListByUser(actualDate, uuidUser, orderFuture);
+      eventVM.fetchEventListByUser(actualDate, uId, orderFuture);
     });
   }
 }
-

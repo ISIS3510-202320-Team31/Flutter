@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:hive_app/data/remote/response/ApiResponse.dart';
 import 'package:hive_app/models/user.model.dart';
 import 'package:hive_app/models/requests/user-register.model.dart';
+import 'package:hive_app/models/requests/user-login.model.dart';
 import 'package:hive_app/repository/user.repo.dart';
+import 'package:hive_app/utils/SecureStorage.dart';
 
 class UserVM extends ChangeNotifier {
+  final SecureStorage secureStorage = SecureStorage();
+
   final _myRepo = UserRepoImpl();
-  var userId;
 
   ApiResponse<UserModel> userModel = ApiResponse.none();
   ApiResponse<User> user = ApiResponse.none();
+  ApiResponse<String> userId = ApiResponse.none();
 
   void _setUserMain(ApiResponse<UserModel> response) {
     print("Response: $response");
@@ -23,10 +27,19 @@ class UserVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  getUserid() {
-    userId = '0f2dfb8a-df34-4026-a989-6607d2b399b7';
-    print("User: $userId");
-    return userId;
+  void _setUserId(ApiResponse<String> response) {
+    print("Response: $response");
+    userId = response;
+    notifyListeners();
+  }
+
+  getUserId() {
+    _setUserId(ApiResponse.loading());
+    secureStorage
+        .readSecureData("userId")
+        .then((value) => _setUserId(ApiResponse.completed(value)))
+        .onError((error, stackTrace) =>
+            _setUserId(ApiResponse.error(error.toString())));
   }
 
   Future<void> fetchUserData() async {
@@ -58,6 +71,20 @@ class UserVM extends ChangeNotifier {
     _setUser(ApiResponse.loading());
     _myRepo
         .registerUser(userReg)
+        .then((value) => _setUser(ApiResponse.completed(value)))
+        .onError((error, stackTrace) =>
+            _setUser(ApiResponse.error(error.toString())));
+  }
+
+  Future<void> login(String login, String password) async {
+    UserLogin userLogin = UserLogin(
+      login: login,
+      password: password,
+    );
+
+    _setUser(ApiResponse.loading());
+    _myRepo
+        .login(userLogin)
         .then((value) => _setUser(ApiResponse.completed(value)))
         .onError((error, stackTrace) =>
             _setUser(ApiResponse.error(error.toString())));

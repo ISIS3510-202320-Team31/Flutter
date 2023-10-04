@@ -7,6 +7,9 @@ import 'package:hive_app/view_model/event.vm.dart';
 import 'package:provider/provider.dart';
 
 class QRscanner extends StatefulWidget {
+  final String userId;
+  const QRscanner({required this.userId});
+
   @override
   _QrCodeScannerWidgetState createState() => _QrCodeScannerWidgetState();
 }
@@ -60,61 +63,64 @@ class _QrCodeScannerWidgetState extends State<QRscanner> {
       builder: (context) {
         // Muestra el detalle del evento y permite que el usuario vuelva a la vista Home
         return ChangeNotifierProvider<EventVM>(
-            create: (BuildContext context) => eventVM,
-            child: Consumer<EventVM>(
-              builder: (context, viewModel, _) {
-                switch (viewModel.event.status) {
-                  case Status.LOADING:
-                    print("Log :: LOADING");
-                    return Container(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                        ),
-                      ),
-                      height: MediaQuery.of(context).size.height,
-                    );
-                  case Status.ERROR:
-                    print("Log :: ERROR");
-                    return Dialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      backgroundColor: appTheme.cardColor,
-                      child: IntrinsicHeight(
-                        child: Column(
-                          children: [
-                            SizedBox(height: 30.0), // Espaciado opcional
-                            Text("Evento no encontrado"),
-                            SizedBox(height: 20.0), // Espaciado opcional
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                backgroundColor: appTheme.hintColor,
+          create: (BuildContext context) => eventVM,
+          child: Consumer<EventVM>(
+            builder: (context, viewModel, _) {
+              switch (viewModel.event.status) {
+                case Status.LOADING:
+                  print("Log :: LOADING");
+                  return Container(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    height: MediaQuery.of(context).size.height,
+                  );
+                case Status.ERROR:
+                  print("Log :: ERROR");
+                  return Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    backgroundColor: appTheme.cardColor,
+                    child: IntrinsicHeight(
+                      child: Column(
+                        children: [
+                          SizedBox(height: 30.0), // Espaciado opcional
+                          Text("Evento no encontrado"),
+                          SizedBox(height: 20.0), // Espaciado opcional
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0),
                               ),
-                              onPressed: () {
-                                Navigator.pop(context); // Cierra el diálogo y vuelve a la vista anterior
-                              },
-                              child: Text('Regresar', style: TextStyle(color: appTheme.cardColor),),
+                              backgroundColor: appTheme.hintColor,
                             ),
-                            SizedBox(height: 30.0),
-                          ],
-                        ),
+                            onPressed: () {
+                              Navigator.pop(
+                                  context); // Cierra el diálogo y vuelve a la vista anterior
+                            },
+                            child: Text(
+                              'Regresar',
+                              style: TextStyle(color: appTheme.cardColor),
+                            ),
+                          ),
+                          SizedBox(height: 30.0),
+                        ],
                       ),
-                    );
+                    ),
+                  );
 
-                  case Status.COMPLETED:
-                    print("Log :: COMPLETED");
-                    return
-                    EventDetail(eventId: viewModel.event.data!.id
-                    );
-                  default:
-                    return Container();
-                }
-              },
-            ),
-          );
+                case Status.COMPLETED:
+                  print("Log :: COMPLETED");
+                  return EventDetail(
+                      userId: widget.userId,
+                      eventId: viewModel.event.data!.id!);
+                default:
+                  return Container();
+              }
+            },
+          ),
+        );
       },
     );
   }

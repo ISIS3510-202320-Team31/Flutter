@@ -4,6 +4,9 @@ import 'package:hive_app/view/pages/ViewsHeader.dart';
 import 'package:hive_app/utils/time_calculator.dart';
 
 class Profile extends StatelessWidget {
+  final String userId;
+  const Profile({required this.userId});
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Duration>(
@@ -50,11 +53,11 @@ class Profile extends StatelessWidget {
                           height: 30,
                         )),
                         Text(
-                          'Correo:\n' 
+                          'Correo:\n'
                           'ne.rueda@uniandes.edu.co\n\n'
-                          'Tiempo usado en la App:\n' 
+                          'Tiempo usado en la App:\n'
                           '${formatTime(timeSinceInstallation!)}\n\n'
-                          'Eventos a los que perteneces:\n' 
+                          'Eventos a los que perteneces:\n'
                           '6 eventos.\n\n\n',
                           style: TextStyle(fontSize: 20),
                         ),
