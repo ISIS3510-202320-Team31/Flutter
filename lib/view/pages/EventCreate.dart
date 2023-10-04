@@ -4,8 +4,8 @@ import 'package:hive_app/view/widgets/ViewsHeader.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view_model/event.vm.dart';
 import 'package:provider/provider.dart';
-import 'package:hive_app/view/pages/Home.dart';
 import 'package:hive_app/data/remote/response/Status.dart';
+import 'package:hive_app/view/pages/Home.dart';
 
 final Map<int, String> _months = {
   1: "enero",
