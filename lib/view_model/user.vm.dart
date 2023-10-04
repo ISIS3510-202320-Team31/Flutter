@@ -14,6 +14,7 @@ class UserVM extends ChangeNotifier {
   ApiResponse<UserModel> userModel = ApiResponse.none();
   ApiResponse<User> user = ApiResponse.none();
   ApiResponse<String> userId = ApiResponse.none();
+  ApiResponse<int> participation = ApiResponse.none();
 
   void _setUserMain(ApiResponse<UserModel> response) {
     print("Response: $response");
@@ -33,6 +34,12 @@ class UserVM extends ChangeNotifier {
     notifyListeners();
   }
 
+  void _setParticipation(ApiResponse<int> response) {
+    print("Response: $response");
+    participation = response;
+    notifyListeners();
+  }
+
   getUserId() {
     _setUserId(ApiResponse.loading());
     secureStorage
@@ -40,6 +47,24 @@ class UserVM extends ChangeNotifier {
         .then((value) => _setUserId(ApiResponse.completed(value)))
         .onError((error, stackTrace) =>
             _setUserId(ApiResponse.error(error.toString())));
+  }
+
+  Future<void> getUserById(String userId) async {
+    _setUser(ApiResponse.loading());
+    _myRepo
+        .getUserById(userId)
+        .then((value) => _setUser(ApiResponse.completed(value)))
+        .onError((error, stackTrace) =>
+            _setUser(ApiResponse.error(error.toString())));
+  }
+
+  Future<void> getParticipationById(String userId) async {
+    _setParticipation(ApiResponse.loading());
+    _myRepo
+        .getParticipationById(userId)
+        .then((value) => _setParticipation(ApiResponse.completed(value!.size)))
+        .onError((error, stackTrace) =>
+            _setParticipation(ApiResponse.error(error.toString())));
   }
 
   Future<void> fetchUserData() async {
