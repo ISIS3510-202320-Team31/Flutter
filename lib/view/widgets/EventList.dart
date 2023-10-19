@@ -6,21 +6,25 @@ import 'package:hive_app/view_model/event.vm.dart';
 
 class EventList extends StatefulWidget {
   final List<Event> eventList;
+  final updateFunction;
   final String userId;
+  final EventVM eventVM;
 
-  EventList({required this.eventList, required this.userId});
+  EventList({required this.eventList, required this.userId, required this.eventVM, required this.updateFunction});
 
-  _EventList createState() => _EventList(eventList: eventList);
+  _EventList createState() => _EventList(eventList: eventList, eventVM: eventVM, updateFunction: updateFunction);
 }
 
 class _EventList extends State<EventList> {
   final eventList;
-  EventVM eventVM = EventVM();
-  _EventList({required this.eventList});
+  final updateFunction;
+  final EventVM eventVM;
+  _EventList({required this.eventList, required this.eventVM, required this.updateFunction});
 
   Future<void> _handleRefresh() async {
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => Home(userId: widget.userId!)));
+    setState(() {
+      updateFunction();
+    });
   }
 
   Widget build(BuildContext context) {

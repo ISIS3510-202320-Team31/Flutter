@@ -43,6 +43,26 @@ class _LoginFormState extends State<LoginForm> {
   final UserVM userVM = UserVM();
 
   @override
+  void initState() {
+    super.initState();
+    checkUserLoggedIn();
+  }
+
+  void checkUserLoggedIn() {
+    secureStorage.readSecureData("userId").then((userId) {
+      if (userId != null && userId.isNotEmpty) {
+        // Redirige a la pantalla principal pasando el userId como parámetro.
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Home(userId: userId),
+          ),
+        );
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     print("Redirection: ${widget.redirection}");
     return Scaffold(

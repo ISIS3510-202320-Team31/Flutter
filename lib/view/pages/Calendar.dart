@@ -23,6 +23,7 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> {
   late String lat = "0";
   late String long = "0";
+  late var updateFunction;
   final EventVM eventVM = EventVM();
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
@@ -35,12 +36,20 @@ class _CalendarState extends State<Calendar> {
     true,
   ];
 
+  void Function() updateFunctionFunction(String actualDate, String userId, String orderFuture) {
+      return () {
+        eventVM.fetchEventListByUser(actualDate, userId, orderFuture);
+      };
+  }
+
   @override
   void initState() {
     super.initState();
     super.initState();
     actualDate = selectedDate.toLocal().toString().split(' ')[0];
-    eventVM.fetchEventListByUser(actualDate, widget.userId, orderFuture);
+    
+    this.updateFunction = updateFunctionFunction(actualDate, widget.userId, orderFuture);
+    this.updateFunction();
   }
 
   @override
@@ -116,7 +125,9 @@ class _CalendarState extends State<Calendar> {
                     return Expanded(
                       child: EventList(
                           userId: widget.userId,
-                          eventList: viewModel.eventModel.data!.events),
+                          eventList: viewModel.eventModel.data!.events,
+                          eventVM: eventVM,
+                          updateFunction: this.updateFunction),
                     );
                   default:
                     return Container();
@@ -131,7 +142,8 @@ class _CalendarState extends State<Calendar> {
 
   void buttonPressed(String uId, String orderFuture) async {
     setState(() {
-      eventVM.fetchEventListByUser(actualDate, uId, orderFuture);
+      this.updateFunction=updateFunctionFunction(actualDate, uId, orderFuture);
+      this.updateFunction();
     });
   }
 }
