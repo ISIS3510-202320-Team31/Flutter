@@ -18,10 +18,16 @@ class Feed extends StatefulWidget {
 
 class _FeedState extends State<Feed> {
   final EventVM eventVM = EventVM();
-
+  late final void Function() updateFunction;
   @override
   void initState() {
-    eventVM.fetchEventsForUser(widget.userId);
+    void Function() updateFunction(String userId) {
+      return () {
+        eventVM.fetchEventsForUser(userId);
+      };
+    }
+    this.updateFunction = updateFunction(widget.userId);
+    this.updateFunction();
     super.initState();
   }
 
@@ -63,7 +69,9 @@ class _FeedState extends State<Feed> {
                     return Expanded(
                         child: EventList(
                             userId: widget.userId,
-                            eventList: viewModel.eventModel.data!.events));
+                            eventList: viewModel.eventModel.data!.events,
+                            eventVM: eventVM,
+                            updateFunction: this.updateFunction));
                   default:
                     return Container();
                 }
