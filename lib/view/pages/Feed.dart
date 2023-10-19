@@ -10,7 +10,6 @@ import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_app/utils/SecureStorage.dart';
 
-
 class Feed extends StatefulWidget {
   static const String id = "feed_screen";
 
@@ -24,33 +23,32 @@ class Feed extends StatefulWidget {
 class _FeedState extends State<Feed> {
   final EventVM eventVM = EventVM();
   final SecureStorage secureStorage = SecureStorage();
-  var cachedEvents;
+
+  Future<List<Event>>? cachedEventsFuture;
   late final void Function() updateFunction;
 
   @override
   void initState() {
-    void Function() updateFunction(String userId) {
-      return () {
-        eventVM.fetchEventsForUser(userId);
-      };
-    }
-    this.updateFunction = updateFunction(widget.userId);
-    this.updateFunction();
-    this.getLocalEvents();
     super.initState();
+    cachedEventsFuture = getLocalEvents();
+    eventVM.fetchEventsForUser(widget.userId);
+
+    updateFunction = () {
+      eventVM.fetchEventsForUser(widget.userId);
+    };
+    updateFunction();
   }
 
-  void getLocalEvents() {
-    secureStorage.readSecureData("feedEvents").then((eventsJSON){
-      if (eventsJSON != null && eventsJSON.isNotEmpty) {
-        var eventsRaw = json.decode(eventsJSON);
-        var events = json.encode(eventsRaw['events']);
-        this.cachedEvents = eventModelFromJson(events).events;
-      }
-      else {
-        this.cachedEvents = [];
-      }
-    });
+  Future<List<Event>> getLocalEvents() async {
+    final eventsJSON = await secureStorage.readSecureData("feedEvents");
+    if (eventsJSON != null && eventsJSON.isNotEmpty) {
+      final eventsRaw = json.decode(eventsJSON);
+      final events = json.encode(eventsRaw['events']);
+      final cachedEvents = eventModelFromJson(events).events;
+      return cachedEvents;
+    } else {
+      return [];
+    }
   }
 
   @override
@@ -74,20 +72,34 @@ class _FeedState extends State<Feed> {
                   case Status.LOADING:
                     print("Log :: LOADING");
                     this.getLocalEvents();
-                    return Expanded(child:
-                    Column(
-                      children: [
-                        Center(
-                        child: LinearProgressIndicator(),
-                        ),  
-                        Expanded(
-                        child: EventList(
-                            userId: widget.userId,
-                            eventList: this.cachedEvents,
-                            eventVM: eventVM,
-                            updateFunction: this.updateFunction))
-                      ]
-                    ));
+                    return FutureBuilder<List<Event>>(
+                    future: cachedEventsFuture,
+                    builder: (context,snapshot)
+                    {
+                      if (snapshot.connectionState == ConnectionState.waiting) 
+                      return Container();
+                      else if (snapshot.hasError) {
+                      return Container();
+                      } else if (snapshot.hasData) {
+                        return Expanded(child:
+                        Column(
+                          children: [
+                            Center(
+                            child: LinearProgressIndicator(),
+                            ),  
+                            Expanded(
+                            child: EventList(
+                                userId: widget.userId,
+                                eventList: snapshot.data!,
+                                eventVM: eventVM,
+                                updateFunction: this.updateFunction))
+                          ]
+                        )
+                      );
+                    }else
+                    return Container();
+                    }
+                    );
                   case Status.ERROR:
                     print("Log :: ERROR");
                     return Container(
@@ -113,6 +125,5 @@ class _FeedState extends State<Feed> {
         ],
       ),
     );
-    
   }
 }
