@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:hive_app/models/user.model.dart';
 
 EventModel eventModelFromJson(String str) =>
     EventModel.fromJson(json.decode(str));

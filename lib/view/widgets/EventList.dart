@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hive_app/models/event.model.dart';
-import 'package:hive_app/view/pages/Home.dart';
 import 'package:hive_app/view/widgets/EventCard.dart';
 import 'package:hive_app/view_model/event.vm.dart';
 
@@ -10,16 +9,24 @@ class EventList extends StatefulWidget {
   final String userId;
   final EventVM eventVM;
 
-  EventList({required this.eventList, required this.userId, required this.eventVM, required this.updateFunction});
+  EventList(
+      {required this.eventList,
+      required this.userId,
+      required this.eventVM,
+      required this.updateFunction});
 
-  _EventList createState() => _EventList(eventList: eventList, eventVM: eventVM, updateFunction: updateFunction);
+  _EventList createState() => _EventList(
+      eventList: eventList, eventVM: eventVM, updateFunction: updateFunction);
 }
 
 class _EventList extends State<EventList> {
   final eventList;
   final updateFunction;
   final EventVM eventVM;
-  _EventList({required this.eventList, required this.eventVM, required this.updateFunction});
+  _EventList(
+      {required this.eventList,
+      required this.eventVM,
+      required this.updateFunction});
 
   Future<void> _handleRefresh() async {
     setState(() {

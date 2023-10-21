@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hive_app/firebase_options.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/utils/time_calculator.dart';
-import 'package:hive_app/view/pages/Home.dart';
 import 'package:hive_app/view/pages/Login.dart';
 import 'package:flutter/services.dart';
 
