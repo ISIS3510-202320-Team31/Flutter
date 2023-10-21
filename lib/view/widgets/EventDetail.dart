@@ -23,6 +23,7 @@ class _EventDetailState extends State<EventDetail> {
   final EventVM eventVM = EventVM();
   final UserVM userVM = UserVM();
   bool isUserParticipant = false;
+  bool flagDescription = true;
 
   _EventDetailState(this.eventId);
 
@@ -90,8 +91,12 @@ class _EventDetailState extends State<EventDetail> {
                   bool isUserParticipant =
                       event.participants!.contains(widget.userId);
                   return Container(
-                      child: showEventDetail(
-                          context, event, widget.userId, isUserParticipant));
+                      child: ListView(
+                    children: [
+                      showEventDetail(
+                          context, event, widget.userId, isUserParticipant),
+                    ],
+                  ));
                 default:
                   return Container();
               }
@@ -106,6 +111,17 @@ class _EventDetailState extends State<EventDetail> {
     String formattedDate = event.date != null
         ? DateFormat('dd/MM/yyyy').format(event.date!)
         : 'Sin fecha';
+
+    String firstHalf;
+    String secondHalf;
+
+    if (event.description!.length > 50) {
+      firstHalf = event.description!.substring(0, 50);
+      secondHalf = event.description!.substring(50);
+    } else {
+      firstHalf = event.description!;
+      secondHalf = "";
+    }
 
     return ClipRRect(
         borderRadius: BorderRadius.circular(
@@ -197,8 +213,37 @@ class _EventDetailState extends State<EventDetail> {
               padding: EdgeInsets.all(20.0),
               width: double.maxFinite,
               color: Color.fromARGB(150, 255, 241, 89),
-              child: Text('${event.description ?? 'Sin descripción'}',
-                  style: TextStyle(fontSize: 13)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                      flagDescription
+                          ? (firstHalf + (secondHalf.isEmpty ? "" : "..."))
+                          : (firstHalf + secondHalf),
+                      style: TextStyle(fontSize: 13)),
+                  // show the inkwell if secondHalf != ""
+                  secondHalf.isEmpty
+                      ? Text("")
+                      : InkWell(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                flagDescription ? "ver más" : "ver menos",
+                                style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            setState(() {
+                              flagDescription = !flagDescription;
+                            });
+                          },
+                        ),
+                ],
+              ),
             ),
             SizedBox(height: 5.0),
             Center(
