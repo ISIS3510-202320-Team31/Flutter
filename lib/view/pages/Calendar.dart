@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+//import 'package:geolocator/geolocator.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/widgets/EventList.dart';
 import 'package:hive_app/view_model/event.vm.dart';
 import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:hive_app/view/widgets/ViewsHeader.dart';
-import 'package:hive_app/services/notification_services.dart';
+//import 'package:hive_app/services/notification_services.dart';
 import 'package:provider/provider.dart';
 
 import '../../view_model/user.vm.dart';
@@ -36,10 +36,11 @@ class _CalendarState extends State<Calendar> {
     true,
   ];
 
-  void Function() updateFunctionFunction(String actualDate, String userId, String orderFuture) {
-      return () {
-        eventVM.fetchEventListByUser(actualDate, userId, orderFuture);
-      };
+  void Function() updateFunctionFunction(
+      String actualDate, String userId, String orderFuture) {
+    return () {
+      eventVM.fetchEventListByUser(actualDate, userId, orderFuture);
+    };
   }
 
   @override
@@ -47,8 +48,9 @@ class _CalendarState extends State<Calendar> {
     super.initState();
     super.initState();
     actualDate = selectedDate.toLocal().toString().split(' ')[0];
-    
-    this.updateFunction = updateFunctionFunction(actualDate, widget.userId, orderFuture);
+
+    this.updateFunction =
+        updateFunctionFunction(actualDate, widget.userId, orderFuture);
     this.updateFunction();
   }
 
@@ -142,7 +144,8 @@ class _CalendarState extends State<Calendar> {
 
   void buttonPressed(String uId, String orderFuture) async {
     setState(() {
-      this.updateFunction=updateFunctionFunction(actualDate, uId, orderFuture);
+      this.updateFunction =
+          updateFunctionFunction(actualDate, uId, orderFuture);
       this.updateFunction();
     });
   }

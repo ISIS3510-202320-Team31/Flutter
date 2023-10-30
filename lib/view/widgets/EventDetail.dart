@@ -23,6 +23,7 @@ class _EventDetailState extends State<EventDetail> {
   final EventVM eventVM = EventVM();
   final UserVM userVM = UserVM();
   bool isUserParticipant = false;
+  bool flagDescription = true;
 
   _EventDetailState(this.eventId);
 
@@ -35,7 +36,7 @@ class _EventDetailState extends State<EventDetail> {
   Future<void> _abrirEnlace(String url) async {
     Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.inAppWebView);
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       throw 'No se pudo abrir el enlace: $url';
     }
@@ -90,8 +91,9 @@ class _EventDetailState extends State<EventDetail> {
                   bool isUserParticipant =
                       event.participants!.contains(widget.userId);
                   return Container(
-                      child: showEventDetail(
-                          context, event, widget.userId, isUserParticipant));
+                    child: showEventDetail(
+                        context, event, widget.userId, isUserParticipant),
+                  );
                 default:
                   return Container();
               }
@@ -106,6 +108,17 @@ class _EventDetailState extends State<EventDetail> {
     String formattedDate = event.date != null
         ? DateFormat('dd/MM/yyyy').format(event.date!)
         : 'Sin fecha';
+
+    String firstHalf;
+    String secondHalf;
+
+    if (event.description!.length > 50) {
+      firstHalf = event.description!.substring(0, 50);
+      secondHalf = event.description!.substring(50);
+    } else {
+      firstHalf = event.description!;
+      secondHalf = "";
+    }
 
     return ClipRRect(
         borderRadius: BorderRadius.circular(
@@ -197,8 +210,42 @@ class _EventDetailState extends State<EventDetail> {
               padding: EdgeInsets.all(20.0),
               width: double.maxFinite,
               color: Color.fromARGB(150, 255, 241, 89),
-              child: Text('${event.description ?? 'Sin descripción'}',
-                  style: TextStyle(fontSize: 13)),
+              child: Container(
+                constraints: BoxConstraints(
+                  maxHeight: 80.0,
+                ),
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    Text(
+                        flagDescription
+                            ? (firstHalf + (secondHalf.isEmpty ? "" : "..."))
+                            : (firstHalf + secondHalf),
+                        style: TextStyle(fontSize: 13)),
+                    // show the inkwell if secondHalf != ""
+                    secondHalf.isEmpty
+                        ? Text("")
+                        : InkWell(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  flagDescription ? "ver más" : "ver menos",
+                                  style: TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              setState(() {
+                                flagDescription = !flagDescription;
+                              });
+                            },
+                          ),
+                  ],
+                ),
+              ),
             ),
             SizedBox(height: 5.0),
             Center(
@@ -237,7 +284,7 @@ class _EventDetailState extends State<EventDetail> {
               Container(
                 constraints: BoxConstraints(
                   maxHeight:
-                      100.0, // Establece la altura máxima según tus necesidades
+                      60.0, // Establece la altura máxima según tus necesidades
                 ),
                 child: ListView.builder(
                   itemCount: event.links!.length,
@@ -247,6 +294,7 @@ class _EventDetailState extends State<EventDetail> {
                       ClampingScrollPhysics(), // Desactiva el desplazamiento del ListView
                   itemBuilder: (context, index) {
                     final link = event.links![index];
+                    // return the ListTile with each item with a height of 50.0
                     return ListTile(
                       leading: Icon(Icons.link),
                       title: Text(link),
