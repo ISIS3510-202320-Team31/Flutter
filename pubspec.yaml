@@ -29,6 +29,7 @@ dependencies:
   firebase_performance: ^0.7.0+9
   connectivity_plus: ^3.0.3
   get: ^4.6.5
+  flutter_screenutil: ^5.9.0
   
 
 dev_dependencies:

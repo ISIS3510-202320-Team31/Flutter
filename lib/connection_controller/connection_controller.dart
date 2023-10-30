@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive_app/utils/custom_banner.dart';
 
 class ConnectionService extends GetxController{
   late Connectivity _connectivity;
@@ -12,20 +14,17 @@ class ConnectionService extends GetxController{
   RxBool isConnected = true.obs;
   StreamSubscription? subscription;
 
-  void listenToNetworkChanges(){
-    subscription = _connectivity.onConnectivityChanged.listen((connectivityResult)
-     {
-      if(connectivityResult == ConnectivityResult.mobile){
+  void listenToNetworkChanges() {
+    subscription = _connectivity.onConnectivityChanged.listen((connectivityResult) {
+      if (connectivityResult == ConnectivityResult.mobile) {
         isConnected.value = true;
-        log("Ahora, hay conexion Wifi!");
-      } else if (connectivityResult == ConnectivityResult.wifi){
+        Get.snackbar("Conexión restablecida", "Ahora hay conexión móvil");
+      } else if (connectivityResult == ConnectivityResult.wifi) {
         isConnected.value = true;
-        
-        log("Ahora, hay conexion Wifi!");
-
+        Get.snackbar("Conexión restablecida", "Ahora hay conexión Wifi");
       } else {
         isConnected.value = false;
-        log("Ahora, NO hay conexion Wifi.");
+        Get.snackbar("Conexión perdida", "No hay conexión Wifi");
       }
     });
   }
