@@ -112,7 +112,7 @@ class _FeedState extends State<Feed> {
                                 child: Column(children: [
                               Center(
                                 child: Text(
-                                  "SIN CONEXIÓN A INTERNET",
+                                  "SIN INTERNET",
                                   style: TextStyle(
                                     color: Colors.grey,
                                   ),
