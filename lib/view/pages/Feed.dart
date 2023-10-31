@@ -27,6 +27,7 @@ class _FeedState extends State<Feed> {
   Future<List<Event>>? cachedEventsFuture;
   late final void Function() updateFunction;
 
+
   @override
   void initState() {
     super.initState();
@@ -100,6 +101,41 @@ class _FeedState extends State<Feed> {
                     return Container();
                     }
                     );
+                  case Status.OFFLINE:
+                    print("Log :: OFFLINE");
+                    this.getLocalEvents();
+                    return FutureBuilder<List<Event>>(
+                    future: cachedEventsFuture,
+                    builder: (context,snapshot)
+                    {
+                      if (snapshot.connectionState == ConnectionState.waiting) 
+                      return Container();
+                      else if (snapshot.hasError) {
+                      return Container();
+                      } else if (snapshot.hasData) {
+                        return Expanded(child:
+                        Column(
+                          children: [
+                            Center(
+                            child: Text("SIN INTERNET"),
+                            ),
+                            Center(
+                            child: Text("Revisa tu conexión y refresca la página"),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                            Expanded(
+                            child: EventList(
+                                userId: widget.userId,
+                                eventList: snapshot.data!,
+                                eventVM: eventVM,
+                                updateFunction: this.updateFunction))
+                          ]
+                        )
+                      );
+                    }else
+                    return Container();
+                    }
+                    );
                   case Status.ERROR:
                     print("Log :: ERROR");
                     this.getLocalEvents();
@@ -116,12 +152,9 @@ class _FeedState extends State<Feed> {
                         Column(
                           children: [
                             Center(
-                            child: Text("Revisa tu conexión y refresca la página"),
+                            child: Text("Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto..."),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                            Center(
-                            child: LinearProgressIndicator(),
-                            ),
                             Expanded(
                             child: EventList(
                                 userId: widget.userId,

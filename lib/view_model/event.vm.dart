@@ -28,7 +28,8 @@ class EventVM extends ChangeNotifier {
         .getEventData()
         .then((value) => _setEventMain(ApiResponse.completed(value)))
         .onError((error, stackTrace) =>
-            _setEventMain(ApiResponse.error(error.toString())));
+        _setEventMain(ApiResponse.error(error.toString()))
+            );
   }
 
   Future<void> fetchEventsForUser(String userId) async {
@@ -37,7 +38,12 @@ class EventVM extends ChangeNotifier {
         .getEventsForUser(userId)
         .then((value) => _setEventMain(ApiResponse.completed(value)))
         .onError((error, stackTrace) =>
-            _setEventMain(ApiResponse.error(error.toString())));
+            {
+          if (error.toString() == "No Internet Connection"){
+            _setEventMain(ApiResponse.offline())}
+          else{
+            _setEventMain(ApiResponse.error(error.toString()))}
+        });
   }
 
   Future<void> fetchEventById(String eventId) async {
