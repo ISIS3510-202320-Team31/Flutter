@@ -18,7 +18,7 @@ late ConnectionService _connectionService;
   void initState(){
     _connectionService = Get.find<ConnectionService>();
 
-    _connectionService.listenToNetworkChanges(context);
+    _connectionService.listenToNetworkChanges();
     super.initState();
   }
   
