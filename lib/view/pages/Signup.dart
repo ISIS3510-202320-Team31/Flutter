@@ -367,70 +367,7 @@ class _SignupFormState extends State<SignupForm> {
                             ),
                             SizedBox(height: 10),
                             ElevatedButton(
-                              onPressed: () async {
-                                // Validation Step
-                                // 1. Check that all fields are filled
-                                if (!_formKey.currentState!.validate()) {
-                                  setState(() {
-                                    _validationError = "";
-                                  });
-                                  return;
-                                }
-                                if (_career == "") {
-                                  setState(() {
-                                    _validationError =
-                                        "Por favor, selecciona una carrera";
-                                  });
-                                  return;
-                                }
-                                if (_selectedDate == null) {
-                                  setState(() {
-                                    _validationError =
-                                        "Por favor, selecciona una fecha de nacimiento";
-                                  });
-                                  return;
-                                }
-                                // 2. Check that the email is valid
-                                RegExp emailRegex = RegExp(
-                                    r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-                                if (!emailRegex.hasMatch(_email.text)) {
-                                  setState(() {
-                                    _validationError =
-                                        "Por favor, ingresa un correo válido";
-                                  });
-                                  return;
-                                }
-                                // 3. Check that the password is valid
-                                RegExp passwordRegex = RegExp(
-                                    r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$");
-                                if (!passwordRegex.hasMatch(_password.text)) {
-                                  setState(() {
-                                    _validationError =
-                                        "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número";
-                                  });
-                                  return;
-                                }
-                                // 4. Check that the password and confirm password fields match
-                                if (_password.text != _confirmpassword.text) {
-                                  setState(() {
-                                    _validationError =
-                                        "Las contraseñas no coinciden";
-                                  });
-                                  return;
-                                }
-                                // 5. Send to backend and wait for response, if response is error, show error message
-                                setState(() {
-                                  _validationError = "";
-                                });
-                                await userVM.registerUser(
-                                  _name.text,
-                                  _username.text,
-                                  _email.text,
-                                  _password.text,
-                                  _career,
-                                  _selectedDate!,
-                                );
-                              },
+                              onPressed: onRegister,
                               child: Text('REGISTRATE'),
                             ),
                             SizedBox(height: 10),
@@ -451,6 +388,66 @@ class _SignupFormState extends State<SignupForm> {
           ),
         ],
       ),
+    );
+  }
+
+  void onRegister() async {
+    // Validation Step
+    // 1. Check that all fields are filled
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _validationError = "";
+      });
+      return;
+    }
+    if (_career == "") {
+      setState(() {
+        _validationError = "Por favor, selecciona una carrera";
+      });
+      return;
+    }
+    if (_selectedDate == null) {
+      setState(() {
+        _validationError = "Por favor, selecciona una fecha de nacimiento";
+      });
+      return;
+    }
+    // 2. Check that the email is valid
+    RegExp emailRegex = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    if (!emailRegex.hasMatch(_email.text)) {
+      setState(() {
+        _validationError = "Por favor, ingresa un correo válido";
+      });
+      return;
+    }
+    // 3. Check that the password is valid
+    RegExp passwordRegex =
+        RegExp(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$");
+    if (!passwordRegex.hasMatch(_password.text)) {
+      setState(() {
+        _validationError =
+            "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número";
+      });
+      return;
+    }
+    // 4. Check that the password and confirm password fields match
+    if (_password.text != _confirmpassword.text) {
+      setState(() {
+        _validationError = "Las contraseñas no coinciden";
+      });
+      return;
+    }
+    // 5. Send to backend and wait for response, if response is error, show error message
+    setState(() {
+      _validationError = "";
+    });
+    await userVM.registerUser(
+      _name.text,
+      _username.text,
+      _email.text,
+      _password.text,
+      _career,
+      _selectedDate!,
     );
   }
 }

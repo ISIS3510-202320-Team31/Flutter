@@ -330,56 +330,7 @@ class _EventCreateState extends State<EventCreate> {
                             ),
                             SizedBox(height: 10),
                             ElevatedButton(
-                              onPressed: () async {
-                                // Validation Step
-                                // 1. Check that all fields are filled
-                                if (!_formKey.currentState!.validate()) {
-                                  setState(() {
-                                    _validationError = "";
-                                  });
-                                  return;
-                                }
-                                if (_selectedDate == null) {
-                                  setState(() {
-                                    _validationError =
-                                        "Por favor, selecciona una fecha";
-                                  });
-                                  return;
-                                }
-                                if (_category == "") {
-                                  setState(() {
-                                    _validationError =
-                                        "Por favor, selecciona una categoría";
-                                  });
-                                  return;
-                                }
-                                // 2. Check that the date is not in the past
-                                if (_selectedDate!.isBefore(DateTime.now())) {
-                                  setState(() {
-                                    _validationError =
-                                        "Por favor, selecciona una fecha futura";
-                                  });
-                                  return;
-                                }
-                                // 3. Send to backend and wait for response, if response is error, show error message
-                                List<String> tags = _tags.text.split(',');
-                                List<String> links = _links.text.split(',');
-                                await eventVM.createEvent(
-                                  _title.text,
-                                  _place.text,
-                                  // duration as int: _duration.text,
-                                  int.parse(_duration.text),
-                                  _participants.text == ""
-                                      ? 0
-                                      : int.parse(_participants.text),
-                                  _selectedDate!,
-                                  _category,
-                                  _description.text,
-                                  tags,
-                                  links,
-                                  widget.userId,
-                                );
-                              },
+                              onPressed: onCreateEvent,
                               child: Text('CREAR EVENTO'),
                             ),
                           ],
@@ -393,6 +344,52 @@ class _EventCreateState extends State<EventCreate> {
           ),
         ),
       ],
+    );
+  }
+
+  void onCreateEvent() async {
+    // Validation Step
+    // 1. Check that all fields are filled
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _validationError = "";
+      });
+      return;
+    }
+    if (_selectedDate == null) {
+      setState(() {
+        _validationError = "Por favor, selecciona una fecha";
+      });
+      return;
+    }
+    if (_category == "") {
+      setState(() {
+        _validationError = "Por favor, selecciona una categoría";
+      });
+      return;
+    }
+    // 2. Check that the date is not in the past
+    if (_selectedDate!.isBefore(DateTime.now())) {
+      setState(() {
+        _validationError = "Por favor, selecciona una fecha futura";
+      });
+      return;
+    }
+    // 3. Send to backend and wait for response, if response is error, show error message
+    List<String> tags = _tags.text.split(',');
+    List<String> links = _links.text.split(',');
+    await eventVM.createEvent(
+      _title.text,
+      _place.text,
+      // duration as int: _duration.text,
+      int.parse(_duration.text),
+      _participants.text == "" ? 0 : int.parse(_participants.text),
+      _selectedDate!,
+      _category,
+      _description.text,
+      tags,
+      links,
+      widget.userId,
     );
   }
 }

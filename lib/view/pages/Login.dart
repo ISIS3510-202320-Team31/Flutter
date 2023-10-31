@@ -289,22 +289,7 @@ class _LoginFormState extends State<LoginForm> {
                             ),
                             SizedBox(height: 10),
                             ElevatedButton(
-                              onPressed: () async {
-                                // Validation Step
-                                // 1. Check that all fields are filled
-                                if (!_formKey.currentState!.validate()) {
-                                  setState(() {
-                                    _validationError = "";
-                                  });
-                                  return;
-                                }
-                                // 2. Send to backend and wait for response, if response is error, show error message
-                                setState(() {
-                                  _validationError = "";
-                                });
-                                await userVM.login(_usernameController.text,
-                                    _passwordController.text);
-                              },
+                              onPressed: onLogin,
                               child: Text('INICIAR SESIÓN',
                                   style: TextStyle(fontSize: 15)),
                             ),
@@ -328,6 +313,22 @@ class _LoginFormState extends State<LoginForm> {
         ],
       ),
     );
+  }
+
+  void onLogin() async {
+    // Validation Step
+    // 1. Check that all fields are filled
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _validationError = "";
+      });
+      return;
+    }
+    // 2. Send to backend and wait for response, if response is error, show error message
+    setState(() {
+      _validationError = "";
+    });
+    await userVM.login(_usernameController.text, _passwordController.text);
   }
 
   void handleNotification() async {
