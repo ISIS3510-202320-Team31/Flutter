@@ -294,15 +294,39 @@ class _SignupFormState extends State<SignupForm> {
                                       );
                                     case Status.ERROR:
                                       print("Log :: ERROR");
-                                      return Container(
-                                        width: double.infinity,
-                                        child: Text(
-                                          jsonDecode(viewModel.user.message!)[
-                                              "message"],
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.red,
+                                      try {
+                                        var decodedJson =
+                                            jsonDecode(viewModel.user.message!);
+                                        var errorMessage =
+                                            decodedJson["message"];
+
+                                        return Container(
+                                          width: double.infinity,
+                                          child: Text(
+                                            errorMessage,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                            ),
                                           ),
+                                        );
+                                      } catch (e) {
+                                        return Container(
+                                          width: double.infinity,
+                                          child: Text(
+                                            "Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Vuelve a intentar más tarde",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    case Status.OFFLINE:
+                                      return Text(
+                                        "Revisa tu conexión y vuelve a intentar",
+                                        style: TextStyle(
+                                          color: Colors.red,
                                         ),
                                       );
                                     case Status.COMPLETED:
@@ -322,7 +346,7 @@ class _SignupFormState extends State<SignupForm> {
                                           return Container();
                                         },
                                       );
-                                    default:
+                                    case Status.NONE:
                                       return Container(
                                         width: double.infinity,
                                         child: Text(
@@ -335,6 +359,8 @@ class _SignupFormState extends State<SignupForm> {
                                           ),
                                         ),
                                       );
+                                    default:
+                                      return Container();
                                   }
                                 },
                               ),
