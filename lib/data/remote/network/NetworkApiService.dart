@@ -11,9 +11,13 @@ class NetworkApiService extends BaseApiService {
     try {
       final response = await http.get(Uri.parse(baseUrl + url));
       responseJson = returnResponse(response);
-    } on SocketException {
-      throw FetchDataException(
-          'No Internet Connection'); // 503 Service Unavailable
+    } catch (error, stackTrace) {
+      print(error.toString());
+      if (error.toString().contains("unreachable")) {
+        throw FetchDataException('No Internet Connection');
+      } else {
+        throw FetchDataException(error.toString());
+      }
     }
     return responseJson;
   }
