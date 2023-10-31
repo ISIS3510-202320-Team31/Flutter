@@ -15,6 +15,8 @@ class ApiResponse<T> {
 
   ApiResponse.error(this.message) : status = Status.ERROR;
 
+  ApiResponse.offline() : status = Status.OFFLINE;
+
   @override
   String toString() {
     return "Status : $status \n Message : $message \n Data : $data";
