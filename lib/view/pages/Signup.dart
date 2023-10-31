@@ -86,6 +86,7 @@ class _SignupFormState extends State<SignupForm> {
   String _career = "";
   DateTime? _selectedDate;
   String _validationError = "";
+  bool _isLoading = false;
 
   final UserVM userVM = UserVM();
 
@@ -281,94 +282,18 @@ class _SignupFormState extends State<SignupForm> {
                               create: (BuildContext context) => userVM,
                               child: Consumer<UserVM>(
                                 builder: (context, viewModel, _) {
-                                  switch (viewModel.user.status) {
-                                    case Status.LOADING:
-                                      print("Log :: LOADING");
-                                      return Container(
-                                        child: Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.05,
-                                      );
-                                    case Status.ERROR:
-                                      print("Log :: ERROR");
-                                      try {
-                                        var decodedJson =
-                                            jsonDecode(viewModel.user.message!);
-                                        var errorMessage =
-                                            decodedJson["message"];
-
-                                        return Container(
-                                          width: double.infinity,
-                                          child: Text(
-                                            errorMessage,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        );
-                                      } catch (e) {
-                                        return Container(
-                                          width: double.infinity,
-                                          child: Text(
-                                            "Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Vuelve a intentar más tarde",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    case Status.OFFLINE:
-                                      return Text(
-                                        "Revisa tu conexión y vuelve a intentar",
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                        ),
-                                      );
-                                    case Status.COMPLETED:
-                                      return Builder(
-                                        builder: (context) {
-                                          Future.delayed(
-                                                  Duration(milliseconds: 100))
-                                              .then((_) {
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => Login(
-                                                        redirection: "signup",
-                                                      )),
-                                            );
-                                          });
-                                          return Container();
-                                        },
-                                      );
-                                    case Status.NONE:
-                                      return Container(
-                                        width: double.infinity,
-                                        child: Text(
-                                          _validationError,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: _validationError == ""
-                                                ? Colors.white
-                                                : Colors.red,
-                                          ),
-                                        ),
-                                      );
-                                    default:
-                                      return Container();
-                                  }
+                                  return switchStatus(viewModel);
                                 },
                               ),
                             ),
                             SizedBox(height: 10),
                             ElevatedButton(
-                              onPressed: onRegister,
+                              onPressed: _isLoading ? null : onRegister,
                               child: Text('REGISTRATE'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    _isLoading ? Colors.grey : Colors.blue,
+                              ),
                             ),
                             SizedBox(height: 10),
                             TextButton(
@@ -389,6 +314,83 @@ class _SignupFormState extends State<SignupForm> {
         ],
       ),
     );
+  }
+
+  Widget switchStatus(viewModel) {
+    switch (viewModel.user.status) {
+      case Status.LOADING:
+        print("Log :: LOADING");
+        return Container(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+          height: MediaQuery.of(context).size.height * 0.05,
+        );
+      case Status.ERROR:
+        print("Log :: ERROR");
+        try {
+          var decodedJson = jsonDecode(viewModel.user.message!);
+          var errorMessage = decodedJson["message"];
+
+          return Container(
+            width: double.infinity,
+            child: Text(
+              errorMessage,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+          );
+        } catch (e) {
+          return Container(
+            width: double.infinity,
+            child: Text(
+              "Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Vuelve a intentar más tarde",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+          );
+        }
+      case Status.OFFLINE:
+        print("Log :: OFFLINE");
+        return Text(
+          "Revisa tu conexión y vuelve a intentar",
+          style: TextStyle(
+            color: Colors.red,
+          ),
+        );
+      case Status.COMPLETED:
+        return Builder(
+          builder: (context) {
+            Future.delayed(Duration(milliseconds: 100)).then((_) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Login(
+                          redirection: "signup",
+                        )),
+              );
+            });
+            return Container();
+          },
+        );
+      case Status.NONE:
+        return Container(
+          width: double.infinity,
+          child: Text(
+            _validationError,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: _validationError == "" ? Colors.white : Colors.red,
+            ),
+          ),
+        );
+      default:
+        return Container();
+    }
   }
 
   void onRegister() async {

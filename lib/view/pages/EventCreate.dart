@@ -247,84 +247,7 @@ class _EventCreateState extends State<EventCreate> {
                               create: (BuildContext context) => eventVM,
                               child: Consumer<EventVM>(
                                 builder: (context, viewModel, _) {
-                                  switch (viewModel.event.status) {
-                                    case Status.LOADING:
-                                      print("Log :: LOADING");
-                                      return Container(
-                                        child: Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.05,
-                                      );
-                                    case Status.ERROR:
-                                      print("Log :: ERROR");
-                                      try {
-                                        var decodedJson = jsonDecode(
-                                            viewModel.event.message!);
-                                        var errorMessage =
-                                            decodedJson["message"];
-
-                                        return Container(
-                                          width: double.infinity,
-                                          child: Text(
-                                            errorMessage,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        );
-                                      } catch (e) {
-                                        return Container(
-                                          width: double.infinity,
-                                          child: Text(
-                                            "Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Vuelve a intentar más tarde",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    case Status.OFFLINE:
-                                      return Text(
-                                        "Revisa tu conexión y vuelve a intentar",
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                        ),
-                                      );
-                                    case Status.COMPLETED:
-                                      return Builder(
-                                        builder: (context) {
-                                          Future.delayed(
-                                                  Duration(milliseconds: 100))
-                                              .then((_) {
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => Home(
-                                                      userId: widget.userId)),
-                                            );
-                                          });
-                                          return Container();
-                                        },
-                                      );
-                                    default:
-                                      return Container(
-                                        width: double.infinity,
-                                        child: Text(
-                                          _validationError,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: _validationError == ""
-                                                ? Colors.white
-                                                : Colors.red,
-                                          ),
-                                        ),
-                                      );
-                                  }
+                                  return switchStatus(viewModel);
                                 },
                               ),
                             ),
@@ -345,6 +268,78 @@ class _EventCreateState extends State<EventCreate> {
         ),
       ],
     );
+  }
+
+  Widget switchStatus(viewModel) {
+    switch (viewModel.event.status) {
+      case Status.LOADING:
+        print("Log :: LOADING");
+        return Container(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+          height: MediaQuery.of(context).size.height * 0.05,
+        );
+      case Status.ERROR:
+        print("Log :: ERROR");
+        try {
+          var decodedJson = jsonDecode(viewModel.event.message!);
+          var errorMessage = decodedJson["message"];
+
+          return Container(
+            width: double.infinity,
+            child: Text(
+              errorMessage,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+          );
+        } catch (e) {
+          return Container(
+            width: double.infinity,
+            child: Text(
+              "Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Vuelve a intentar más tarde",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+          );
+        }
+      case Status.OFFLINE:
+        return Text(
+          "Revisa tu conexión y vuelve a intentar",
+          style: TextStyle(
+            color: Colors.red,
+          ),
+        );
+      case Status.COMPLETED:
+        return Builder(
+          builder: (context) {
+            Future.delayed(Duration(milliseconds: 100)).then((_) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Home(userId: widget.userId)),
+              );
+            });
+            return Container();
+          },
+        );
+      default:
+        return Container(
+          width: double.infinity,
+          child: Text(
+            _validationError,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: _validationError == "" ? Colors.white : Colors.red,
+            ),
+          ),
+        );
+    }
   }
 
   void onCreateEvent() async {

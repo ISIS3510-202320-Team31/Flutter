@@ -199,91 +199,7 @@ class _LoginFormState extends State<LoginForm> {
                               create: (BuildContext context) => userVM,
                               child: Consumer<UserVM>(
                                 builder: (context, viewModel, _) {
-                                  switch (viewModel.user.status) {
-                                    case Status.LOADING:
-                                      print("Log :: LOADING");
-                                      return Container(
-                                        child: Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.05,
-                                      );
-                                    case Status.ERROR:
-                                      print("Log :: ERROR");
-                                      try {
-                                        var decodedJson =
-                                            jsonDecode(viewModel.user.message!);
-                                        var errorMessage =
-                                            decodedJson["message"];
-
-                                        return Container(
-                                          width: double.infinity,
-                                          child: Text(
-                                            errorMessage,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        );
-                                      } catch (e) {
-                                        return Container(
-                                          width: double.infinity,
-                                          child: Text(
-                                            "Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Vuelve a intentar más tarde",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    case Status.COMPLETED:
-                                      return Builder(
-                                        builder: (context) {
-                                          Future.delayed(
-                                                  Duration(milliseconds: 100))
-                                              .then((_) {
-                                            handleNotification();
-                                            secureStorage.writeSecureData(
-                                                'userId',
-                                                viewModel.user.data!.id!);
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => Home(
-                                                      userId: viewModel
-                                                          .user.data!.id!)),
-                                            );
-                                          });
-                                          return Container();
-                                        },
-                                      );
-                                    case Status.OFFLINE:
-                                      return Text(
-                                        "Revisa tu conexión y vuelve a intentar",
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                        ),
-                                      );
-                                    case Status.NONE:
-                                      return Container(
-                                        width: double.infinity,
-                                        child: Text(
-                                          _validationError,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: _validationError == ""
-                                                ? Colors.white
-                                                : Colors.red,
-                                          ),
-                                        ),
-                                      );
-                                    default:
-                                      return Container();
-                                  }
+                                  return switchStatus(viewModel);
                                 },
                               ),
                             ),
@@ -313,6 +229,83 @@ class _LoginFormState extends State<LoginForm> {
         ],
       ),
     );
+  }
+
+  Widget switchStatus(viewModel) {
+    switch (viewModel.user.status) {
+      case Status.LOADING:
+        print("Log :: LOADING");
+        return Container(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+          height: MediaQuery.of(context).size.height * 0.05,
+        );
+      case Status.ERROR:
+        print("Log :: ERROR");
+        try {
+          var decodedJson = jsonDecode(viewModel.user.message!);
+          var errorMessage = decodedJson["message"];
+
+          return Container(
+            width: double.infinity,
+            child: Text(
+              errorMessage,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+          );
+        } catch (e) {
+          return Container(
+            width: double.infinity,
+            child: Text(
+              "Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Vuelve a intentar más tarde",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+          );
+        }
+      case Status.COMPLETED:
+        return Builder(
+          builder: (context) {
+            Future.delayed(Duration(milliseconds: 100)).then((_) {
+              handleNotification();
+              secureStorage.writeSecureData('userId', viewModel.user.data!.id!);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Home(userId: viewModel.user.data!.id!)),
+              );
+            });
+            return Container();
+          },
+        );
+      case Status.OFFLINE:
+        return Text(
+          "Revisa tu conexión y vuelve a intentar",
+          style: TextStyle(
+            color: Colors.red,
+          ),
+        );
+      case Status.NONE:
+        return Container(
+          width: double.infinity,
+          child: Text(
+            _validationError,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: _validationError == "" ? Colors.white : Colors.red,
+            ),
+          ),
+        );
+      default:
+        return Container();
+    }
   }
 
   void onLogin() async {
