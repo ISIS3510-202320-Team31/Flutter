@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/widgets/ViewsHeader.dart';
 import 'package:hive_app/utils/time_calculator.dart';
 import 'package:hive_app/view_model/user.vm.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:hive_app/utils/SecureStorage.dart';
@@ -27,6 +31,19 @@ class _ProfileState extends State<Profile> {
     _userVM.getUserById(widget.userId);
     _userVM.getParticipationById(widget.userId);
     super.initState();
+  }
+
+  File? image;
+  
+  Future pickImage() async{
+    try{
+  final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+  if (image == null) return;
+
+  final imageTemporary = File(image.path);
+  setState(() => this.image = imageTemporary);
+  } on PlatformException catch (e) {
+    print("failed to pick image");
   }
 
   @override
@@ -88,17 +105,41 @@ class _ProfileState extends State<Profile> {
                                       MediaQuery.of(context).size.height * 0.3,
                                 );
                               case Status.COMPLETED:
-                                return Text(
-                                  'Nombre:\n'
-                                  '${viewModel.user.data!.name}\n\n'
-                                  'Correo:\n'
-                                  '${viewModel.user.data!.email}\n\n'
-                                  'Tiempo usado en la App:\n'
-                                  '${formatTime(timeSinceInstallation!)}\n\n'
-                                  'Eventos a los que perteneces:\n'
-                                  '${viewModel.participation.data} eventos.\n\n\n',
-                                  style: TextStyle(fontSize: 20),
+                                return Column(
+                                  children: [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        minimumSize: Size.fromHeight(40),
+                                        primary: Colors.white,
+                                        onPrimary: Colors.black,
+                                        textStyle: TextStyle(fontSize: 20),
+                                      ),
+                                      onPressed: () {
+                                        pickImage();
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.image_outlined, size: 28),
+                                          SizedBox(width: 16),
+                                          Text("Seleccionar de la galería"),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 24), // Espacio entre el botón y el texto
+                                    Text(
+                                      'Nombre:\n'
+                                      '${viewModel.user.data!.name}\n\n'
+                                      'Correo:\n'
+                                      '${viewModel.user.data!.email}\n\n'
+                                      'Tiempo usado en la App:\n'
+                                      '${formatTime(timeSinceInstallation!)}\n\n'
+                                      'Eventos a los que perteneces:\n'
+                                      '${viewModel.participation.data} eventos.\n\n\n',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ],
                                 );
+
                               case Status.ERROR:
                                 return Text(
                                   'Error: ${viewModel.user.message}',
@@ -141,4 +182,11 @@ String formatTime(Duration duration) {
   final hours = duration.inHours;
   final minutes = duration.inMinutes.remainder(60);
   return '$hours horas, $minutes minutos';
+}
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
 }
