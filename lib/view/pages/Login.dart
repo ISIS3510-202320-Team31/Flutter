@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
+import 'package:hive_app/connection_controller/connection_controller.dart';
 import 'package:hive_app/services/notification_services.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/pages/Home.dart';
@@ -41,9 +43,14 @@ class _LoginFormState extends State<LoginForm> {
   String _validationError = "";
 
   final UserVM userVM = UserVM();
+  late ConnectionService _connectionService;
 
   @override
   void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    _connectionService = Get.find<ConnectionService>();
+    _connectionService.listenToNetworkChanges();});
+
     super.initState();
     checkUserLoggedIn();
   }
