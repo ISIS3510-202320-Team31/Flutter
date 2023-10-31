@@ -122,6 +122,27 @@ class _CalendarState extends State<Calendar> {
                         child: Text("Error"),
                       ),
                     );
+                    case Status.OFFLINE:
+                    print("Log :: OFFLINE");
+                    return Expanded(
+                      child: Column(children: [
+                    Center(
+                      child: Text(
+                        "SIN CONEXIÓN A INTERNET",
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Text(
+                        "Revisa tu conexión y refresca la página",
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ],),);
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
                     return Expanded(
