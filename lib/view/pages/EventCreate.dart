@@ -247,116 +247,26 @@ class _EventCreateState extends State<EventCreate> {
                               create: (BuildContext context) => eventVM,
                               child: Consumer<EventVM>(
                                 builder: (context, viewModel, _) {
-                                  switch (viewModel.event.status) {
-                                    case Status.LOADING:
-                                      print("Log :: LOADING");
-                                      return Container(
-                                        child: Center(
-                                          child: CircularProgressIndicator(),
+                                  bool _isLoading =
+                                      viewModel.event.status == Status.LOADING;
+                                  return Column(
+                                    children: [
+                                      switchStatus(viewModel),
+                                      SizedBox(height: 10),
+                                      ElevatedButton(
+                                        onPressed:
+                                            _isLoading ? null : onCreateEvent,
+                                        child: Text('CREAR EVENTO'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: _isLoading
+                                              ? Colors.grey
+                                              : Colors.blue,
                                         ),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.05,
-                                      );
-                                    case Status.ERROR:
-                                      print("Log :: ERROR");
-                                      return Container(
-                                        width: double.infinity,
-                                        child: Text(
-                                          jsonDecode(viewModel.event.message!)[
-                                              "message"],
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                      );
-                                    case Status.COMPLETED:
-                                      return Builder(
-                                        builder: (context) {
-                                          Future.delayed(
-                                                  Duration(milliseconds: 100))
-                                              .then((_) {
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => Home(
-                                                      userId: widget.userId)),
-                                            );
-                                          });
-                                          return Container();
-                                        },
-                                      );
-                                    default:
-                                      return Container(
-                                        width: double.infinity,
-                                        child: Text(
-                                          _validationError,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: _validationError == ""
-                                                ? Colors.white
-                                                : Colors.red,
-                                          ),
-                                        ),
-                                      );
-                                  }
+                                      ),
+                                    ],
+                                  );
                                 },
                               ),
-                            ),
-                            SizedBox(height: 10),
-                            ElevatedButton(
-                              onPressed: () async {
-                                // Validation Step
-                                // 1. Check that all fields are filled
-                                if (!_formKey.currentState!.validate()) {
-                                  setState(() {
-                                    _validationError = "";
-                                  });
-                                  return;
-                                }
-                                if (_selectedDate == null) {
-                                  setState(() {
-                                    _validationError =
-                                        "Por favor, selecciona una fecha";
-                                  });
-                                  return;
-                                }
-                                if (_category == "") {
-                                  setState(() {
-                                    _validationError =
-                                        "Por favor, selecciona una categoría";
-                                  });
-                                  return;
-                                }
-                                // 2. Check that the date is not in the past
-                                if (_selectedDate!.isBefore(DateTime.now())) {
-                                  setState(() {
-                                    _validationError =
-                                        "Por favor, selecciona una fecha futura";
-                                  });
-                                  return;
-                                }
-                                // 3. Send to backend and wait for response, if response is error, show error message
-                                List<String> tags = _tags.text.split(',');
-                                List<String> links = _links.text.split(',');
-                                await eventVM.createEvent(
-                                  _title.text,
-                                  _place.text,
-                                  // duration as int: _duration.text,
-                                  int.parse(_duration.text),
-                                  _participants.text == ""
-                                      ? 0
-                                      : int.parse(_participants.text),
-                                  _selectedDate!,
-                                  _category,
-                                  _description.text,
-                                  tags,
-                                  links,
-                                  widget.userId,
-                                );
-                              },
-                              child: Text('CREAR EVENTO'),
                             ),
                           ],
                         ),
@@ -369,6 +279,124 @@ class _EventCreateState extends State<EventCreate> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget switchStatus(viewModel) {
+    switch (viewModel.event.status) {
+      case Status.LOADING:
+        print("Log :: LOADING");
+        return Container(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+          height: MediaQuery.of(context).size.height * 0.05,
+        );
+      case Status.ERROR:
+        print("Log :: ERROR");
+        try {
+          var decodedJson = jsonDecode(viewModel.event.message!);
+          var errorMessage = decodedJson["message"];
+
+          return Container(
+            width: double.infinity,
+            child: Text(
+              errorMessage,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+          );
+        } catch (e) {
+          return Container(
+            width: double.infinity,
+            child: Text(
+              "Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Vuelve a intentar más tarde",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+          );
+        }
+      case Status.OFFLINE:
+        return Text(
+          "Revisa tu conexión y vuelve a intentar",
+          style: TextStyle(
+            color: Colors.red,
+          ),
+        );
+      case Status.COMPLETED:
+        return Builder(
+          builder: (context) {
+            Future.delayed(Duration(milliseconds: 100)).then((_) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Home(userId: widget.userId)),
+              );
+            });
+            return Container();
+          },
+        );
+      default:
+        return Container(
+          width: double.infinity,
+          child: Text(
+            _validationError,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: _validationError == "" ? Colors.white : Colors.red,
+            ),
+          ),
+        );
+    }
+  }
+
+  void onCreateEvent() async {
+    // Validation Step
+    // 1. Check that all fields are filled
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _validationError = "";
+      });
+      return;
+    }
+    if (_selectedDate == null) {
+      setState(() {
+        _validationError = "Por favor, selecciona una fecha";
+      });
+      return;
+    }
+    if (_category == "") {
+      setState(() {
+        _validationError = "Por favor, selecciona una categoría";
+      });
+      return;
+    }
+    // 2. Check that the date is not in the past
+    if (_selectedDate!.isBefore(DateTime.now())) {
+      setState(() {
+        _validationError = "Por favor, selecciona una fecha futura";
+      });
+      return;
+    }
+    // 3. Send to backend and wait for response, if response is error, show error message
+    List<String> tags = _tags.text.split(',');
+    List<String> links = _links.text.split(',');
+    await eventVM.createEvent(
+      _title.text,
+      _place.text,
+      // duration as int: _duration.text,
+      int.parse(_duration.text),
+      _participants.text == "" ? 0 : int.parse(_participants.text),
+      _selectedDate!,
+      _category,
+      _description.text,
+      tags,
+      links,
+      widget.userId,
     );
   }
 }

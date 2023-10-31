@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:hive_app/utils/SecureStorage.dart';
 import 'package:hive_app/view/pages/Login.dart';
+import 'package:hive_app/view/widgets/OfflineWidget.dart';
 
 class Profile extends StatefulWidget {
   final String userId;
@@ -101,14 +102,13 @@ class _ProfileState extends State<Profile> {
                                 );
                               case Status.ERROR:
                                 return Text(
-                                  'Error: ${viewModel.user.message}',
+                                  'Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Intenta refrescar',
                                   style: TextStyle(fontSize: 20),
                                 );
+                              case Status.OFFLINE:
+                                return OfflineWidget();
                               default:
-                                return Text(
-                                  'Cargando...',
-                                  style: TextStyle(fontSize: 20),
-                                );
+                                return Container();
                             }
                           }),
                         ),

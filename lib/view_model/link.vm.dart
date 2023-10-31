@@ -19,7 +19,11 @@ class LinkVM extends ChangeNotifier {
     _myRepo
         .getLinkData()
         .then((value) => _setLinkMain(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-            _setLinkMain(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setLinkMain(ApiResponse.offline())}
+              else
+                {_setLinkMain(ApiResponse.error(error.toString()))}
+            });
   }
 }
