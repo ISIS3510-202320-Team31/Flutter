@@ -152,7 +152,7 @@ class _FeedState extends State<Feed> {
                         Column(
                           children: [
                             Center(
-                            child: Text("Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto..."),
+                            child: Text("Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto...Intenta refrescar"),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                             Expanded(
