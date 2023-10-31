@@ -27,9 +27,12 @@ class EventVM extends ChangeNotifier {
     _myRepo
         .getEventData()
         .then((value) => _setEventMain(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-        _setEventMain(ApiResponse.error(error.toString()))
-            );
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setEventMain(ApiResponse.offline())}
+              else
+                {_setEventMain(ApiResponse.error(error.toString()))}
+            });
   }
 
   Future<void> fetchEventsForUser(String userId) async {
@@ -37,13 +40,12 @@ class EventVM extends ChangeNotifier {
     _myRepo
         .getEventsForUser(userId)
         .then((value) => _setEventMain(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-            {
-          if (error.toString() == "No Internet Connection"){
-            _setEventMain(ApiResponse.offline())}
-          else{
-            _setEventMain(ApiResponse.error(error.toString()))}
-        });
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setEventMain(ApiResponse.offline())}
+              else
+                {_setEventMain(ApiResponse.error(error.toString()))}
+            });
   }
 
   Future<void> fetchEventById(String eventId) async {
@@ -51,8 +53,12 @@ class EventVM extends ChangeNotifier {
     _myRepo
         .getEventById(eventId)
         .then((value) => _setEvent(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-            _setEvent(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setEvent(ApiResponse.offline())}
+              else
+                {_setEvent(ApiResponse.error(error.toString()))}
+            });
   }
 
   Future<void> createEvent(
@@ -84,8 +90,12 @@ class EventVM extends ChangeNotifier {
     _myRepo
         .createEvent(event)
         .then((value) => _setEvent(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-            _setEvent(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setEvent(ApiResponse.offline())}
+              else
+                {_setEvent(ApiResponse.error(error.toString()))}
+            });
   }
 
   Future<void> addParticipant(String eventId, String participantId) async {
@@ -93,8 +103,12 @@ class EventVM extends ChangeNotifier {
     _myRepo
         .addParticipant(eventId, participantId)
         .then((value) => _setEvent(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-            _setEvent(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setEvent(ApiResponse.offline())}
+              else
+                {_setEvent(ApiResponse.error(error.toString()))}
+            });
   }
 
   Future<void> removeParticipant(String eventId, String participantId) async {
@@ -102,8 +116,12 @@ class EventVM extends ChangeNotifier {
     _myRepo
         .removeParticipant(eventId, participantId)
         .then((value) => _setEvent(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-            _setEvent(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setEvent(ApiResponse.offline())}
+              else
+                {_setEvent(ApiResponse.error(error.toString()))}
+            });
   }
 
   Future<void> fetchEventListByUser(
@@ -112,7 +130,11 @@ class EventVM extends ChangeNotifier {
     _myRepo
         .fetchEventListByUser(date, uuidUser, orderFuture)
         .then((value) => _setEventMain(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-            _setEventMain(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setEventMain(ApiResponse.offline())}
+              else
+                {_setEventMain(ApiResponse.error(error.toString()))}
+            });
   }
 }

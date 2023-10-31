@@ -19,7 +19,11 @@ class TagVM extends ChangeNotifier {
     _myRepo
         .getTagData()
         .then((value) => _setTagMain(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-            _setTagMain(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setTagMain(ApiResponse.offline())}
+              else
+                {_setTagMain(ApiResponse.error(error.toString()))}
+            });
   }
 }

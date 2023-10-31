@@ -47,9 +47,10 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-    _connectionService = Get.find<ConnectionService>();
-    _connectionService.listenToNetworkChanges();});
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _connectionService = Get.find<ConnectionService>();
+      _connectionService.listenToNetworkChanges();
+    });
 
     super.initState();
     checkUserLoggedIn();
