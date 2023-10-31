@@ -45,8 +45,12 @@ class UserVM extends ChangeNotifier {
     secureStorage
         .readSecureData("userId")
         .then((value) => _setUserId(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-            _setUserId(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setUserId(ApiResponse.offline())}
+              else
+                {_setUserId(ApiResponse.error(error.toString()))}
+            });
   }
 
   Future<void> getUserById(String userId) async {
@@ -54,8 +58,12 @@ class UserVM extends ChangeNotifier {
     _myRepo
         .getUserById(userId)
         .then((value) => _setUser(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-            _setUser(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setUser(ApiResponse.offline())}
+              else
+                {_setUser(ApiResponse.error(error.toString()))}
+            });
   }
 
   Future<void> getParticipationById(String userId) async {
@@ -63,8 +71,12 @@ class UserVM extends ChangeNotifier {
     _myRepo
         .getParticipationById(userId)
         .then((value) => _setParticipation(ApiResponse.completed(value!.size)))
-        .onError((error, stackTrace) =>
-            _setParticipation(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setParticipation(ApiResponse.offline())}
+              else
+                {_setParticipation(ApiResponse.error(error.toString()))}
+            });
   }
 
   Future<void> fetchUserData() async {
@@ -72,8 +84,12 @@ class UserVM extends ChangeNotifier {
     _myRepo
         .getUserData()
         .then((value) => _setUserMain(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-            _setUserMain(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setUserMain(ApiResponse.offline())}
+              else
+                {_setUserMain(ApiResponse.error(error.toString()))}
+            });
   }
 
   Future<void> registerUser(
@@ -97,8 +113,12 @@ class UserVM extends ChangeNotifier {
     _myRepo
         .registerUser(userReg)
         .then((value) => _setUser(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-            _setUser(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setUser(ApiResponse.offline())}
+              else
+                {_setUser(ApiResponse.error(error.toString()))}
+            });
   }
 
   Future<void> login(String login, String password) async {
@@ -111,7 +131,11 @@ class UserVM extends ChangeNotifier {
     _myRepo
         .login(userLogin)
         .then((value) => _setUser(ApiResponse.completed(value)))
-        .onError((error, stackTrace) =>
-            _setUser(ApiResponse.error(error.toString())));
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setUser(ApiResponse.offline())}
+              else
+                {_setUser(ApiResponse.error(error.toString()))}
+            });
   }
 }
