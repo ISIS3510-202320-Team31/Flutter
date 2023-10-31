@@ -102,10 +102,38 @@ class _FeedState extends State<Feed> {
                     );
                   case Status.ERROR:
                     print("Log :: ERROR");
-                    return Container(
-                      child: Center(
-                        child: Text("Error"),
-                      ),
+                    this.getLocalEvents();
+                    return FutureBuilder<List<Event>>(
+                    future: cachedEventsFuture,
+                    builder: (context,snapshot)
+                    {
+                      if (snapshot.connectionState == ConnectionState.waiting) 
+                      return Container();
+                      else if (snapshot.hasError) {
+                      return Container();
+                      } else if (snapshot.hasData) {
+                        return Expanded(child:
+                        Column(
+                          children: [
+                            Center(
+                            child: Text("Revisa tu conexión y refresca la página"),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                            Center(
+                            child: LinearProgressIndicator(),
+                            ),
+                            Expanded(
+                            child: EventList(
+                                userId: widget.userId,
+                                eventList: snapshot.data!,
+                                eventVM: eventVM,
+                                updateFunction: this.updateFunction))
+                          ]
+                        )
+                      );
+                    }else
+                    return Container();
+                    }
                     );
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
