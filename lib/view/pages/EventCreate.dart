@@ -260,15 +260,39 @@ class _EventCreateState extends State<EventCreate> {
                                       );
                                     case Status.ERROR:
                                       print("Log :: ERROR");
-                                      return Container(
-                                        width: double.infinity,
-                                        child: Text(
-                                          jsonDecode(viewModel.event.message!)[
-                                              "message"],
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.red,
+                                      try {
+                                        var decodedJson = jsonDecode(
+                                            viewModel.event.message!);
+                                        var errorMessage =
+                                            decodedJson["message"];
+
+                                        return Container(
+                                          width: double.infinity,
+                                          child: Text(
+                                            errorMessage,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                            ),
                                           ),
+                                        );
+                                      } catch (e) {
+                                        return Container(
+                                          width: double.infinity,
+                                          child: Text(
+                                            "Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Vuelve a intentar más tarde",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    case Status.OFFLINE:
+                                      return Text(
+                                        "Revisa tu conexión y vuelve a intentar",
+                                        style: TextStyle(
+                                          color: Colors.red,
                                         ),
                                       );
                                     case Status.COMPLETED:
