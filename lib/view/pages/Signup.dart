@@ -86,7 +86,6 @@ class _SignupFormState extends State<SignupForm> {
   String _career = "";
   DateTime? _selectedDate;
   String _validationError = "";
-  bool _isLoading = false;
 
   final UserVM userVM = UserVM();
 
@@ -282,17 +281,25 @@ class _SignupFormState extends State<SignupForm> {
                               create: (BuildContext context) => userVM,
                               child: Consumer<UserVM>(
                                 builder: (context, viewModel, _) {
-                                  return switchStatus(viewModel);
+                                  bool _isLoading =
+                                      viewModel.user.status == Status.LOADING;
+                                  return Column(
+                                    children: [
+                                      switchStatus(viewModel),
+                                      SizedBox(height: 10),
+                                      ElevatedButton(
+                                        onPressed:
+                                            _isLoading ? null : onRegister,
+                                        child: Text('REGISTRATE'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: _isLoading
+                                              ? Colors.grey
+                                              : Colors.blue,
+                                        ),
+                                      ),
+                                    ],
+                                  );
                                 },
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            ElevatedButton(
-                              onPressed: _isLoading ? null : onRegister,
-                              child: Text('REGISTRATE'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    _isLoading ? Colors.grey : Colors.blue,
                               ),
                             ),
                             SizedBox(height: 10),

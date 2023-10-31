@@ -247,14 +247,26 @@ class _EventCreateState extends State<EventCreate> {
                               create: (BuildContext context) => eventVM,
                               child: Consumer<EventVM>(
                                 builder: (context, viewModel, _) {
-                                  return switchStatus(viewModel);
+                                  bool _isLoading =
+                                      viewModel.event.status == Status.LOADING;
+                                  return Column(
+                                    children: [
+                                      switchStatus(viewModel),
+                                      SizedBox(height: 10),
+                                      ElevatedButton(
+                                        onPressed:
+                                            _isLoading ? null : onCreateEvent,
+                                        child: Text('CREAR EVENTO'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: _isLoading
+                                              ? Colors.grey
+                                              : Colors.blue,
+                                        ),
+                                      ),
+                                    ],
+                                  );
                                 },
                               ),
-                            ),
-                            SizedBox(height: 10),
-                            ElevatedButton(
-                              onPressed: onCreateEvent,
-                              child: Text('CREAR EVENTO'),
                             ),
                           ],
                         ),

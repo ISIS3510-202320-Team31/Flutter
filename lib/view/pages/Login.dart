@@ -199,15 +199,25 @@ class _LoginFormState extends State<LoginForm> {
                               create: (BuildContext context) => userVM,
                               child: Consumer<UserVM>(
                                 builder: (context, viewModel, _) {
-                                  return switchStatus(viewModel);
+                                  bool _isLoading =
+                                      viewModel.user.status == Status.LOADING;
+                                  return Column(
+                                    children: [
+                                      switchStatus(viewModel),
+                                      SizedBox(height: 10),
+                                      ElevatedButton(
+                                        onPressed: _isLoading ? null : onLogin,
+                                        child: Text('INICIAR SESIÓN'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: _isLoading
+                                              ? Colors.grey
+                                              : Colors.blue,
+                                        ),
+                                      ),
+                                    ],
+                                  );
                                 },
                               ),
-                            ),
-                            SizedBox(height: 10),
-                            ElevatedButton(
-                              onPressed: onLogin,
-                              child: Text('INICIAR SESIÓN',
-                                  style: TextStyle(fontSize: 15)),
                             ),
                             SizedBox(height: 10),
                             // other kind of button
