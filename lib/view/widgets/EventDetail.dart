@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:hive_app/view_model/user.vm.dart';
 import 'package:hive_app/view_model/event.vm.dart';
+import 'package:hive_app/view/widgets/OfflineWidget.dart';
 
 class EventDetail extends StatefulWidget {
   final String userId;
@@ -82,9 +83,13 @@ class _EventDetailState extends State<EventDetail> {
                   print("Log :: ERROR");
                   return Container(
                     child: Center(
-                      child: Text("Error"),
+                      child: Text(
+                          "Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Intenta refrescar"),
                     ),
                   );
+                case Status.OFFLINE:
+                  print("Log :: OFFLINE");
+                  return OfflineWidget();
                 case Status.COMPLETED:
                   print("Log :: COMPLETED");
                   final event = viewModel.event.data!;
