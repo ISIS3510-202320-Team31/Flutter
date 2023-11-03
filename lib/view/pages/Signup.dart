@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:hive_app/utils/CacheService.dart';
+import 'package:hive_app/utils/Cache.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/pages/Login.dart';
 import 'package:hive_app/view_model/user.vm.dart';
@@ -87,7 +87,6 @@ class _SignupFormState extends State<SignupForm> {
   String _career = "";
   DateTime? _selectedDate;
   String _validationError = "";
-  CacheService cacheService = CacheService();
 
   final UserVM userVM = UserVM();
 
@@ -102,7 +101,18 @@ class _SignupFormState extends State<SignupForm> {
       setState(() {
         _selectedDate = picked;
       });
+      cache.write("signup-birthdate", _selectedDate);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _name.text = cache.read("signup-name") ?? "";
+    _username.text = cache.read("signup-username") ?? "";
+    _email.text = cache.read("signup-email") ?? "";
+    _career = cache.read("signup-career") ?? "";
+    _selectedDate = cache.read("signup-birthdate") ?? null;
   }
 
   @override
@@ -175,6 +185,9 @@ class _SignupFormState extends State<SignupForm> {
                                 }
                                 return null;
                               },
+                              onChanged: (value) {
+                                cache.write("signup-name", value);
+                              },
                             ),
                             TextFormField(
                               controller: _username,
@@ -186,6 +199,9 @@ class _SignupFormState extends State<SignupForm> {
                                 }
                                 return null;
                               },
+                              onChanged: (value) {
+                                cache.write("signup-username", value);
+                              },
                             ),
                             TextFormField(
                               controller: _email,
@@ -195,6 +211,9 @@ class _SignupFormState extends State<SignupForm> {
                                   return 'Por favor, ingresa tu correo';
                                 }
                                 return null;
+                              },
+                              onChanged: (value) {
+                                cache.write("signup-email", value);
                               },
                             ),
                             TextFormField(
@@ -219,6 +238,7 @@ class _SignupFormState extends State<SignupForm> {
                                   return 'Por favor, ingresa tu contraseña de nuevo';
                                 }
                                 return null;
+                                // this one should not be saved in cache
                               },
                             ),
                             SizedBox(height: 30),
@@ -235,9 +255,14 @@ class _SignupFormState extends State<SignupForm> {
                                         child: Text(key),
                                       ))
                                   .toList(),
+                              value: _career == ""
+                                  ? null
+                                  : _dropdownValues.keys.firstWhere(
+                                      (k) => _dropdownValues[k] == _career),
                               onChanged: (value) {
                                 setState(() {
                                   _career = _dropdownValues[value]!;
+                                  cache.write("signup-career", _career);
                                 });
                               },
                             ),
@@ -374,6 +399,8 @@ class _SignupFormState extends State<SignupForm> {
       case Status.COMPLETED:
         return Builder(
           builder: (context) {
+            cache.flush();
+            cache.write("login-username", _username.text);
             Future.delayed(Duration(milliseconds: 100)).then((_) {
               Navigator.pushReplacement(
                 context,
