@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:hive_app/connection_controller/connection_controller.dart';
 import 'package:hive_app/services/notification_services.dart';
+import 'package:hive_app/utils/Cache.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/pages/Home.dart';
 import 'package:hive_app/view/pages/Signup.dart';
@@ -53,6 +54,7 @@ class _LoginFormState extends State<LoginForm> {
     });
 
     super.initState();
+    _usernameController.text = cache.read("login-username") ?? "";
     checkUserLoggedIn();
   }
 
@@ -172,16 +174,18 @@ class _LoginFormState extends State<LoginForm> {
                         child: Column(
                           children: <Widget>[
                             TextFormField(
-                              controller: _usernameController,
-                              decoration: InputDecoration(
-                                  labelText: 'Nombre de usuario'),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Por favor, ingresa tu nombre de usuario';
-                                }
-                                return null;
-                              },
-                            ),
+                                controller: _usernameController,
+                                decoration: InputDecoration(
+                                    labelText: 'Nombre de usuario'),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Por favor, ingresa tu nombre de usuario';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  cache.write("login-username", value);
+                                }),
                             TextFormField(
                               controller: _passwordController,
                               decoration:
@@ -282,6 +286,7 @@ class _LoginFormState extends State<LoginForm> {
       case Status.COMPLETED:
         return Builder(
           builder: (context) {
+            cache.flush();
             Future.delayed(Duration(milliseconds: 100)).then((_) {
               handleNotification();
               secureStorage.writeSecureData('userId', viewModel.user.data!.id!);

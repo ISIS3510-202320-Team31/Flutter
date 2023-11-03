@@ -244,7 +244,7 @@ class _SignupFormState extends State<SignupForm> {
                             SizedBox(height: 30),
                             DropdownButtonFormField(
                               decoration: InputDecoration(
-                                labelText: 'Carrera',
+                                labelText: 'Departamento',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20.0),
                                 ),
