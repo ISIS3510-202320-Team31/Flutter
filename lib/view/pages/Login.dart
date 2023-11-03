@@ -219,7 +219,7 @@ class _LoginFormState extends State<LoginForm> {
                                 },
                               ),
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 30),
                             // other kind of button
                             TextButton(
                               onPressed: () async {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:hive_app/utils/CacheService.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/pages/Login.dart';
 import 'package:hive_app/view_model/user.vm.dart';
@@ -86,6 +87,7 @@ class _SignupFormState extends State<SignupForm> {
   String _career = "";
   DateTime? _selectedDate;
   String _validationError = "";
+  CacheService cacheService = CacheService();
 
   final UserVM userVM = UserVM();
 
@@ -302,7 +304,7 @@ class _SignupFormState extends State<SignupForm> {
                                 },
                               ),
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 30),
                             TextButton(
                               onPressed: () async {
                                 Navigator.push(
