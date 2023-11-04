@@ -117,9 +117,10 @@ class _EventDetailState extends State<EventDetail> {
     String firstHalf;
     String secondHalf;
 
-    if (event.description!.length > 50) {
-      firstHalf = event.description!.substring(0, 50);
-      secondHalf = event.description!.substring(50);
+    final lengthForHalf = 65;
+    if (event.description!.length > lengthForHalf) {
+      firstHalf = event.description!.substring(0, lengthForHalf);
+      secondHalf = event.description!.substring(lengthForHalf);
     } else {
       firstHalf = event.description!;
       secondHalf = "";
@@ -137,25 +138,27 @@ class _EventDetailState extends State<EventDetail> {
               padding: EdgeInsets.all(10.0),
               color: Color.fromARGB(150, 255, 241, 89),
               child: Align(
-                alignment: Alignment.center,
                 child: Text(
                   event.name ?? 'Sin nombre',
                   style: TextStyle(
                     fontSize: 22.0,
                     fontWeight: FontWeight.bold,
                   ),
+                  textAlign: TextAlign.center, // Center-align text horizontally
                 ),
               ),
             ),
             SizedBox(height: 10.0),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                /* // Show or not the active/cancelled text ?
                 SizedBox(width: 20.0),
                 Text(
                     '${event.state != null && event.state! ? 'Activo' : 'Cancelado'}',
                     style:
                         TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                SizedBox(width: 15.0),
+                SizedBox(width: 15.0),*/
                 Icon(
                   Icons.location_on,
                   size: 25.0,
@@ -286,7 +289,9 @@ class _EventDetailState extends State<EventDetail> {
               ),
             ),
             SizedBox(height: 5.0),
-            if (event.links != null && event.links!.isNotEmpty)
+            if (event.links != null &&
+                event.links!.isNotEmpty &&
+                event.links != [])
               Container(
                 constraints: BoxConstraints(
                   maxHeight:
@@ -300,7 +305,7 @@ class _EventDetailState extends State<EventDetail> {
                       ClampingScrollPhysics(), // Desactiva el desplazamiento del ListView
                   itemBuilder: (context, index) {
                     final link = event.links![index];
-                    // return the ListTile with each item with a height of 50.0
+                    if (link == "") return Container();
                     return ListTile(
                       leading: Icon(Icons.link),
                       title: Text(link),
