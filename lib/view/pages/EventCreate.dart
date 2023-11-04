@@ -128,6 +128,9 @@ class _EventCreateState extends State<EventCreate> {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa el título del evento';
                                 }
+                                if (value.length > 15) {
+                                  return 'El título del evento no debe tener más de 15 caracteres';
+                                }
                                 return null;
                               },
                               onChanged: (value) => {
@@ -141,6 +144,9 @@ class _EventCreateState extends State<EventCreate> {
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa el lugar del evento';
+                                }
+                                if (value.length > 20) {
+                                  return 'El lugar del evento no debe tener más de 20 caracteres';
                                 }
                                 return null;
                               },
@@ -158,6 +164,16 @@ class _EventCreateState extends State<EventCreate> {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa la duración del evento';
                                 }
+                                final intValue = int.tryParse(value);
+                                if (intValue == null) {
+                                  return 'Por favor, ingresa un número válido';
+                                }
+                                if (intValue < 0) {
+                                  return 'La duración del evento no puede ser negativa';
+                                }
+                                if (intValue > 1440) {
+                                  return 'La duración del evento no puede ser mayor a 1440 minutos (24 horas)';
+                                }
                                 return null;
                               },
                               onChanged: (value) => {
@@ -169,7 +185,23 @@ class _EventCreateState extends State<EventCreate> {
                               decoration: InputDecoration(
                                   labelText: 'Cantidad de participantes'),
                               keyboardType: TextInputType.number,
-                              // no validator, optional field
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return null; // optional field
+                                }
+                                final intValue = int.tryParse(value);
+                                if (intValue == null) {
+                                  return 'Por favor, ingresa un número válido';
+                                }
+                                if (intValue < 0) {
+                                  return 'La cantidad de participantes no puede ser negativa';
+                                }
+                                if (intValue > 1000000) {
+                                  return 'La cantidad no puede ser mayor a 1.000.000';
+                                }
+
+                                return null;
+                              },
                               onChanged: (value) => {
                                 cache.write("eventcreate-participants", value),
                               },
@@ -261,7 +293,13 @@ class _EventCreateState extends State<EventCreate> {
                                   labelText:
                                       'Links de interés (separados por comas)'),
                               validator: (value) {
-                                final links = value!.split(',');
+                                if (value!.isEmpty) {
+                                  return null; // optional field
+                                }
+                                if (value.length > 100) {
+                                  return 'Los links no pueden tener más de 100 caracteres';
+                                }
+                                final links = value.split(',');
                                 if (links.length > 5) {
                                   return 'No puedes agregar más de 5 links';
                                 }
@@ -276,7 +314,13 @@ class _EventCreateState extends State<EventCreate> {
                               decoration: InputDecoration(
                                   labelText: 'Tags (separados por comas)'),
                               validator: (value) {
-                                final tags = value!.split(',');
+                                if (value!.isEmpty) {
+                                  return null; // optional field
+                                }
+                                if (value.length > 100) {
+                                  return 'Los tags no pueden tener más de 100 caracteres';
+                                }
+                                final tags = value.split(',');
                                 if (tags.length > 5) {
                                   return 'No puedes agregar más de 5 tags';
                                 }
@@ -356,7 +400,7 @@ class _EventCreateState extends State<EventCreate> {
           return Container(
             width: double.infinity,
             child: Text(
-              "Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Vuelve a intentar más tarde",
+              "Estamos presentando errores... Vuelve a intentar más tarde",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.red,
