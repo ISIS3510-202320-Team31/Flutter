@@ -440,7 +440,7 @@ class _SignupFormState extends State<SignupForm> {
     }
     if (_career == "") {
       setState(() {
-        _validationError = "Por favor, selecciona una carrera";
+        _validationError = "Por favor, selecciona un departamento";
       });
       return;
     }
