@@ -136,7 +136,8 @@ class _EventDetailState extends State<EventDetail> {
             Container(
               padding: EdgeInsets.all(10.0),
               color: Color.fromARGB(150, 255, 241, 89),
-              child: Center(
+              child: Align(
+                alignment: Alignment.center,
                 child: Text(
                   event.name ?? 'Sin nombre',
                   style: TextStyle(
