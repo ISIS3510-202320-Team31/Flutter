@@ -30,7 +30,7 @@ dependencies:
   connectivity_plus: ^3.0.3
   get: ^4.6.5
   flutter_screenutil: ^5.9.0
-  equatable: ^2.0.3
+  
 
 dev_dependencies:
   flutter_test:

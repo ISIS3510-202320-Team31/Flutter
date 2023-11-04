@@ -68,25 +68,20 @@ class _ProfileState extends State<Profile> {
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(
-                                10), // Bordes redondeados de 10px
+                            borderRadius: BorderRadius.circular(10), // Bordes redondeados de 10px
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black, // Color de la sombra
-                                offset: Offset(0,
-                                    2), // Desplazamiento de la sombra (eje X, eje Y)
-                                blurRadius:
-                                    2, // Radio de desenfoque de la sombra
-                                spreadRadius:
-                                    0, // Radio de extensión de la sombra
+                                offset: Offset(0, 2), // Desplazamiento de la sombra (eje X, eje Y)
+                                blurRadius: 2, // Radio de desenfoque de la sombra
+                                spreadRadius: 0, // Radio de extensión de la sombra
                               ),
                             ],
                           ),
-                          padding: EdgeInsets.all(
-                              20), // Espacio alrededor del cuadrado
+                          padding: EdgeInsets.all(20), // Espacio alrededor del cuadrado
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
+                            children: [ 
                               Icon(
                                 Icons.account_circle_rounded,
                                 size: 100,
@@ -106,24 +101,21 @@ class _ProfileState extends State<Profile> {
                                         child: Center(
                                           child: CircularProgressIndicator(),
                                         ),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.3,
+                                        height: MediaQuery.of(context).size.height * 0.3,
                                       );
                                     case Status.COMPLETED:
                                       return Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Nombre:\n${viewModel.user.data!.name}\n\n'
-                                            'Correo:\n${viewModel.user.data!.email}\n\n'
-                                            'Tiempo usado en la App:\n${formatTime(timeSinceInstallation!)}\n\n'
-                                            'Eventos a los que perteneces:\n${viewModel.participation.data} eventos.\n',
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                            ),
+                                          'Nombre:\n${viewModel.user.data!.name}\n\n'
+                                          'Correo:\n${viewModel.user.data!.email}\n\n'
+                                          'Tiempo usado en la App:\n${formatTime(timeSinceInstallation!)}\n\n'
+                                          'Eventos a los que perteneces:\n${viewModel.participation.data} eventos.\n',
+                                          style: TextStyle(
+                                            fontSize: 20,
                                           ),
+                                        ),
                                         ],
                                       );
                                     case Status.ERROR:
@@ -142,7 +134,7 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                         SizedBox(
-                          height: 30,
+                          height: 30, 
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -155,12 +147,12 @@ class _ProfileState extends State<Profile> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            shadowColor: Colors.black,
-                            elevation: 6,
+                            backgroundColor: Colors.blue, 
+                            shadowColor: Colors.black, 
+                            elevation: 6, 
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(6),
+                            padding: const EdgeInsets.all(6), 
                             child: Text(
                               'Cerrar sesión',
                               style: TextStyle(
@@ -187,3 +179,4 @@ String formatTime(Duration duration) {
   final minutes = duration.inMinutes.remainder(60);
   return '$hours horas, $minutes minutos';
 }
+

@@ -4,7 +4,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:hive_app/connection_controller/connection_controller.dart';
 import 'package:hive_app/services/notification_services.dart';
-import 'package:hive_app/utils/Cache.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/pages/Home.dart';
 import 'package:hive_app/view/pages/Signup.dart';
@@ -42,47 +41,31 @@ class _LoginFormState extends State<LoginForm> {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   String _validationError = "";
-  bool _isLoggedIn = true;
-  bool _logoVisible = true;
 
   final UserVM userVM = UserVM();
   late ConnectionService _connectionService;
 
   @override
   void initState() {
-    checkUserLoggedIn();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _connectionService = Get.find<ConnectionService>();
       _connectionService.listenToNetworkChanges();
     });
 
     super.initState();
-    _usernameController.text = cache.read("login-username") ?? "";
+    checkUserLoggedIn();
   }
 
   void checkUserLoggedIn() {
     secureStorage.readSecureData("userId").then((userId) {
       if (userId != null && userId.isNotEmpty) {
         // Redirige a la pantalla principal pasando el userId como parámetro.
-        Future.delayed(Duration(milliseconds: 1000), () {
-          handleNotification();
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Home(userId: userId),
-            ),
-          );
-        });
-        Future.delayed(Duration(milliseconds: 650), () {
-          setState(() {
-            _logoVisible = false;
-          });
-        });
-      } else {
-        setState(() {
-          _isLoggedIn = false;
-        });
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Home(userId: userId),
+          ),
+        );
       }
     });
   }
@@ -90,203 +73,172 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     print("Redirection: ${widget.redirection}");
-    return _isLoggedIn
-        ? Scaffold(
-            body: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    appTheme.primaryColor,
-                    appTheme.secondaryHeaderColor
-                  ], // Cambia estos colores según tus preferencias
-                ),
-              ),
-              child: Center(
-                child: AnimatedOpacity(
-                  opacity: _logoVisible ? 1.0 : 0.0,
-                  duration: Duration(milliseconds: 300),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    height: MediaQuery.of(context).size.width * 0.6,
-                    child: Image.asset(
-                      'assets/images/HIVE_LOGO.png',
-                    ),
-                  ),
-                ),
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  appTheme.primaryColor,
+                  appTheme.secondaryHeaderColor
+                ], // Cambia estos colores según tus preferencias
               ),
             ),
-          )
-        : Scaffold(
-            body: Stack(
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        appTheme.primaryColor,
-                        appTheme.secondaryHeaderColor
-                      ], // Cambia estos colores según tus preferencias
+          ),
+          ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.all(5),
+            children: <Widget>[
+              SizedBox(height: 20),
+              Container(
+                width: 100,
+                height: 250,
+                child: Image.asset('assets/images/HIVE_LOGO_small.png'),
+              ),
+              Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      bottom:
+                          20), // Esto agrega un margen inferior de 20 píxeles
+                  child: Text(
+                    "HIVE!",
+                    style: TextStyle(
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.7),
+                          offset: Offset(2, 3),
+                          blurRadius: 12,
+                        )
+                      ],
+                      fontSize: 50, // Tamaño de fuente deseado
+                      fontFamily: "Jost", // Fuente deseada
+                      fontWeight:
+                          FontWeight.bold, // Peso de la fuente en negrita
+                      color: Colors.black, // Color del texto (opcional)
                     ),
                   ),
                 ),
-                ListView(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.all(5),
-                  children: <Widget>[
-                    SizedBox(height: 20),
-                    Container(
-                      width: 100,
-                      height: 250,
-                      child: Image.asset('assets/images/HIVE_LOGO_small.png'),
-                    ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            bottom:
-                                20), // Esto agrega un margen inferior de 20 píxeles
-                        child: Text(
-                          "HIVE!",
-                          style: TextStyle(
-                            shadows: [
-                              Shadow(
-                                color: Colors.black.withOpacity(0.7),
-                                offset: Offset(2, 3),
-                                blurRadius: 12,
-                              )
-                            ],
-                            fontSize: 50, // Tamaño de fuente deseado
-                            fontFamily: "Jost", // Fuente deseada
-                            fontWeight:
-                                FontWeight.bold, // Peso de la fuente en negrita
-                            color: Colors.black, // Color del texto (opcional)
-                          ),
-                        ),
+              ),
+              // if redirected from signup, show a success message
+              if (widget.redirection == 'signup')
+                Container(
+                    child: Text(
+                      '¡Registro exitoso!',
+                      style: TextStyle(
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withOpacity(0.3),
+                            offset: Offset(2, 3),
+                            blurRadius: 12,
+                          )
+                        ],
+                        fontSize: 18, // Tamaño de fuente deseado
+                        fontFamily: "Jost", // Fuente deseada
+                        fontWeight:
+                            FontWeight.bold, // Peso de la fuente en negrita
+                        color: Colors.black, // Color del texto (opcional)
                       ),
                     ),
-                    // if redirected from signup, show a success message
-                    if (widget.redirection == 'signup')
-                      Container(
-                          child: Text(
-                            '¡Registro exitoso!',
-                            style: TextStyle(
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  offset: Offset(2, 3),
-                                  blurRadius: 12,
-                                )
-                              ],
-                              fontSize: 18, // Tamaño de fuente deseado
-                              fontFamily: "Jost", // Fuente deseada
-                              fontWeight: FontWeight
-                                  .bold, // Peso de la fuente en negrita
-                              color: Colors.black, // Color del texto (opcional)
-                            ),
-                          ),
-                          alignment: Alignment.center),
+                    alignment: Alignment.center),
 
-                    // if redirected from signup, show a success message
-                    if (widget.redirection == 'signup')
-                      Container(
-                          child: Text(
-                            'Ingresa tus credenciales',
-                            style: TextStyle(
-                              fontSize: 14, // Tamaño de fuente deseado
-                              fontFamily: "Jost", // Fuente deseada
-                              fontWeight: FontWeight
-                                  .bold, // Peso de la fuente en negrita
-                              color: Colors.black, // Color del texto (opcional)
+              // if redirected from signup, show a success message
+              if (widget.redirection == 'signup')
+                Container(
+                    child: Text(
+                      'Ingresa tus credenciales',
+                      style: TextStyle(
+                        fontSize: 14, // Tamaño de fuente deseado
+                        fontFamily: "Jost", // Fuente deseada
+                        fontWeight:
+                            FontWeight.bold, // Peso de la fuente en negrita
+                        color: Colors.black, // Color del texto (opcional)
+                      ),
+                    ),
+                    alignment: Alignment.center),
+              SizedBox(height: 10),
+              Card(
+                  margin: EdgeInsets.only(
+                      left: 10.0, right: 10.0, bottom: 10, top: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                  elevation: 8,
+                  child: Padding(
+                      padding: EdgeInsets.all(25),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: <Widget>[
+                            TextFormField(
+                              controller: _usernameController,
+                              decoration: InputDecoration(
+                                  labelText: 'Nombre de usuario'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Por favor, ingresa tu nombre de usuario';
+                                }
+                                return null;
+                              },
                             ),
-                          ),
-                          alignment: Alignment.center),
-                    SizedBox(height: 10),
-                    Card(
-                        margin: EdgeInsets.only(
-                            left: 10.0, right: 10.0, bottom: 10, top: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        elevation: 8,
-                        child: Padding(
-                            padding: EdgeInsets.all(25),
-                            child: Form(
-                              key: _formKey,
-                              child: Column(
-                                children: <Widget>[
-                                  TextFormField(
-                                      controller: _usernameController,
-                                      decoration: InputDecoration(
-                                          labelText: 'Nombre de usuario'),
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return 'Por favor, ingresa tu nombre de usuario';
-                                        }
-                                        return null;
-                                      },
-                                      onChanged: (value) {
-                                        cache.write("login-username", value);
-                                      }),
-                                  TextFormField(
-                                    controller: _passwordController,
-                                    decoration: InputDecoration(
-                                        labelText: 'Contraseña'),
-                                    obscureText: true,
-                                    validator: (value) {
-                                      if (value!.isEmpty) {
-                                        return 'Por favor, ingrese su contraseña';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  SizedBox(height: 20),
-                                  ChangeNotifierProvider<UserVM>(
-                                    create: (BuildContext context) => userVM,
-                                    child: Consumer<UserVM>(
-                                      builder: (context, viewModel, _) {
-                                        bool _isLoading =
-                                            viewModel.user.status ==
-                                                Status.LOADING;
-                                        return Column(
-                                          children: [
-                                            switchStatus(viewModel),
-                                            SizedBox(height: 10),
-                                            ElevatedButton(
-                                              onPressed:
-                                                  _isLoading ? null : onLogin,
-                                              child: Text('INICIAR SESIÓN'),
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: _isLoading
-                                                    ? Colors.grey
-                                                    : Colors.blue,
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(height: 30),
-                                  // other kind of button
-                                  TextButton(
-                                    onPressed: () async {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Signup()),
-                                      );
-                                    },
-                                    child: Text(
-                                        '¿No tienes una cuenta? Regístrate'),
-                                  ),
-                                ],
+                            TextFormField(
+                              controller: _passwordController,
+                              decoration:
+                                  InputDecoration(labelText: 'Contraseña'),
+                              obscureText: true,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Por favor, ingrese su contraseña';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 20),
+                            ChangeNotifierProvider<UserVM>(
+                              create: (BuildContext context) => userVM,
+                              child: Consumer<UserVM>(
+                                builder: (context, viewModel, _) {
+                                  bool _isLoading =
+                                      viewModel.user.status == Status.LOADING;
+                                  return Column(
+                                    children: [
+                                      switchStatus(viewModel),
+                                      SizedBox(height: 10),
+                                      ElevatedButton(
+                                        onPressed: _isLoading ? null : onLogin,
+                                        child: Text('INICIAR SESIÓN'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: _isLoading
+                                              ? Colors.grey
+                                              : Colors.blue,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
                               ),
-                            )))
-                  ],
-                ),
-              ],
-            ),
-          );
+                            ),
+                            SizedBox(height: 10),
+                            // other kind of button
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Signup()),
+                                );
+                              },
+                              child: Text('¿No tienes una cuenta? Regístrate'),
+                            ),
+                          ],
+                        ),
+                      )))
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget switchStatus(viewModel) {
@@ -330,7 +282,6 @@ class _LoginFormState extends State<LoginForm> {
       case Status.COMPLETED:
         return Builder(
           builder: (context) {
-            cache.flush();
             Future.delayed(Duration(milliseconds: 100)).then((_) {
               handleNotification();
               secureStorage.writeSecureData('userId', viewModel.user.data!.id!);
