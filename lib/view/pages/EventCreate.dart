@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hive_app/view/widgets/ViewsHeader.dart';
+import 'package:hive_app/utils/Cache.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view_model/event.vm.dart';
 import 'package:provider/provider.dart';
@@ -64,7 +65,22 @@ class _EventCreateState extends State<EventCreate> {
       setState(() {
         _selectedDate = picked;
       });
+      cache.write("eventcreate-date", _selectedDate);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _title.text = cache.read("eventcreate-title") ?? "";
+    _place.text = cache.read("eventcreate-place") ?? "";
+    _duration.text = cache.read("eventcreate-duration") ?? "";
+    _participants.text = cache.read("eventcreate-participants") ?? "";
+    _selectedDate = cache.read("eventcreate-date") ?? null;
+    _category = cache.read("eventcreate-category") ?? "";
+    _description.text = cache.read("eventcreate-description") ?? "";
+    _links.text = cache.read("eventcreate-links") ?? "";
+    _tags.text = cache.read("eventcreate-tags") ?? "";
   }
 
   @override
@@ -107,36 +123,45 @@ class _EventCreateState extends State<EventCreate> {
                             TextFormField(
                               controller: _title,
                               decoration: InputDecoration(
-                                  labelText: 'Título del evento'),
+                                  labelText: 'Título del evento *'),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa el título del evento';
                                 }
                                 return null;
                               },
+                              onChanged: (value) => {
+                                cache.write("eventcreate-title", value),
+                              },
                             ),
                             TextFormField(
                               controller: _place,
                               decoration: InputDecoration(
-                                  labelText: 'Lugar del evento'),
+                                  labelText: 'Lugar del evento *'),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa el lugar del evento';
                                 }
                                 return null;
                               },
+                              onChanged: (value) => {
+                                cache.write("eventcreate-place", value),
+                              },
                             ),
                             TextFormField(
                               controller: _duration,
                               decoration: InputDecoration(
                                   labelText:
-                                      'Duración del evento (en minutos)'),
+                                      'Duración del evento (en minutos) *'),
                               keyboardType: TextInputType.number,
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa la duración del evento';
                                 }
                                 return null;
+                              },
+                              onChanged: (value) => {
+                                cache.write("eventcreate-duration", value),
                               },
                             ),
                             TextFormField(
@@ -145,10 +170,13 @@ class _EventCreateState extends State<EventCreate> {
                                   labelText: 'Cantidad de participantes'),
                               keyboardType: TextInputType.number,
                               // no validator, optional field
+                              onChanged: (value) => {
+                                cache.write("eventcreate-participants", value),
+                              },
                             ),
                             SizedBox(height: 20),
                             Text(
-                              'Fecha del evento',
+                              'Fecha del evento *',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.black54,
@@ -186,7 +214,7 @@ class _EventCreateState extends State<EventCreate> {
                             SizedBox(height: 20),
                             DropdownButtonFormField(
                               decoration: InputDecoration(
-                                labelText: 'Tipo de evento',
+                                labelText: 'Tipo de evento *',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20.0),
                                 ),
@@ -197,9 +225,15 @@ class _EventCreateState extends State<EventCreate> {
                                         child: Text(key),
                                       ))
                                   .toList(),
+                              value: _category == ""
+                                  ? null
+                                  : _categories.keys.firstWhere(
+                                      (k) => _categories[k] == _category),
                               onChanged: (value) {
                                 setState(() {
                                   _category = _categories[value]!;
+                                  cache.write(
+                                      "eventcreate-category", _category);
                                 });
                               },
                             ),
@@ -207,7 +241,7 @@ class _EventCreateState extends State<EventCreate> {
                               controller: _description,
                               maxLines: 5,
                               decoration: InputDecoration(
-                                  labelText: 'Descripción del evento'),
+                                  labelText: 'Descripción del evento *'),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa la descripción del evento';
@@ -217,19 +251,26 @@ class _EventCreateState extends State<EventCreate> {
                                 }
                                 return null;
                               },
+                              onChanged: (value) => {
+                                cache.write("eventcreate-description", value),
+                              },
                             ),
                             TextFormField(
-                                controller: _links,
-                                decoration: InputDecoration(
-                                    labelText:
-                                        'Links de interés (separados por comas)'),
-                                validator: (value) {
-                                  final links = value!.split(',');
-                                  if (links.length > 5) {
-                                    return 'No puedes agregar más de 5 links';
-                                  }
-                                  return null;
-                                }),
+                              controller: _links,
+                              decoration: InputDecoration(
+                                  labelText:
+                                      'Links de interés (separados por comas)'),
+                              validator: (value) {
+                                final links = value!.split(',');
+                                if (links.length > 5) {
+                                  return 'No puedes agregar más de 5 links';
+                                }
+                                return null;
+                              },
+                              onChanged: (value) => {
+                                cache.write("eventcreate-links", value),
+                              },
+                            ),
                             TextFormField(
                               controller: _tags,
                               decoration: InputDecoration(
@@ -240,6 +281,9 @@ class _EventCreateState extends State<EventCreate> {
                                   return 'No puedes agregar más de 5 tags';
                                 }
                                 return null;
+                              },
+                              onChanged: (value) => {
+                                cache.write("eventcreate-tags", value),
                               },
                             ),
                             SizedBox(height: 20),
@@ -330,6 +374,7 @@ class _EventCreateState extends State<EventCreate> {
       case Status.COMPLETED:
         return Builder(
           builder: (context) {
+            cache.flush();
             Future.delayed(Duration(milliseconds: 100)).then((_) {
               Navigator.pushReplacement(
                 context,
@@ -384,7 +429,13 @@ class _EventCreateState extends State<EventCreate> {
     }
     // 3. Send to backend and wait for response, if response is error, show error message
     List<String> tags = _tags.text.split(',');
+    tags.forEach((element) {
+      element.trim();
+    });
     List<String> links = _links.text.split(',');
+    links.forEach((element) {
+      element.trim();
+    });
     await eventVM.createEvent(
       _title.text,
       _place.text,
