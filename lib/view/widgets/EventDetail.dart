@@ -84,7 +84,7 @@ class _EventDetailState extends State<EventDetail> {
                   return Container(
                     child: Center(
                       child: Text(
-                          "Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Intenta refrescar"),
+                          "Estamos presentando errores... Intenta refrescar"),
                     ),
                   );
                 case Status.OFFLINE:

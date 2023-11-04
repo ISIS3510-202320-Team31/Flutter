@@ -356,7 +356,7 @@ class _EventCreateState extends State<EventCreate> {
           return Container(
             width: double.infinity,
             child: Text(
-              "Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Vuelve a intentar más tarde",
+              "Estamos presentando errores... Vuelve a intentar más tarde",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.red,

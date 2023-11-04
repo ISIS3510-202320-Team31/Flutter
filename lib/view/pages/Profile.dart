@@ -128,7 +128,7 @@ class _ProfileState extends State<Profile> {
                                       );
                                     case Status.ERROR:
                                       return Text(
-                                        'Estamos presentando errores en nuestro servidor, esperamos arreglarlos pronto... Intenta refrescar',
+                                        'Estamos presentando errores... Intenta refrescar',
                                         style: TextStyle(fontSize: 20),
                                       );
                                     case Status.OFFLINE:
