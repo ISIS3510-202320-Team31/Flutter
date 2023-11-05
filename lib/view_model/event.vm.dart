@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:hive_app/data/remote/response/ApiResponse.dart';
 import 'package:hive_app/models/event.model.dart';
 import 'package:hive_app/models/requests/event-create.model.dart';
+import 'package:hive_app/utils/SecureStorage.dart';
 import 'package:hive_app/repository/event.repo.dart';
 
 class EventVM extends ChangeNotifier {
@@ -9,6 +11,7 @@ class EventVM extends ChangeNotifier {
 
   ApiResponse<EventModel> eventModel = ApiResponse.none();
   ApiResponse<Event> event = ApiResponse.none();
+  final SecureStorage secureStorage = SecureStorage();
 
   void _setEventMain(ApiResponse<EventModel> response) {
     print("Response: $response");
@@ -33,6 +36,46 @@ class EventVM extends ChangeNotifier {
               else
                 {_setEventMain(ApiResponse.error(error.toString()))}
             });
+  }
+
+   Future<List<Event>> getLocalEventsFeed() async {
+    final eventsJSON = await secureStorage.readSecureData("feedEvents");
+    if (eventsJSON != null && eventsJSON.isNotEmpty) {
+      final eventsRaw = json.decode(eventsJSON);
+      final events = json.encode(eventsRaw['events']);
+      final cachedEvents = eventModelFromJson(events).events;
+      return cachedEvents;
+    } else {
+      return [];
+    }
+  }
+
+  Future<void> saveLocalEventsFeed() async {
+    secureStorage.writeSecureData('feedEvents', eventModelToJson(eventModel.data!));
+  }
+
+  Future<List<Event>> getLocalCalendarFuture() async {
+    final eventsJSON = await secureStorage.readSecureData("futureCalendarEvents");
+    if (eventsJSON != null && eventsJSON.isNotEmpty) {
+      final eventsRaw = json.decode(eventsJSON);
+      final events = json.encode(eventsRaw['events']);
+      final cachedEvents = eventModelFromJson(events).events;
+      return cachedEvents;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<Event>> getLocalCalendarPast() async {
+    final eventsJSON = await secureStorage.readSecureData("pastCalendarEvents");
+    if (eventsJSON != null && eventsJSON.isNotEmpty) {
+      final eventsRaw = json.decode(eventsJSON);
+      final events = json.encode(eventsRaw['events']);
+      final cachedEvents = eventModelFromJson(events).events;
+      return cachedEvents;
+    } else {
+      return [];
+    }
   }
 
   Future<void> fetchEventsForUser(String userId) async {
