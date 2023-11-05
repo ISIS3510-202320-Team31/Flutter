@@ -8,6 +8,7 @@ import 'package:hive_app/view/widgets/ViewsHeader.dart';
 //import 'package:hive_app/services/notification_services.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/event.model.dart';
 import '../../view_model/user.vm.dart';
 
 class Calendar extends StatefulWidget {
@@ -36,6 +37,11 @@ class _CalendarState extends State<Calendar> {
     true,
   ];
 
+  Future<List<Event>>? cachedCalendarFuture;
+  late final void Function() updateFunctionFuture;
+  Future<List<Event>>? cachedCalendarPast;
+  late final void Function() updateFunctionPast;
+
   void Function() updateFunctionFunction(
       String actualDate, String userId, String orderFuture) {
     return () {
@@ -46,12 +52,25 @@ class _CalendarState extends State<Calendar> {
   @override
   void initState() {
     super.initState();
-    super.initState();
+    cachedCalendarFuture = eventVM.getLocalCalendarFuture();
+    cachedCalendarPast = eventVM.getLocalCalendarPast();
+    updateFunction = () {
+      updateFunction = updateFunctionFuture;
+    };
     actualDate = selectedDate.toLocal().toString().split(' ')[0];
 
     this.updateFunction =
         updateFunctionFunction(actualDate, widget.userId, orderFuture);
     this.updateFunction();
+
+    updateFunctionFuture = () {
+      eventVM.fetchEventsForUser(widget.userId);
+    };
+    updateFunctionFuture();
+
+    updateFunctionPast = () {
+      eventVM.fetchEventsForUser(widget.userId);
+    };
   }
 
   @override
@@ -109,49 +128,121 @@ class _CalendarState extends State<Calendar> {
                 switch (viewModel.eventModel.status) {
                   case Status.LOADING:
                     print("Log :: LOADING");
-                    return Container(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                      height: MediaQuery.of(context).size.height * 0.5,
-                    );
+                    cachedCalendarFuture = eventVM.getLocalCalendarFuture();
+                    cachedCalendarPast = eventVM.getLocalCalendarPast();
+                    return FutureBuilder<List<Event>>(
+                        future: cachedCalendarFuture,
+                        // cachedCalendarPast,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting)
+                            return Container();
+                          else if (snapshot.hasError) {
+                            return Container();
+                          } else if (snapshot.hasData) {
+                            return Expanded(
+                                child: Column(children: [
+                              Center(
+                                child: LinearProgressIndicator(),
+                              ),
+                              Expanded(
+                                  child: EventList(
+                                      userId: widget.userId,
+                                      eventList: snapshot.data!,
+                                      eventVM: eventVM,
+                                      updateFunction: this.updateFunction))
+                            ]));
+                          } else
+                            return Container();
+                        });
+                  case Status.OFFLINE:
+                    print("Log :: OFFLINE");
+                    cachedCalendarFuture = eventVM.getLocalCalendarFuture();
+                    cachedCalendarPast = eventVM.getLocalCalendarPast();
+                    return FutureBuilder<List<Event>>(
+                        future: cachedCalendarFuture,
+                        // cachedCalendarPast,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting)
+                            return Container();
+                          else if (snapshot.hasError) {
+                            return Container();
+                          } else if (snapshot.hasData) {
+                            return Expanded(
+                                child: Column(children: [
+                              Center(
+                                child: Text(
+                                  "SIN INTERNET",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                              Center(
+                                child: Text(
+                                  "Revisa tu conexión y refresca la página",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                              Expanded(
+                                  child: EventList(
+                                      userId: widget.userId,
+                                      eventList: snapshot.data!,
+                                      eventVM: eventVM,
+                                      updateFunction: this.updateFunction))
+                            ]));
+                          } else
+                            return Container();
+                        });
                   case Status.ERROR:
                     print("Log :: ERROR");
-                    return Container(
-                      child: Center(
-                        child: Text("Error"),
-                      ),
-                    );
-                    case Status.OFFLINE:
-                    print("Log :: OFFLINE");
-                    return Expanded(
-                      child: Column(children: [
-                    Center(
-                      child: Text(
-                        "SIN CONEXIÓN A INTERNET",
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        "Revisa tu conexión y refresca la página",
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  ],),);
+                    cachedCalendarFuture = eventVM.getLocalCalendarFuture();
+                    cachedCalendarPast = eventVM.getLocalCalendarPast();
+                    return FutureBuilder<List<Event>>(
+                        future: cachedCalendarFuture,
+                        // cachedCalendarPast,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting)
+                            return Container();
+                          else if (snapshot.hasError) {
+                            return Container();
+                          } else if (snapshot.hasData) {
+                            return Expanded(
+                                child: Column(children: [
+                              Center(
+                                child: Text(
+                                    "Estamos presentando errores... Intenta refrescar"),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                              Expanded(
+                                  child: EventList(
+                                      userId: widget.userId,
+                                      eventList: snapshot.data!,
+                                      eventVM: eventVM,
+                                      updateFunction: this.updateFunction))
+                            ]));
+                          } else
+                            return Container();
+                        });
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
+                    eventVM.saveLocalEventsFutureCalendar();
+                    eventVM.saveLocalEventsPastCalendar();
                     return Expanded(
-                      child: EventList(
-                          userId: widget.userId,
-                          eventList: viewModel.eventModel.data!.events,
-                          eventVM: eventVM,
-                          updateFunction: this.updateFunction),
-                    );
+                        child: EventList(
+                            userId: widget.userId,
+                            eventList: viewModel.eventModel.data!.events,
+                            eventVM: eventVM,
+                            updateFunction: this.updateFunction));
                   default:
                     return Container();
                 }

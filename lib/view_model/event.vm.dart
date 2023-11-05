@@ -54,6 +54,14 @@ class EventVM extends ChangeNotifier {
     secureStorage.writeSecureData('feedEvents', eventModelToJson(eventModel.data!));
   }
 
+  Future<void> saveLocalEventsFutureCalendar() async {
+    secureStorage.writeSecureData('futureCalendarEvents', eventModelToJson(eventModel.data!));
+  }
+
+  Future<void> saveLocalEventsPastCalendar() async {
+    secureStorage.writeSecureData('pastCalendarEvents', eventModelToJson(eventModel.data!));
+  }
+
   Future<List<Event>> getLocalCalendarFuture() async {
     final eventsJSON = await secureStorage.readSecureData("futureCalendarEvents");
     if (eventsJSON != null && eventsJSON.isNotEmpty) {
