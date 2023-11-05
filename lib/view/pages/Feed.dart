@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:hive_app/models/event.model.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
@@ -8,7 +6,6 @@ import 'package:hive_app/view_model/event.vm.dart';
 import 'package:hive_app/view/widgets/SearchBar.dart';
 import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:provider/provider.dart';
-import 'package:hive_app/utils/SecureStorage.dart';
 
 class Feed extends StatefulWidget {
   static const String id = "feed_screen";
@@ -22,7 +19,7 @@ class Feed extends StatefulWidget {
 
 class _FeedState extends State<Feed> {
   final EventVM eventVM = EventVM();
-  final SecureStorage secureStorage = SecureStorage();
+  
 
   Future<List<Event>>? cachedEventsFuture;
   late final void Function() updateFunction;
@@ -30,25 +27,13 @@ class _FeedState extends State<Feed> {
   @override
   void initState() {
     super.initState();
-    cachedEventsFuture = getLocalEvents();
+    cachedEventsFuture = eventVM.getLocalEventsFeed();
     eventVM.fetchEventsForUser(widget.userId);
 
     updateFunction = () {
       eventVM.fetchEventsForUser(widget.userId);
     };
     updateFunction();
-  }
-
-  Future<List<Event>> getLocalEvents() async {
-    final eventsJSON = await secureStorage.readSecureData("feedEvents");
-    if (eventsJSON != null && eventsJSON.isNotEmpty) {
-      final eventsRaw = json.decode(eventsJSON);
-      final events = json.encode(eventsRaw['events']);
-      final cachedEvents = eventModelFromJson(events).events;
-      return cachedEvents;
-    } else {
-      return [];
-    }
   }
 
   @override
@@ -71,7 +56,7 @@ class _FeedState extends State<Feed> {
                 switch (viewModel.eventModel.status) {
                   case Status.LOADING:
                     print("Log :: LOADING");
-                    this.getLocalEvents();
+                    cachedEventsFuture = eventVM.getLocalEventsFeed();
                     return FutureBuilder<List<Event>>(
                         future: cachedEventsFuture,
                         builder: (context, snapshot) {
@@ -98,7 +83,7 @@ class _FeedState extends State<Feed> {
                         });
                   case Status.OFFLINE:
                     print("Log :: OFFLINE");
-                    this.getLocalEvents();
+                    cachedEventsFuture = eventVM.getLocalEventsFeed();
                     return FutureBuilder<List<Event>>(
                         future: cachedEventsFuture,
                         builder: (context, snapshot) {
@@ -141,7 +126,7 @@ class _FeedState extends State<Feed> {
                         });
                   case Status.ERROR:
                     print("Log :: ERROR");
-                    this.getLocalEvents();
+                    cachedEventsFuture = eventVM.getLocalEventsFeed();
                     return FutureBuilder<List<Event>>(
                         future: cachedEventsFuture,
                         builder: (context, snapshot) {
@@ -172,8 +157,7 @@ class _FeedState extends State<Feed> {
                         });
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
-                    secureStorage.writeSecureData('feedEvents',
-                        eventModelToJson(viewModel.eventModel.data!));
+                    eventVM.saveLocalEventsFeed();
                     return Expanded(
                         child: EventList(
                             userId: widget.userId,
