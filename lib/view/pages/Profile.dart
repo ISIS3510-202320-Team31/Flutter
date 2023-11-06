@@ -74,12 +74,13 @@ class _ProfileState extends State<Profile> {
                             titleText: "Perfil",
                           ),
                           Card(
-                            margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10, top: 10),
+                            margin: EdgeInsets.only(
+                                left: 10.0, right: 10.0, bottom: 10, top: 10),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25.0),
                             ),
                             elevation: 8,
-                            child: Center( 
+                            child: Center(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
@@ -102,69 +103,83 @@ class _ProfileState extends State<Profile> {
                                             print("Log :: LOADING");
                                             return Container(
                                               child: Center(
-                                                child: CircularProgressIndicator(),
+                                                child:
+                                                    CircularProgressIndicator(),
                                               ),
-                                              height: MediaQuery.of(context).size.height * 0.3,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.3,
                                             );
                                           case Status.COMPLETED:
                                             return Center(
                                               child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     'Nombre:',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                   Text(
                                                     '${viewModel.user.data!.name}\n',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                   Text(
                                                     'Correo:',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                   Text(
                                                     '${viewModel.user.data!.email}\n',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                   Text(
                                                     'Tiempo usado en la App:',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                   Text(
                                                     '${formatTime(timeSinceInstallation!)}\n',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                   Text(
                                                     'Eventos a los que perteneces:',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
+                                                    textAlign: TextAlign.center,
                                                   ),
                                                   Text(
-                                                    '${viewModel.participation.data} eventos.\n',
+                                                    '${viewModel.participation.data} eventos\n',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                 ],
