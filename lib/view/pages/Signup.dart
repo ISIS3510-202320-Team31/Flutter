@@ -79,6 +79,13 @@ class SignupForm extends StatefulWidget {
 
 class _SignupFormState extends State<SignupForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormFieldState> nameKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> usernameKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> emailKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> passwordKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> confirmpasswordKey =
+      GlobalKey<FormFieldState>();
+
   TextEditingController _name = TextEditingController();
   TextEditingController _username = TextEditingController();
   TextEditingController _email = TextEditingController();
@@ -177,19 +184,25 @@ class _SignupFormState extends State<SignupForm> {
                         child: Column(
                           children: <Widget>[
                             TextFormField(
+                              key: nameKey,
                               controller: _name,
                               decoration: InputDecoration(labelText: 'Nombre'),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa tu nombre';
                                 }
+                                if (value.length > 70) {
+                                  return 'El nombre no puede tener más de 70 caracteres';
+                                }
                                 return null;
                               },
                               onChanged: (value) {
                                 cache.write("signup-name", value);
+                                nameKey.currentState!.validate();
                               },
                             ),
                             TextFormField(
+                              key: usernameKey,
                               controller: _username,
                               decoration: InputDecoration(
                                   labelText: 'Nombre de usuario'),
@@ -197,26 +210,43 @@ class _SignupFormState extends State<SignupForm> {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa tu nombre de usuario';
                                 }
+                                if (value.length > 20) {
+                                  return 'No puede tener más de 20 caracteres';
+                                }
+                                // el nombre de usuario solo puede tener minusculas, _ y numeros
+                                RegExp usernameRegex = RegExp(r"^[a-z0-9_]+$");
+                                if (!usernameRegex.hasMatch(value)) {
+                                  return 'Solo puede tener minúsculas, números y _';
+                                }
                                 return null;
                               },
                               onChanged: (value) {
                                 cache.write("signup-username", value);
+                                usernameKey.currentState!.validate();
                               },
                             ),
                             TextFormField(
+                              key: emailKey,
                               controller: _email,
                               decoration: InputDecoration(labelText: 'Email'),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa tu correo';
                                 }
+                                RegExp emailRegex = RegExp(
+                                    r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+                                if (!emailRegex.hasMatch(value)) {
+                                  return 'Por favor, ingresa un correo válido';
+                                }
                                 return null;
                               },
                               onChanged: (value) {
                                 cache.write("signup-email", value);
+                                emailKey.currentState!.validate();
                               },
                             ),
                             TextFormField(
+                              key: passwordKey,
                               controller: _password,
                               decoration:
                                   InputDecoration(labelText: 'Contraseña'),
@@ -225,10 +255,20 @@ class _SignupFormState extends State<SignupForm> {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa tu contraseña';
                                 }
+                                RegExp passwordRegex = RegExp(
+                                    r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$");
+                                if (!passwordRegex.hasMatch(value)) {
+                                  return "Debe tener: 8 caracteres, una mayúscula y un número";
+                                }
                                 return null;
+                              },
+                              onChanged: (value) {
+                                passwordKey.currentState!.validate();
+                                confirmpasswordKey.currentState!.validate();
                               },
                             ),
                             TextFormField(
+                              key: confirmpasswordKey,
                               controller: _confirmpassword,
                               decoration: InputDecoration(
                                   labelText: 'Confirmar contraseña'),
@@ -237,8 +277,14 @@ class _SignupFormState extends State<SignupForm> {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa tu contraseña de nuevo';
                                 }
+                                if (_password.text != value) {
+                                  return "Las contraseñas no coinciden";
+                                }
                                 return null;
                                 // this one should not be saved in cache
+                              },
+                              onChanged: (value) {
+                                confirmpasswordKey.currentState!.validate();
                               },
                             ),
                             SizedBox(height: 30),
@@ -447,31 +493,6 @@ class _SignupFormState extends State<SignupForm> {
     if (_selectedDate == null) {
       setState(() {
         _validationError = "Por favor, selecciona una fecha de nacimiento";
-      });
-      return;
-    }
-    // 2. Check that the email is valid
-    RegExp emailRegex = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-    if (!emailRegex.hasMatch(_email.text)) {
-      setState(() {
-        _validationError = "Por favor, ingresa un correo válido";
-      });
-      return;
-    }
-    // 3. Check that the password is valid
-    RegExp passwordRegex =
-        RegExp(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$");
-    if (!passwordRegex.hasMatch(_password.text)) {
-      setState(() {
-        _validationError =
-            "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número";
-      });
-      return;
-    }
-    // 4. Check that the password and confirm password fields match
-    if (_password.text != _confirmpassword.text) {
-      setState(() {
-        _validationError = "Las contraseñas no coinciden";
       });
       return;
     }
