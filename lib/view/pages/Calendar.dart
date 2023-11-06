@@ -118,7 +118,6 @@ class _CalendarState extends State<Calendar> {
                 switch (listener) {
                   case Status.LOADING:
                     print("Log :: LOADING");
-                    print(orderFuture);
                      return FutureBuilder<List<Event>?>(
                         future: () async {
                           if (orderFuture == '1') {
@@ -144,19 +143,14 @@ class _CalendarState extends State<Calendar> {
                                       userId: widget.userId,
                                       eventList: snapshot.data!,
                                       eventVM: eventVM,
-                                      updateFunction: () async {
-                                        if (orderFuture == '1') {
-                                          return cachedCalendarFuture;
-                                        } else {
-                                          return cachedCalendarPast;
-                                        }}))
+                                      updateFunction: this.updateFunction
+                              ))
                             ]));
                           } else
                             return Container();
                         });
                   case Status.OFFLINE:
                     print("Log :: OFFLINE");
-                    print(orderFuture);
                     cachedCalendarFuture = eventVM.getLocalCalendarFuture();
                     cachedCalendarPast = eventVM.getLocalCalendarPast();
                     return FutureBuilder<List<Event>>(
@@ -170,7 +164,7 @@ class _CalendarState extends State<Calendar> {
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting)
-                            return Container();
+                            return Container(); 
                           else if (snapshot.hasError) {
                             return Container();
                           } else if (snapshot.hasData) {
@@ -200,22 +194,14 @@ class _CalendarState extends State<Calendar> {
                                       userId: widget.userId,
                                       eventList: snapshot.data!,
                                       eventVM: eventVM,
-                                      updateFunction: () async {
-                          if (orderFuture == '1') {
-                            print(cachedCalendarFuture);
-                            return cachedCalendarFuture;
-                          } else {
-                            return cachedCalendarPast;
-                          }
-                        }(),
-                        ))
+                                      updateFunction: this.updateFunction,
+                              )),
                             ]));
                           } else
                             return Container();
                         });
                   case Status.ERROR:
                     print("Log :: ERROR");
-                    print(orderFuture);
                     cachedCalendarFuture = eventVM.getLocalCalendarFuture();
                     cachedCalendarPast = eventVM.getLocalCalendarPast();
                     return FutureBuilder<List<Event>>(
@@ -252,14 +238,14 @@ class _CalendarState extends State<Calendar> {
                                           return cachedCalendarFuture;
                                         } else {
                                           return cachedCalendarPast;
-                                        }}))
+                                        }}
+                              ))
                             ]));
                           } else
                             return Container();
                         });
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
-                    print(orderFuture);
                     eventVM.saveLocalEventsFutureCalendar();
                     eventVM.saveLocalEventsPastCalendar();
                     var eventList = orderFuture == '1' ?
@@ -270,12 +256,7 @@ class _CalendarState extends State<Calendar> {
                             userId: widget.userId,
                             eventList: eventList,
                             eventVM: eventVM,
-                            updateFunction: () async {
-                          if (orderFuture == '1') {
-                            return cachedCalendarFuture;
-                          } else {
-                            return cachedCalendarFuture;
-                          }}));
+                            updateFunction: this.updateFunction));
                   default:
                     return Container();
                 }
