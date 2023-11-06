@@ -73,82 +73,118 @@ class _ProfileState extends State<Profile> {
                           ViewsHeader(
                             titleText: "Perfil",
                           ),
-                          // Cuadrado blanco
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(
-                                  10), // Bordes redondeados de 10px
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black, // Color de la sombra
-                                  offset: Offset(0,
-                                      2), // Desplazamiento de la sombra (eje X, eje Y)
-                                  blurRadius:
-                                      2, // Radio de desenfoque de la sombra
-                                  spreadRadius:
-                                      0, // Radio de extensión de la sombra
-                                ),
-                              ],
+                          Card(
+                            margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10, top: 10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25.0),
                             ),
-                            padding: EdgeInsets.all(
-                                20), // Espacio alrededor del cuadrado
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Icons.account_circle_rounded,
-                                  size: 100,
-                                ),
-                                // Espacio entre la imagen y el texto
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                ChangeNotifierProvider(
-                                  create: (context) => _userVM,
-                                  child: Consumer<UserVM>(
+                            elevation: 8,
+                            child: Center( 
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  Icon(
+                                    Icons.account_circle_rounded,
+                                    size: 150,
+                                  ),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  ChangeNotifierProvider(
+                                    create: (context) => _userVM,
+                                    child: Consumer<UserVM>(
                                       builder: (context, viewModel, _) {
-                                    switch (viewModel.user.status) {
-                                      case Status.LOADING:
-                                        print("Log :: LOADING");
-                                        return Container(
-                                          child: Center(
-                                            child: CircularProgressIndicator(),
-                                          ),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.3,
-                                        );
-                                      case Status.COMPLETED:
-                                        return Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Nombre:\n${viewModel.user.data!.name}\n\n'
-                                              'Correo:\n${viewModel.user.data!.email}\n\n'
-                                              'Tiempo usado en la App:\n${formatTime(timeSinceInstallation!)}\n\n'
-                                              'Eventos a los que perteneces:\n${viewModel.participation.data} eventos.\n',
-                                              style: TextStyle(
-                                                fontSize: 20,
+                                        switch (viewModel.user.status) {
+                                          case Status.LOADING:
+                                            print("Log :: LOADING");
+                                            return Container(
+                                              child: Center(
+                                                child: CircularProgressIndicator(),
                                               ),
-                                            ),
-                                          ],
-                                        );
-                                      case Status.ERROR:
-                                        return Text(
-                                          'Estamos presentando errores... Intenta refrescar',
-                                          style: TextStyle(fontSize: 20),
-                                        );
-                                      case Status.OFFLINE:
-                                        return OfflineWidget();
-                                      default:
-                                        return Container();
-                                    }
-                                  }),
-                                ),
-                              ],
+                                              height: MediaQuery.of(context).size.height * 0.3,
+                                            );
+                                          case Status.COMPLETED:
+                                            return Center(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'Nombre:',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '${viewModel.user.data!.name}\n',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'Correo:',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '${viewModel.user.data!.email}\n',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'Tiempo usado en la App:',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '${formatTime(timeSinceInstallation!)}\n',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'Eventos a los que perteneces:',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '${viewModel.participation.data} eventos.\n',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          case Status.ERROR:
+                                            return Text(
+                                              'Estamos presentando errores... Intenta refrescar',
+                                              style: TextStyle(fontSize: 20),
+                                            );
+                                          case Status.OFFLINE:
+                                            return OfflineWidget();
+                                          default:
+                                            return Container();
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           SizedBox(
