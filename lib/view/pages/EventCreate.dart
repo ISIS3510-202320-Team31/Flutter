@@ -41,6 +41,14 @@ class EventCreate extends StatefulWidget {
 
 class _EventCreateState extends State<EventCreate> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormFieldState> titleKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> placeKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> durationKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> participantsKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> descriptionKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> linksKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> tagsKey = GlobalKey<FormFieldState>();
+
   TextEditingController _title = TextEditingController();
   TextEditingController _place = TextEditingController();
   TextEditingController _duration = TextEditingController();
@@ -121,6 +129,7 @@ class _EventCreateState extends State<EventCreate> {
                         child: Column(
                           children: [
                             TextFormField(
+                              key: titleKey,
                               controller: _title,
                               decoration: InputDecoration(
                                   labelText: 'Título del evento *'),
@@ -135,9 +144,11 @@ class _EventCreateState extends State<EventCreate> {
                               },
                               onChanged: (value) => {
                                 cache.write("eventcreate-title", value),
+                                titleKey.currentState!.validate(),
                               },
                             ),
                             TextFormField(
+                              key: placeKey,
                               controller: _place,
                               decoration: InputDecoration(
                                   labelText: 'Lugar del evento *'),
@@ -152,9 +163,11 @@ class _EventCreateState extends State<EventCreate> {
                               },
                               onChanged: (value) => {
                                 cache.write("eventcreate-place", value),
+                                placeKey.currentState!.validate(),
                               },
                             ),
                             TextFormField(
+                              key: durationKey,
                               controller: _duration,
                               decoration: InputDecoration(
                                   labelText:
@@ -178,9 +191,11 @@ class _EventCreateState extends State<EventCreate> {
                               },
                               onChanged: (value) => {
                                 cache.write("eventcreate-duration", value),
+                                durationKey.currentState!.validate(),
                               },
                             ),
                             TextFormField(
+                              key: participantsKey,
                               controller: _participants,
                               decoration: InputDecoration(
                                   labelText: 'Cantidad de participantes'),
@@ -204,6 +219,7 @@ class _EventCreateState extends State<EventCreate> {
                               },
                               onChanged: (value) => {
                                 cache.write("eventcreate-participants", value),
+                                participantsKey.currentState!.validate(),
                               },
                             ),
                             SizedBox(height: 20),
@@ -270,6 +286,7 @@ class _EventCreateState extends State<EventCreate> {
                               },
                             ),
                             TextFormField(
+                              key: descriptionKey,
                               controller: _description,
                               maxLines: 5,
                               decoration: InputDecoration(
@@ -285,9 +302,11 @@ class _EventCreateState extends State<EventCreate> {
                               },
                               onChanged: (value) => {
                                 cache.write("eventcreate-description", value),
+                                descriptionKey.currentState!.validate(),
                               },
                             ),
                             TextFormField(
+                              key: linksKey,
                               controller: _links,
                               decoration: InputDecoration(
                                   labelText:
@@ -307,9 +326,11 @@ class _EventCreateState extends State<EventCreate> {
                               },
                               onChanged: (value) => {
                                 cache.write("eventcreate-links", value),
+                                linksKey.currentState!.validate(),
                               },
                             ),
                             TextFormField(
+                              key: tagsKey,
                               controller: _tags,
                               decoration: InputDecoration(
                                   labelText: 'Tags (separados por comas)'),
@@ -328,6 +349,7 @@ class _EventCreateState extends State<EventCreate> {
                               },
                               onChanged: (value) => {
                                 cache.write("eventcreate-tags", value),
+                                tagsKey.currentState!.validate(),
                               },
                             ),
                             SizedBox(height: 20),
