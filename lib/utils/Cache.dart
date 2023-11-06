@@ -17,17 +17,8 @@ class _CacheService {
     return _cache.containsKey(key);
   }
 
-  // Other useful methods...
   void flush() {
     _cache.clear();
-  }
-
-  void flushExcept(List<String> keys) {
-    _cache.removeWhere((key, value) => !keys.contains(key));
-  }
-
-  void flushStartsWith(String key) {
-    _cache.removeWhere((key, value) => key.startsWith(key));
   }
 }
 
