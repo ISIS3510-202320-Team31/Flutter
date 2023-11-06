@@ -30,7 +30,6 @@ class _CalendarState extends State<Calendar> {
   String orderFuture = "1";
   String textChanger = "futuros";
   String actualDate = '';
-  int numDeEventos = 0;
   final UserVM userVM = UserVM();
   List<bool> isSelected = [
     false,
@@ -87,13 +86,6 @@ class _CalendarState extends State<Calendar> {
                 child: ViewsHeader(
                   titleText: "Eventos\n$textChanger",
                 ),
-              ),
-            ),
-            Text(
-              "(Tienes $numDeEventos eventos $textChanger)",
-              style: TextStyle(
-                color: Colors.deepPurple,
-                fontSize: 20,
               ),
             ),
             SizedBox(height: 15),
@@ -162,7 +154,6 @@ class _CalendarState extends State<Calendar> {
                         else if (snapshot.hasError) {
                           return Container();
                         } else if (snapshot.hasData) {
-                          numDeEventos = snapshot.data!.length;
                           return Expanded(
                               child: Column(children: [
                             Center(
@@ -195,7 +186,6 @@ class _CalendarState extends State<Calendar> {
                           return Container();
                         } else if (snapshot.hasData) {
                           if (snapshot.data!.length > 0) {
-                            numDeEventos = snapshot.data!.length;
                             return Expanded(
                                 child: Column(children: [
                               Center(
@@ -214,6 +204,13 @@ class _CalendarState extends State<Calendar> {
                                   ),
                                 ),
                               ),
+                              Text(
+                                "Tienes ${snapshot.data!.length} eventos",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                ),
+                              ),
                               SizedBox(
                                   height: MediaQuery.of(context).size.height *
                                       0.01),
@@ -226,7 +223,6 @@ class _CalendarState extends State<Calendar> {
                               )),
                             ]));
                           } else {
-                            numDeEventos = snapshot.data!.length;
                             return Expanded(
                                 child: Column(children: [
                               Center(
@@ -310,15 +306,26 @@ class _CalendarState extends State<Calendar> {
                           ? viewModel.eventModelCalendarFuture.data!.events
                           : viewModel.eventModelCalendarPast.data!.events;
                       if (eventList.length > 0) {
-                        numDeEventos = eventList.length;
                         return Expanded(
-                            child: EventList(
-                                userId: widget.userId,
-                                eventList: eventList,
-                                eventVM: eventVM,
-                                updateFunction: this.updateFunction));
+                          child: Column(
+                            children: [
+                              Text(
+                                "Tienes ${eventList.length} eventos",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Expanded(
+                                  child: EventList(
+                                      userId: widget.userId,
+                                      eventList: eventList,
+                                      eventVM: eventVM,
+                                      updateFunction: this.updateFunction))
+                            ],
+                          ),
+                        );
                       } else {
-                        numDeEventos = eventList.length;
                         return Expanded(
                             child: Column(children: [
                           SizedBox(height: 30),
