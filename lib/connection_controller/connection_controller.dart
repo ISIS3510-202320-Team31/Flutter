@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive_app/utils/custom_banner.dart';
 
 class ConnectionService extends GetxController{
   late Connectivity _connectivity;
