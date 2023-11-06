@@ -9,6 +9,7 @@ import 'package:hive_app/utils/SecureStorage.dart';
 import 'package:hive_app/view/pages/Login.dart';
 import 'package:hive_app/view/widgets/OfflineWidget.dart';
 import 'package:hive_app/view/pages/Home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   final String userId;
@@ -20,6 +21,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final sharedPreferences = SharedPreferences.getInstance();
   final SecureStorage secureStorage = SecureStorage();
   final UserVM _userVM = UserVM();
 
@@ -207,7 +209,11 @@ class _ProfileState extends State<Profile> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              secureStorage.deleteSecureData("userId");
+                              // remove all the information in local storage
+                              secureStorage.flushSecureData();
+                              sharedPreferences.then((value) {
+                                value.clear();
+                              });
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

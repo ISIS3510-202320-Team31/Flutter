@@ -17,4 +17,9 @@ class SecureStorage {
     var deleteData = await _storage.delete(key: key);
     return deleteData;
   }
+
+  Future flushSecureData() async {
+    var flushData = await _storage.deleteAll();
+    return flushData;
+  }
 }
