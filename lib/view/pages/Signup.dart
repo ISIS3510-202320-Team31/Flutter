@@ -233,6 +233,9 @@ class _SignupFormState extends State<SignupForm> {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa tu correo';
                                 }
+                                if (value.length > 30) {
+                                  return 'El correo no puede tener más de 30 caracteres';
+                                }
                                 RegExp emailRegex = RegExp(
                                     r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
                                 if (!emailRegex.hasMatch(value)) {
@@ -254,6 +257,9 @@ class _SignupFormState extends State<SignupForm> {
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Por favor, ingresa tu contraseña';
+                                }
+                                if (value.length > 60) {
+                                  return 'La contraseña no puede tener más de 60 caracteres';
                                 }
                                 RegExp passwordRegex = RegExp(
                                     r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$");

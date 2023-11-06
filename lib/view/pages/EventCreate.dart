@@ -324,8 +324,8 @@ class _EventCreateState extends State<EventCreate> {
                                   if (value!.isEmpty) {
                                     return null; // optional field
                                   }
-                                  if (value.length > 100) {
-                                    return 'Los links no pueden tener más de 100 caracteres';
+                                  if (value.length > 200) {
+                                    return 'Los links no pueden tener más de 200 caracteres';
                                   }
                                   final links = value.split(',');
                                   if (links.length > 5) {
