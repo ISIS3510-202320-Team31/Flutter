@@ -27,8 +27,9 @@ class _CalendarState extends State<Calendar> {
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
   String orderFuture = "1";
-  String textChanger = "Futuros";
+  String textChanger = "futuros";
   String actualDate = '';
+  int numDeEventos = 0;
   final UserVM userVM = UserVM();
   List<bool> isSelected = [
     false,
@@ -52,7 +53,7 @@ class _CalendarState extends State<Calendar> {
     super.initState();
     cachedCalendarFuture = eventVM.getLocalCalendarFuture();
     cachedCalendarPast = eventVM.getLocalCalendarPast();
-    
+
     actualDate = selectedDate.toLocal().toString().split(' ')[0];
           
  
@@ -73,31 +74,47 @@ class _CalendarState extends State<Calendar> {
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(30, 75, 30, 0),
+              padding: EdgeInsets.fromLTRB(16, 75, 16, 0),
               child: ViewsHeader(
                 titleText: "Eventos\n$textChanger",
               ),
             ),
           ),
+          Text(
+            "(Tienes $numDeEventos eventos $textChanger)",
+            style: TextStyle(
+              color: Colors.deepPurple,
+              fontSize: 20,
+            ),
+          ),
+          SizedBox(height: 15),
           ToggleButtons(
             children: [
               Container(
                 width: 100,
-                child: Center(child: Text("Pasado")),
+                child: Center(child: Text(
+                  "Pasado",
+                  style: TextStyle(
+                  fontSize: 18,
+              ),),),
               ),
               Container(
                 width: 100,
-                child: Center(child: Text("Futuro")),
+                child: Center(child:  Text(
+                  "Futuro",
+                  style: TextStyle(
+                  fontSize: 18,
+              ),),),
               ),
             ],
             isSelected: isSelected,
             onPressed: (int index) {
               if (index == 0) {
                 buttonPressed(widget.userId, "0");
-                textChanger = "Pasados";
+                textChanger = "pasados";
               } else {
                 buttonPressed(widget.userId, "1");
-                textChanger = "Futuros";
+                textChanger = "futuros";
               }
               setState(() {
                 for (int i = 0; i < isSelected.length; i++) {
@@ -118,7 +135,6 @@ class _CalendarState extends State<Calendar> {
                 switch (listener) {
                   case Status.LOADING:
                     print("Log :: LOADING");
-                    print(orderFuture);
                      return FutureBuilder<List<Event>?>(
                         future: () async {
                           if (orderFuture == '1') {
@@ -134,6 +150,7 @@ class _CalendarState extends State<Calendar> {
                           else if (snapshot.hasError) {
                             return Container();
                           } else if (snapshot.hasData) {
+                            numDeEventos = snapshot.data!.length;
                             return Expanded(
                                 child: Column(children: [
                               Center(
@@ -144,19 +161,14 @@ class _CalendarState extends State<Calendar> {
                                       userId: widget.userId,
                                       eventList: snapshot.data!,
                                       eventVM: eventVM,
-                                      updateFunction: () async {
-                                        if (orderFuture == '1') {
-                                          return cachedCalendarFuture;
-                                        } else {
-                                          return cachedCalendarPast;
-                                        }}))
+                                      updateFunction: this.updateFunction
+                              ))
                             ]));
                           } else
                             return Container();
                         });
                   case Status.OFFLINE:
                     print("Log :: OFFLINE");
-                    print(orderFuture);
                     cachedCalendarFuture = eventVM.getLocalCalendarFuture();
                     cachedCalendarPast = eventVM.getLocalCalendarPast();
                     return FutureBuilder<List<Event>>(
@@ -170,52 +182,79 @@ class _CalendarState extends State<Calendar> {
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting)
-                            return Container();
+                            return Container(); 
                           else if (snapshot.hasError) {
                             return Container();
                           } else if (snapshot.hasData) {
-                            return Expanded(
+                              if (snapshot.data!.length > 0) {
+                                numDeEventos = snapshot.data!.length;
+                                return Expanded(
                                 child: Column(children: [
-                              Center(
-                                child: Text(
-                                  "SIN INTERNET",
-                                  style: TextStyle(
-                                    color: Colors.grey,
+                                Center(
+                                  child: Text(
+                                    "SIN INTERNET",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Center(
-                                child: Text(
-                                  "Revisa tu conexión y refresca la página",
-                                  style: TextStyle(
-                                    color: Colors.grey,
+                                Center(
+                                  child: Text(
+                                    "Revisa tu conexión y refresca la página",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.01),
-                              Expanded(
-                                  child: EventList(
-                                      userId: widget.userId,
-                                      eventList: snapshot.data!,
-                                      eventVM: eventVM,
-                                      updateFunction: () async {
-                          if (orderFuture == '1') {
-                            print(cachedCalendarFuture);
-                            return cachedCalendarFuture;
-                          } else {
-                            return cachedCalendarPast;
-                          }
-                        }(),
-                        ))
-                            ]));
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.01),
+                                Expanded(
+                                    child: EventList(
+                                        userId: widget.userId,
+                                        eventList: snapshot.data!,
+                                        eventVM: eventVM,
+                                        updateFunction: this.updateFunction,
+                                  )),
+                                ]));
+                              } 
+                              else {
+                                numDeEventos = snapshot.data!.length;
+                                return Expanded(
+                                child: Column(children: [
+                                Center(
+                                  child: Text(
+                                    "SIN INTERNET",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                                Center(
+                                  child: Text(
+                                    "Revisa tu conexión y refresca la página",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 30),
+                                Center(
+                                  child: Text(
+                                    "No hay eventos.",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 26,
+                                    ),
+                                  ),
+                                ),
+                                ]));
+                              }
                           } else
-                            return Container();
+                              return Container();
                         });
                   case Status.ERROR:
                     print("Log :: ERROR");
-                    print(orderFuture);
                     cachedCalendarFuture = eventVM.getLocalCalendarFuture();
                     cachedCalendarPast = eventVM.getLocalCalendarPast();
                     return FutureBuilder<List<Event>>(
@@ -252,36 +291,51 @@ class _CalendarState extends State<Calendar> {
                                           return cachedCalendarFuture;
                                         } else {
                                           return cachedCalendarPast;
-                                        }}))
+                                        }}
+                              ))
                             ]));
                           } else
-                            return Container();
+                              return Container();
                         });
+                        
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
-                    print(orderFuture);
                     eventVM.saveLocalEventsFutureCalendar();
                     eventVM.saveLocalEventsPastCalendar();
                     var eventList = orderFuture == '1' ?
                     viewModel.eventModelCalendarFuture.data!.events :
                     viewModel.eventModelCalendarPast.data!.events;
-                    return Expanded(
-                        child: EventList(
-                            userId: widget.userId,
-                            eventList: eventList,
-                            eventVM: eventVM,
-                            updateFunction: () async {
-                          if (orderFuture == '1') {
-                            return cachedCalendarFuture;
-                          } else {
-                            return cachedCalendarFuture;
-                          }}));
+                    if (eventList.length > 0){
+                      numDeEventos = eventList.length;
+                      return Expanded(
+                          child: 
+                          EventList(
+                              userId: widget.userId,
+                              eventList: eventList,
+                              eventVM: eventVM,
+                              updateFunction: this.updateFunction));
+                    } else{
+                      numDeEventos = eventList.length;
+                      return Expanded(
+                        child: Column(children: [
+                          SizedBox(height: 30),
+                          Center(
+                            child: Text(
+                              "No hay eventos.",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 26,
+                              ),
+                            ),
+                          ),
+                      ]));
+                    }
                   default:
                     return Container();
                 }
               },
             ),
-          )
+          ),
         ],
       ),
     );
