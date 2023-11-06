@@ -37,9 +37,9 @@ class _CalendarState extends State<Calendar> {
     true,
   ];
 
-  Future<List<Event>>? cachedCalendarFuture;
+  late Future<List<Event>> cachedCalendarFuture;
   late final void Function() updateFunctionFuture;
-  Future<List<Event>>? cachedCalendarPast;
+  late Future<List<Event>> cachedCalendarPast;
   late final void Function() updateFunctionPast;
 
   void Function() updateFunctionFunction(
@@ -54,14 +54,8 @@ class _CalendarState extends State<Calendar> {
     super.initState();
     cachedCalendarFuture = eventVM.getLocalCalendarFuture();
     cachedCalendarPast = eventVM.getLocalCalendarPast();
-    updateFunction = () {
-      updateFunction = updateFunctionFuture;
-    };
+    
     actualDate = selectedDate.toLocal().toString().split(' ')[0];
-
-    this.updateFunction =
-        updateFunctionFunction(actualDate, widget.userId, orderFuture);
-    this.updateFunction();
 
     updateFunctionFuture = () {
       eventVM.fetchEventsForUser(widget.userId);
@@ -71,6 +65,14 @@ class _CalendarState extends State<Calendar> {
     updateFunctionPast = () {
       eventVM.fetchEventsForUser(widget.userId);
     };
+    updateFunction = () {
+      if(orderFuture == "1") {
+        updateFunctionFuture();
+      } else {
+        updateFunctionPast();
+      }
+    };
+    updateFunction();
   }
 
   @override
@@ -128,11 +130,15 @@ class _CalendarState extends State<Calendar> {
                 switch (viewModel.eventModel.status) {
                   case Status.LOADING:
                     print("Log :: LOADING");
-                    cachedCalendarFuture = eventVM.getLocalCalendarFuture();
-                    cachedCalendarPast = eventVM.getLocalCalendarPast();
-                    return FutureBuilder<List<Event>>(
-                        future: cachedCalendarFuture,
-                        // cachedCalendarPast,
+                    print(orderFuture);
+                     return FutureBuilder<List<Event>?>(
+                        future: () async {
+                          if (orderFuture == '1') {
+                            return cachedCalendarFuture;
+                          } else {
+                            return cachedCalendarPast;
+                          }
+                        }(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting)
@@ -150,18 +156,27 @@ class _CalendarState extends State<Calendar> {
                                       userId: widget.userId,
                                       eventList: snapshot.data!,
                                       eventVM: eventVM,
-                                      updateFunction: this.updateFunction))
+                                      updateFunction: () async {
+                                        if (orderFuture == '1') {
+                                          return cachedCalendarFuture;
+                                        } else {
+                                          return cachedCalendarPast;
+                                        }}))
                             ]));
                           } else
                             return Container();
                         });
                   case Status.OFFLINE:
                     print("Log :: OFFLINE");
-                    cachedCalendarFuture = eventVM.getLocalCalendarFuture();
-                    cachedCalendarPast = eventVM.getLocalCalendarPast();
+                    print(orderFuture);
                     return FutureBuilder<List<Event>>(
-                        future: cachedCalendarFuture,
-                        // cachedCalendarPast,
+                        future: () async {
+                          if (orderFuture == '1') {
+                            return cachedCalendarFuture;
+                          } else {
+                            return cachedCalendarPast;
+                          }
+                        }(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting)
@@ -195,18 +210,31 @@ class _CalendarState extends State<Calendar> {
                                       userId: widget.userId,
                                       eventList: snapshot.data!,
                                       eventVM: eventVM,
-                                      updateFunction: this.updateFunction))
+                                      updateFunction: () async {
+                          if (orderFuture == '1') {
+                            return cachedCalendarFuture;
+                          } else {
+                            return cachedCalendarPast;
+                          }
+                        }(),
+                        ))
                             ]));
                           } else
                             return Container();
                         });
                   case Status.ERROR:
                     print("Log :: ERROR");
+                    print(orderFuture);
                     cachedCalendarFuture = eventVM.getLocalCalendarFuture();
                     cachedCalendarPast = eventVM.getLocalCalendarPast();
                     return FutureBuilder<List<Event>>(
-                        future: cachedCalendarFuture,
-                        // cachedCalendarPast,
+                       future: () async {
+                          if (orderFuture == '1') {
+                            return cachedCalendarFuture;
+                          } else {
+                            return cachedCalendarPast;
+                          }
+                        }(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting)
@@ -228,13 +256,19 @@ class _CalendarState extends State<Calendar> {
                                       userId: widget.userId,
                                       eventList: snapshot.data!,
                                       eventVM: eventVM,
-                                      updateFunction: this.updateFunction))
+                                      updateFunction: () async {
+                                        if (orderFuture == '1') {
+                                          return cachedCalendarFuture;
+                                        } else {
+                                          return cachedCalendarPast;
+                                        }}))
                             ]));
                           } else
                             return Container();
                         });
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
+                    print(orderFuture);
                     eventVM.saveLocalEventsFutureCalendar();
                     eventVM.saveLocalEventsPastCalendar();
                     return Expanded(
@@ -242,7 +276,12 @@ class _CalendarState extends State<Calendar> {
                             userId: widget.userId,
                             eventList: viewModel.eventModel.data!.events,
                             eventVM: eventVM,
-                            updateFunction: this.updateFunction));
+                            updateFunction: () async {
+                          if (orderFuture == '1') {
+                            return cachedCalendarFuture;
+                          } else {
+                            return cachedCalendarFuture;
+                          }}));
                   default:
                     return Container();
                 }
@@ -254,8 +293,9 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
-  void buttonPressed(String uId, String orderFuture) async {
+  void buttonPressed(String uId, String newOrderFuture) async {
     setState(() {
+      orderFuture = newOrderFuture;
       this.updateFunction =
           updateFunctionFunction(actualDate, uId, orderFuture);
       this.updateFunction();

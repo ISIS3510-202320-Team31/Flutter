@@ -188,4 +188,18 @@ class EventVM extends ChangeNotifier {
                 {_setEventMain(ApiResponse.error(error.toString()))}
             });
   }
+
+  Future<void> fetchCalendarByUser(
+      String date, String uuidUser, String orderFuture) async {
+    _setEventMain(ApiResponse.loading());
+    _myRepo
+        .fetchEventListByUser(date, uuidUser, orderFuture)
+        .then((value) => _setEventMain(ApiResponse.completed(value)))
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setEventMain(ApiResponse.offline())}
+              else
+                {_setEventMain(ApiResponse.error(error.toString()))}
+            });
+  }
 }
