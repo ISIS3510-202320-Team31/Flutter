@@ -168,37 +168,70 @@ class _CalendarState extends State<Calendar> {
                           else if (snapshot.hasError) {
                             return Container();
                           } else if (snapshot.hasData) {
-                            return Expanded(
+                              if (snapshot.data!.length > 0) {
+                                return Expanded(
                                 child: Column(children: [
-                              Center(
-                                child: Text(
-                                  "SIN INTERNET",
-                                  style: TextStyle(
-                                    color: Colors.grey,
+                                Center(
+                                  child: Text(
+                                    "SIN INTERNET",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Center(
-                                child: Text(
-                                  "Revisa tu conexión y refresca la página",
-                                  style: TextStyle(
-                                    color: Colors.grey,
+                                Center(
+                                  child: Text(
+                                    "Revisa tu conexión y refresca la página",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.01),
-                              Expanded(
-                                  child: EventList(
-                                      userId: widget.userId,
-                                      eventList: snapshot.data!,
-                                      eventVM: eventVM,
-                                      updateFunction: this.updateFunction,
-                              )),
-                            ]));
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.01),
+                                Expanded(
+                                    child: EventList(
+                                        userId: widget.userId,
+                                        eventList: snapshot.data!,
+                                        eventVM: eventVM,
+                                        updateFunction: this.updateFunction,
+                                  )),
+                                ]));
+                              } 
+                              else {
+                                return Expanded(
+                                child: Column(children: [
+                                Center(
+                                  child: Text(
+                                    "SIN INTERNET",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                                Center(
+                                  child: Text(
+                                    "Revisa tu conexión y refresca la página",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 30),
+                                Center(
+                                  child: Text(
+                                    "No hay eventos.",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 26,
+                                    ),
+                                  ),
+                                ),
+                                ]));
+                              }
                           } else
-                            return Container();
+                              return Container();
                         });
                   case Status.ERROR:
                     print("Log :: ERROR");
@@ -242,8 +275,9 @@ class _CalendarState extends State<Calendar> {
                               ))
                             ]));
                           } else
-                            return Container();
+                              return Container();
                         });
+                        
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
                     eventVM.saveLocalEventsFutureCalendar();
@@ -251,12 +285,28 @@ class _CalendarState extends State<Calendar> {
                     var eventList = orderFuture == '1' ?
                     viewModel.eventModelCalendarFuture.data!.events :
                     viewModel.eventModelCalendarPast.data!.events;
-                    return Expanded(
-                        child: EventList(
-                            userId: widget.userId,
-                            eventList: eventList,
-                            eventVM: eventVM,
-                            updateFunction: this.updateFunction));
+                    if (eventList.length > 0){
+                      return Expanded(
+                          child: EventList(
+                              userId: widget.userId,
+                              eventList: eventList,
+                              eventVM: eventVM,
+                              updateFunction: this.updateFunction));
+                    } else{
+                      return Expanded(
+                        child: Column(children: [
+                          SizedBox(height: 30),
+                          Center(
+                            child: Text(
+                              "No hay eventos.",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 26,
+                              ),
+                            ),
+                          ),
+                      ]));
+                    }
                   default:
                     return Container();
                 }
