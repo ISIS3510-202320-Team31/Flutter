@@ -12,6 +12,9 @@ class EventVM extends ChangeNotifier {
   ApiResponse<EventModel> eventModel = ApiResponse.none();
   ApiResponse<Event> event = ApiResponse.none();
   final SecureStorage secureStorage = SecureStorage();
+  ApiResponse<EventModel> eventModelCalendarFuture = ApiResponse.none();
+  ApiResponse<EventModel> eventModelCalendarPast = ApiResponse.none();
+  
 
   void _setEventMain(ApiResponse<EventModel> response) {
     print("Response: $response");
@@ -22,6 +25,18 @@ class EventVM extends ChangeNotifier {
   void _setEvent(ApiResponse<Event> response) {
     print("Response: $response");
     event = response;
+    notifyListeners();
+  }
+
+  void _setEventCalendarFuture(ApiResponse<EventModel> response) {
+    print("Response: $response");
+    eventModelCalendarFuture = response;
+    notifyListeners();
+  }
+
+  void _setEventCalendarPast(ApiResponse<EventModel> response) {
+    print("Response: $response");
+    eventModelCalendarPast = response;
     notifyListeners();
   }
 
@@ -52,6 +67,14 @@ class EventVM extends ChangeNotifier {
 
   Future<void> saveLocalEventsFeed() async {
     secureStorage.writeSecureData('feedEvents', eventModelToJson(eventModel.data!));
+  }
+
+  Future<void> saveLocalEventsFutureCalendar() async {
+    secureStorage.writeSecureData('futureCalendarEvents', eventModelToJson(eventModelCalendarFuture.data!));
+  }
+
+  Future<void> saveLocalEventsPastCalendar() async {
+    secureStorage.writeSecureData('pastCalendarEvents', eventModelToJson(eventModelCalendarPast.data!));
   }
 
   Future<List<Event>> getLocalCalendarFuture() async {
@@ -179,5 +202,37 @@ class EventVM extends ChangeNotifier {
               else
                 {_setEventMain(ApiResponse.error(error.toString()))}
             });
+  }
+
+  Future<void> fetchCalendarByUser(
+      String date, String uuidUser, String orderFuture) async {
+    if (orderFuture == '1') {
+    _setEventCalendarFuture(ApiResponse.loading());
+    _myRepo
+        .fetchEventListByUser(date, uuidUser, orderFuture)
+        .then((value) =>
+          _setEventCalendarFuture(ApiResponse.completed(value))
+        )
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setEventCalendarFuture(ApiResponse.offline())}
+              else
+                {_setEventCalendarFuture(ApiResponse.error(error.toString()))}
+            });
+    }
+    else {
+    _setEventCalendarPast(ApiResponse.loading());
+    _myRepo
+        .fetchEventListByUser(date, uuidUser, orderFuture)
+        .then((value) =>
+          _setEventCalendarPast(ApiResponse.completed(value))
+        )
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setEventCalendarPast(ApiResponse.offline())}
+              else
+                {_setEventCalendarPast(ApiResponse.error(error.toString()))}
+            });
+    }
   }
 }

@@ -9,6 +9,7 @@ import 'package:hive_app/view/pages/Home.dart';
 //import 'package:hive_app/services/notification_services.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/event.model.dart';
 import '../../view_model/user.vm.dart';
 
 class Calendar extends StatefulWidget {
@@ -37,22 +38,29 @@ class _CalendarState extends State<Calendar> {
     true,
   ];
 
+  late Future<List<Event>> cachedCalendarFuture;
+  late final void Function() updateFunctionFuture;
+  late Future<List<Event>> cachedCalendarPast;
+  late final void Function() updateFunctionPast;
+
   void Function() updateFunctionFunction(
       String actualDate, String userId, String orderFuture) {
     return () {
-      eventVM.fetchEventListByUser(actualDate, userId, orderFuture);
+      eventVM.fetchCalendarByUser(actualDate, userId, orderFuture);
     };
   }
 
   @override
   void initState() {
     super.initState();
-    super.initState();
+    cachedCalendarFuture = eventVM.getLocalCalendarFuture();
+    cachedCalendarPast = eventVM.getLocalCalendarPast();
+    
     actualDate = selectedDate.toLocal().toString().split(' ')[0];
-
-    this.updateFunction =
-        updateFunctionFunction(actualDate, widget.userId, orderFuture);
-    this.updateFunction();
+          
+ 
+    updateFunction = updateFunctionFunction(actualDate, widget.userId, orderFuture);
+    updateFunction();
   }
 
   @override
@@ -82,25 +90,206 @@ class _CalendarState extends State<Calendar> {
                 ),
               ),
             ),
-            ToggleButtons(
-              children: [
-                Container(
-                  width: 100,
-                  child: Center(child: Text("Pasado")),
-                ),
-                Container(
-                  width: 100,
-                  child: Center(child: Text("Futuro")),
-                ),
-              ],
-              isSelected: isSelected,
-              onPressed: (int index) {
-                if (index == 0) {
-                  buttonPressed(widget.userId, "0");
-                  textChanger = "Pasados";
-                } else {
-                  buttonPressed(widget.userId, "1");
-                  textChanger = "Futuros";
+          ),
+          ToggleButtons(
+            children: [
+              Container(
+                width: 100,
+                child: Center(child: Text("Pasado")),
+              ),
+              Container(
+                width: 100,
+                child: Center(child: Text("Futuro")),
+              ),
+            ],
+            isSelected: isSelected,
+            onPressed: (int index) {
+              if (index == 0) {
+                buttonPressed(widget.userId, "0");
+                textChanger = "Pasados";
+              } else {
+                buttonPressed(widget.userId, "1");
+                textChanger = "Futuros";
+              }
+              setState(() {
+                for (int i = 0; i < isSelected.length; i++) {
+                  isSelected[i] =
+                      (i == index); // Activa solo el ícono seleccionado
+                }
+              });
+            },
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          ChangeNotifierProvider<EventVM>(
+            create: (BuildContext context) => eventVM,
+            child: Consumer<EventVM>(
+              builder: (context, viewModel, _) {
+                var listener = orderFuture == '1' ?
+                viewModel.eventModelCalendarFuture.status :
+                viewModel.eventModelCalendarPast.status;
+                switch (listener) {
+                  case Status.LOADING:
+                    print("Log :: LOADING");
+                    print(orderFuture);
+                     return FutureBuilder<List<Event>?>(
+                        future: () async {
+                          if (orderFuture == '1') {
+                            return cachedCalendarFuture;
+                          } else {
+                            return cachedCalendarPast;
+                          }
+                        }(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting)
+                            return Container();
+                          else if (snapshot.hasError) {
+                            return Container();
+                          } else if (snapshot.hasData) {
+                            return Expanded(
+                                child: Column(children: [
+                              Center(
+                                child: LinearProgressIndicator(),
+                              ),
+                              Expanded(
+                                  child: EventList(
+                                      userId: widget.userId,
+                                      eventList: snapshot.data!,
+                                      eventVM: eventVM,
+                                      updateFunction: () async {
+                                        if (orderFuture == '1') {
+                                          return cachedCalendarFuture;
+                                        } else {
+                                          return cachedCalendarPast;
+                                        }}))
+                            ]));
+                          } else
+                            return Container();
+                        });
+                  case Status.OFFLINE:
+                    print("Log :: OFFLINE");
+                    print(orderFuture);
+                    cachedCalendarFuture = eventVM.getLocalCalendarFuture();
+                    cachedCalendarPast = eventVM.getLocalCalendarPast();
+                    return FutureBuilder<List<Event>>(
+                        future: () async {
+                          if (orderFuture == '1') {
+                            return cachedCalendarFuture;
+                          } else {
+                            return cachedCalendarPast;
+                          }
+                        }(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting)
+                            return Container();
+                          else if (snapshot.hasError) {
+                            return Container();
+                          } else if (snapshot.hasData) {
+                            return Expanded(
+                                child: Column(children: [
+                              Center(
+                                child: Text(
+                                  "SIN INTERNET",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                              Center(
+                                child: Text(
+                                  "Revisa tu conexión y refresca la página",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                              Expanded(
+                                  child: EventList(
+                                      userId: widget.userId,
+                                      eventList: snapshot.data!,
+                                      eventVM: eventVM,
+                                      updateFunction: () async {
+                          if (orderFuture == '1') {
+                            print(cachedCalendarFuture);
+                            return cachedCalendarFuture;
+                          } else {
+                            return cachedCalendarPast;
+                          }
+                        }(),
+                        ))
+                            ]));
+                          } else
+                            return Container();
+                        });
+                  case Status.ERROR:
+                    print("Log :: ERROR");
+                    print(orderFuture);
+                    cachedCalendarFuture = eventVM.getLocalCalendarFuture();
+                    cachedCalendarPast = eventVM.getLocalCalendarPast();
+                    return FutureBuilder<List<Event>>(
+                       future: () async {
+                          if (orderFuture == '1') {
+                            return cachedCalendarFuture;
+                          } else {
+                            return cachedCalendarPast;
+                          }
+                        }(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting)
+                            return Container();
+                          else if (snapshot.hasError) {
+                            return Container();
+                          } else if (snapshot.hasData) {
+                            return Expanded(
+                                child: Column(children: [
+                              Center(
+                                child: Text(
+                                    "Estamos presentando errores... Intenta refrescar"),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                              Expanded(
+                                  child: EventList(
+                                      userId: widget.userId,
+                                      eventList: snapshot.data!,
+                                      eventVM: eventVM,
+                                      updateFunction: () async {
+                                        if (orderFuture == '1') {
+                                          return cachedCalendarFuture;
+                                        } else {
+                                          return cachedCalendarPast;
+                                        }}))
+                            ]));
+                          } else
+                            return Container();
+                        });
+                  case Status.COMPLETED:
+                    print("Log :: COMPLETED");
+                    print(orderFuture);
+                    eventVM.saveLocalEventsFutureCalendar();
+                    eventVM.saveLocalEventsPastCalendar();
+                    var eventList = orderFuture == '1' ?
+                    viewModel.eventModelCalendarFuture.data!.events :
+                    viewModel.eventModelCalendarPast.data!.events;
+                    return Expanded(
+                        child: EventList(
+                            userId: widget.userId,
+                            eventList: eventList,
+                            eventVM: eventVM,
+                            updateFunction: () async {
+                          if (orderFuture == '1') {
+                            return cachedCalendarFuture;
+                          } else {
+                            return cachedCalendarFuture;
+                          }}));
+                  default:
+                    return Container();
                 }
                 setState(() {
                   for (int i = 0; i < isSelected.length; i++) {
@@ -176,8 +365,9 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
-  void buttonPressed(String uId, String orderFuture) async {
+  void buttonPressed(String uId, String newOrderFuture) async {
     setState(() {
+      orderFuture = newOrderFuture;
       this.updateFunction =
           updateFunctionFunction(actualDate, uId, orderFuture);
       this.updateFunction();
