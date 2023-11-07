@@ -93,8 +93,32 @@ class _EventDetailState extends State<EventDetail> {
                 case Status.COMPLETED:
                   print("Log :: COMPLETED");
                   final event = viewModel.event.data!;
-                  bool isUserParticipant =
-                      event.participants!.contains(widget.userId);
+
+                  int isUserParticipant=0;      
+
+                  if (event.participants!.contains(widget.userId))
+                  {
+                    isUserParticipant = 1;
+                  }
+                  else
+                  {
+                    if (event.numParticipants != null && event.participants != null)
+                    {
+                    if (event.participants!.length >= event.numParticipants!)
+                      {
+                      isUserParticipant = 2;
+                      }
+                      else
+                      {
+                        isUserParticipant = 0;
+                      }
+                    }
+                    else
+                    {
+                      isUserParticipant = 0;
+                    }
+                  }   
+                      
                   return Container(
                     child: showEventDetail(
                         context, event, widget.userId, isUserParticipant),
@@ -109,7 +133,7 @@ class _EventDetailState extends State<EventDetail> {
 
   // Función para mostrar el cuadro de diálogo de detalles del evento
   showEventDetail(BuildContext context, Event event, String userId,
-      bool isUserParticipant) {
+      int isUserParticipant) {
     String formattedDate = event.date != null
         ? DateFormat('dd/MM/yyyy').format(event.date!)
         : 'Sin fecha';
@@ -124,6 +148,26 @@ class _EventDetailState extends State<EventDetail> {
     } else {
       firstHalf = event.description!;
       secondHalf = "";
+    }
+
+   String texto ;
+   if (isUserParticipant == 2)
+    {
+      texto = "Evento lleno";
+    }
+    else
+    {
+      texto = isUserParticipant == 1 ? 'No asistiré' : 'Unirse';
+    }
+
+    var color;
+    if (isUserParticipant == 2)
+    {
+      color = Colors.grey;
+    }
+    else
+    {
+      color = isUserParticipant == 1 ? Colors.red : Colors.blue;
     }
 
     return ClipRRect(
@@ -367,20 +411,21 @@ class _EventDetailState extends State<EventDetail> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),
-                      backgroundColor: isUserParticipant
-                          ? Colors.red // Usuario ya es participante, botón rojo
-                          : Colors
-                              .blue, // Usuario no es participante, botón azul
+                      backgroundColor: color
                     ),
                     onPressed: () {
-                      if (isUserParticipant) {
+                      if (isUserParticipant == 1) {
                         eventVM.removeParticipant(eventId, userId);
-                      } else {
+                      } else if (isUserParticipant == 0){
                         eventVM.addParticipant(eventId, userId);
+                      }
+                      else
+                      {
+                        print("Log :: Evento lleno");
                       }
                     },
                     child: Text(
-                      isUserParticipant ? 'No asistiré' : 'Unirse',
+                      texto,
                       style: TextStyle(color: appTheme.cardColor),
                     ),
                   ),
