@@ -13,7 +13,7 @@ class NetworkApiService extends BaseApiService {
       responseJson = returnResponse(response);
     } catch (error /*, stackTrace*/) {
       print(error.toString());
-      if (error.toString().contains("unreachable")) {
+      if (error.toString().contains("Connection failed")) {
         throw FetchDataException('No Internet Connection');
       } else {
         throw FetchDataException(error.toString());

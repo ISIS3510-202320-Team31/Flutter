@@ -36,6 +36,18 @@ class EventRepoImpl extends EventRepo {
     }
   }
 
+  Future<EventModel?> getEventsByOwner(String ownerId) async {
+    try {
+      dynamic response = await _apiService.getResponse(
+          ApiEndPoints().eventsEndPoint + 'users/$ownerId/createdby/');
+      print("Log: $response");
+      final jsonData = EventModel.fromJson(response);
+      return jsonData;
+    } catch (e) {
+      throw e;
+    }
+  }
+
   Future<Event> getEventById(String eventId) async {
     try {
       // Construye la URL completa para obtener un evento por ID

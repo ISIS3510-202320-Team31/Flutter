@@ -145,8 +145,8 @@ class _EventCreateState extends State<EventCreate> {
                                   if (value!.isEmpty) {
                                     return 'Por favor, ingresa el título del evento';
                                   }
-                                  if (value.length > 15) {
-                                    return 'El título del evento no debe tener más de 15 caracteres';
+                                  if (value.length > 20) {
+                                    return 'El título del evento no debe tener más de 20 caracteres';
                                   }
                                   return null;
                                 },
@@ -192,8 +192,8 @@ class _EventCreateState extends State<EventCreate> {
                                   if (intValue < 0) {
                                     return 'La duración del evento no puede ser negativa';
                                   }
-                                  if (intValue > 1440) {
-                                    return 'La duración del evento no puede ser mayor a 1440 minutos (24 horas)';
+                                  if (intValue > 999) {
+                                    return 'La duración del evento no puede ser mayor a 999 minutos';
                                   }
                                   return null;
                                 },
@@ -219,8 +219,8 @@ class _EventCreateState extends State<EventCreate> {
                                   if (intValue < 0) {
                                     return 'La cantidad de participantes no puede ser negativa';
                                   }
-                                  if (intValue > 1000000) {
-                                    return 'La cantidad no puede ser mayor a 1.000.000';
+                                  if (intValue > 999) {
+                                    return 'La cantidad no puede ser mayor a 999';
                                   }
 
                                   return null;

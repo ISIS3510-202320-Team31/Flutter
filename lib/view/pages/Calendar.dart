@@ -6,6 +6,7 @@ import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:hive_app/view/widgets/ViewsHeader.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_app/view/pages/Home.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../models/event.model.dart';
 import '../../view_model/user.vm.dart';
@@ -31,20 +32,22 @@ class _CalendarState extends State<Calendar> {
   String textChanger = "futuros";
   String actualDate = '';
   final UserVM userVM = UserVM();
-  List<bool> isSelected = [
-    false,
-    true,
-  ];
+  int currentSelected = 1;
 
   late Future<List<Event>> cachedCalendarFuture;
   late final void Function() updateFunctionFuture;
   late Future<List<Event>> cachedCalendarPast;
   late final void Function() updateFunctionPast;
+  late Future<List<Event>> cachedCalendarByOwner;
+  late final void Function() updateFunctionByOwner;
 
   void Function() updateFunctionFunction(
       String actualDate, String userId, String orderFuture) {
     return () {
-      eventVM.fetchCalendarByUser(actualDate, userId, orderFuture);
+      if (orderFuture == '2')
+        eventVM.fetchEventsByOwner(userId);
+      else
+        eventVM.fetchCalendarByUser(actualDate, userId, orderFuture);
     };
   }
 
@@ -53,6 +56,7 @@ class _CalendarState extends State<Calendar> {
     super.initState();
     cachedCalendarFuture = eventVM.getLocalCalendarFuture();
     cachedCalendarPast = eventVM.getLocalCalendarPast();
+    cachedCalendarByOwner = eventVM.getLocalEventsByOwner();
 
     actualDate = selectedDate.toLocal().toString().split(' ')[0];
 
@@ -89,45 +93,25 @@ class _CalendarState extends State<Calendar> {
               ),
             ),
             SizedBox(height: 15),
-            ToggleButtons(
-              children: [
-                Container(
-                  width: 100,
-                  child: Center(
-                    child: Text(
-                      "Pasado",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 100,
-                  child: Center(
-                    child: Text(
-                      "Futuro",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-              isSelected: isSelected,
-              onPressed: (int index) {
+            ToggleSwitch(
+              initialLabelIndex: currentSelected,
+              totalSwitches: 3,
+              minWidth: MediaQuery.of(context).size.width * 0.9,
+              inactiveBgColor: Color.fromARGB(100, 255, 255, 255),
+              labels: ['Historial', 'Actividades', 'Tus Eventos'],
+              onToggle: (index) {
                 if (index == 0) {
                   buttonPressed(widget.userId, "0");
                   textChanger = "pasados";
-                } else {
+                } else if (index == 1) {
                   buttonPressed(widget.userId, "1");
                   textChanger = "futuros";
+                } else {
+                  buttonPressed(widget.userId, "2");
+                  textChanger = "tuyos";
                 }
                 setState(() {
-                  for (int i = 0; i < isSelected.length; i++) {
-                    isSelected[i] =
-                        (i == index); // Activa solo el ícono seleccionado
-                  }
+                  currentSelected = index!;
                 });
               },
             ),
@@ -136,17 +120,23 @@ class _CalendarState extends State<Calendar> {
               create: (BuildContext context) => eventVM,
               child: Consumer<EventVM>(
                 builder: (context, viewModel, _) {
-                  var listener = orderFuture == '1'
-                      ? viewModel.eventModelCalendarFuture.status
-                      : viewModel.eventModelCalendarPast.status;
+                  var listener;
+                  if (orderFuture == '0')
+                    listener = viewModel.eventModelCalendarPast.status;
+                  else if (orderFuture == '1')
+                    listener = viewModel.eventModelCalendarFuture.status;
+                  else if (orderFuture == '2')
+                    listener = viewModel.eventModelByOwner.status;
                   switch (listener) {
                     case Status.LOADING:
                       print("Log :: LOADING");
                       return FutureBuilder<List<Event>?>(future: () async {
-                        if (orderFuture == '1') {
+                        if (orderFuture == '0') {
+                          return cachedCalendarPast;
+                        } else if (orderFuture == '1') {
                           return cachedCalendarFuture;
                         } else {
-                          return cachedCalendarPast;
+                          return cachedCalendarByOwner;
                         }
                       }(), builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting)
@@ -173,11 +163,14 @@ class _CalendarState extends State<Calendar> {
                       print("Log :: OFFLINE");
                       cachedCalendarFuture = eventVM.getLocalCalendarFuture();
                       cachedCalendarPast = eventVM.getLocalCalendarPast();
+                      cachedCalendarByOwner = eventVM.getLocalEventsByOwner();
                       return FutureBuilder<List<Event>>(future: () async {
-                        if (orderFuture == '1') {
+                        if (orderFuture == '0') {
+                          return cachedCalendarPast;
+                        } else if (orderFuture == '1') {
                           return cachedCalendarFuture;
                         } else {
-                          return cachedCalendarPast;
+                          return cachedCalendarByOwner;
                         }
                       }(), builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting)
@@ -260,11 +253,14 @@ class _CalendarState extends State<Calendar> {
                       print("Log :: ERROR");
                       cachedCalendarFuture = eventVM.getLocalCalendarFuture();
                       cachedCalendarPast = eventVM.getLocalCalendarPast();
+                      cachedCalendarByOwner = eventVM.getLocalEventsByOwner();
                       return FutureBuilder<List<Event>>(future: () async {
-                        if (orderFuture == '1') {
+                        if (orderFuture == '0') {
+                          return cachedCalendarPast;
+                        } else if (orderFuture == '1') {
                           return cachedCalendarFuture;
                         } else {
-                          return cachedCalendarPast;
+                          return cachedCalendarByOwner;
                         }
                       }(), builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting)
@@ -287,10 +283,12 @@ class _CalendarState extends State<Calendar> {
                                     eventList: snapshot.data!,
                                     eventVM: eventVM,
                                     updateFunction: () async {
-                                      if (orderFuture == '1') {
+                                      if (orderFuture == '0') {
+                                        return cachedCalendarPast;
+                                      } else if (orderFuture == '1') {
                                         return cachedCalendarFuture;
                                       } else {
-                                        return cachedCalendarPast;
+                                        return cachedCalendarByOwner;
                                       }
                                     }))
                           ]));
@@ -302,9 +300,16 @@ class _CalendarState extends State<Calendar> {
                       print("Log :: COMPLETED");
                       eventVM.saveLocalEventsFutureCalendar();
                       eventVM.saveLocalEventsPastCalendar();
-                      var eventList = orderFuture == '1'
-                          ? viewModel.eventModelCalendarFuture.data!.events
-                          : viewModel.eventModelCalendarPast.data!.events;
+                      eventVM.saveLocalEventsByOwner();
+                      var eventList;
+                      if (orderFuture == '0')
+                        eventList =
+                            viewModel.eventModelCalendarPast.data!.events;
+                      else if (orderFuture == '1')
+                        eventList =
+                            viewModel.eventModelCalendarFuture.data!.events;
+                      else
+                        eventList = viewModel.eventModelByOwner.data!.events;
                       if (eventList.length > 0) {
                         return Expanded(
                           child: Column(
