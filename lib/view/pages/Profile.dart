@@ -271,6 +271,8 @@ class _ProfileState extends State<Profile> {
                                                       'Tiempo usado en la App:',
                                                       style: TextStyle(
                                                         fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
                                                     Text(
