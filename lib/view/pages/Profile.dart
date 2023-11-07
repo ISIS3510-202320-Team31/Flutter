@@ -29,7 +29,7 @@ class _ProfileState extends State<Profile> {
   String _email = cache.read("signup-email") ?? "";
   String _timeOnApp = cache.read("time-on-app") ?? "";
   String _eventsJoined = cache.read("events-joined") ?? "";
-  
+
   @override
   void initState() {
     _userVM.getUserById(widget.userId);
@@ -81,16 +81,19 @@ class _ProfileState extends State<Profile> {
                             titleText: "Perfil",
                           ),
                           Card(
-                            margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10, top: 10),
+                            margin: EdgeInsets.only(
+                                left: 10.0, right: 10.0, bottom: 10, top: 10),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25.0),
                             ),
                             elevation: 8,
-                            child: Center( 
+                            child: Center(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  SizedBox(height: 15,),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
                                   ChangeNotifierProvider(
                                     create: (context) => _userVM,
                                     child: Consumer<UserVM>(
@@ -100,91 +103,121 @@ class _ProfileState extends State<Profile> {
                                             print("Log :: LOADING");
                                             return Container(
                                               child: Center(
-                                                child: CircularProgressIndicator(),
+                                                child:
+                                                    CircularProgressIndicator(),
                                               ),
-                                              height: MediaQuery.of(context).size.height * 0.3,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.3,
                                             );
                                           case Status.COMPLETED:
-                                            if (_name.length>1 && _email.length>1 && _timeOnApp.length>1 && _eventsJoined.length>1) {
-                                              cache.write("time-on-app", formatTime(timeSinceInstallation!));
-                                              cache.write("events-joined", viewModel.participation.data);
-                                              _timeOnApp = cache.read("time-on-app");
-                                              _eventsJoined = cache.read("events-joined");
-                                            }
-                                            else{
-                                              cache.write("signup-name", viewModel.user.data!.name);
-                                              cache.write("signup-email", viewModel.user.data!.email);
-                                              cache.write("time-on-app", formatTime(timeSinceInstallation!));
-                                              cache.write("events-joined", viewModel.participation.data.toString());
+                                            if (_name.length > 1 &&
+                                                _email.length > 1 &&
+                                                _timeOnApp.length > 1 &&
+                                                _eventsJoined.length > 1) {
+                                              cache.write(
+                                                  "time-on-app",
+                                                  formatTime(
+                                                      timeSinceInstallation!));
+                                              cache.write("events-joined",
+                                                  viewModel.participation.data);
+                                              _timeOnApp =
+                                                  cache.read("time-on-app");
+                                              _eventsJoined =
+                                                  cache.read("events-joined");
+                                            } else {
+                                              cache.write("signup-name",
+                                                  viewModel.user.data!.name);
+                                              cache.write("signup-email",
+                                                  viewModel.user.data!.email);
+                                              cache.write(
+                                                  "time-on-app",
+                                                  formatTime(
+                                                      timeSinceInstallation!));
+                                              cache.write(
+                                                  "events-joined",
+                                                  viewModel.participation.data
+                                                      .toString());
                                               _name = cache.read("signup-name");
-                                              _email = cache.read("signup-email");
-                                              _timeOnApp = cache.read("time-on-app");
-                                              _eventsJoined = cache.read("events-joined");
+                                              _email =
+                                                  cache.read("signup-email");
+                                              _timeOnApp =
+                                                  cache.read("time-on-app");
+                                              _eventsJoined =
+                                                  cache.read("events-joined");
                                             }
                                             return Center(
                                               child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
                                                 children: [
-                                                  SizedBox(height: 15,),
+                                                  SizedBox(
+                                                    height: 15,
+                                                  ),
                                                   Icon(
-                                                    Icons.account_circle_rounded,
+                                                    Icons
+                                                        .account_circle_rounded,
                                                     size: 150,
                                                   ),
-                                                  SizedBox(height: 22,),
+                                                  SizedBox(
+                                                    height: 22,
+                                                  ),
                                                   Text(
                                                     'Nombre:',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                   Text(
                                                     '$_name\n',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
                                                     ),
                                                   ),
                                                   Text(
                                                     'Correo:',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                   Text(
                                                     '$_email\n',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
                                                     ),
                                                   ),
                                                   Text(
                                                     'Tiempo usado en la App:',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                   Text(
                                                     '$_timeOnApp\n',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
                                                     ),
                                                   ),
                                                   Text(
                                                     'Eventos a los que perteneces:',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
+                                                    textAlign: TextAlign.center,
                                                   ),
                                                   Text(
                                                     '$_eventsJoined eventos.\n',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
                                                     ),
                                                   ),
                                                 ],
@@ -196,16 +229,22 @@ class _ProfileState extends State<Profile> {
                                               style: TextStyle(fontSize: 20),
                                             );
                                           case Status.OFFLINE:
-                                          print(_name);
-                                          print(_email);
-                                          print(_timeOnApp);
-                                          print(_eventsJoined);
-                                            if (_name.length>1 && _email.length>1 && _timeOnApp.length>1 && _eventsJoined.length>1){
+                                            print(_name);
+                                            print(_email);
+                                            print(_timeOnApp);
+                                            print(_eventsJoined);
+                                            if (_name.length > 1 &&
+                                                _email.length > 1 &&
+                                                _timeOnApp.length > 1 &&
+                                                _eventsJoined.length > 1) {
                                               return Center(
                                                 child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
                                                   children: [
-                                                    SizedBox(height: 15,),
+                                                    SizedBox(
+                                                      height: 15,
+                                                    ),
                                                     Icon(
                                                       Icons.signal_wifi_off,
                                                       size: 100,
@@ -218,68 +257,69 @@ class _ProfileState extends State<Profile> {
                                                         color: Colors.grey,
                                                       ),
                                                     ),
-                                                    SizedBox(height: 15,),
+                                                    SizedBox(
+                                                      height: 15,
+                                                    ),
                                                     Text(
                                                       'Nombre:',
                                                       style: TextStyle(
                                                         fontSize: 20,
-                                                        fontWeight: FontWeight.bold,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
                                                     Text(
                                                       '$_name\n',
                                                       style: TextStyle(
                                                         fontSize: 20,
-                                                        fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
                                                     Text(
                                                       'Correo:',
                                                       style: TextStyle(
                                                         fontSize: 20,
-                                                        fontWeight: FontWeight.bold,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
                                                     Text(
                                                       '$_email\n',
                                                       style: TextStyle(
                                                         fontSize: 20,
-                                                        fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
                                                     Text(
                                                       'Tiempo usado en la App:',
                                                       style: TextStyle(
                                                         fontSize: 20,
-                                                        fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
                                                     Text(
                                                       '$_timeOnApp\n',
                                                       style: TextStyle(
                                                         fontSize: 20,
-                                                        fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
                                                     Text(
                                                       'Eventos a los que perteneces:',
                                                       style: TextStyle(
                                                         fontSize: 20,
-                                                        fontWeight: FontWeight.bold,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
+                                                      textAlign:
+                                                          TextAlign.center,
                                                     ),
                                                     Text(
-                                                      '$_eventsJoined eventos.\n',
+                                                      '$_eventsJoined eventos\n',
                                                       style: TextStyle(
                                                         fontSize: 20,
-                                                        fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                               );
-                                            }
-                                            else{
+                                            } else {
                                               return OfflineWidget();
                                             }
                                           default:
@@ -302,6 +342,7 @@ class _ProfileState extends State<Profile> {
                               sharedPreferences.then((value) {
                                 value.clear();
                               });
+                              cache.flush();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
