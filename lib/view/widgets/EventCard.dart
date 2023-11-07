@@ -2,27 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_app/models/event.model.dart';
 import 'package:hive_app/view/widgets/EventDetail.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
-class EventCard extends StatelessWidget {
+class EventCard extends StatefulWidget {
   final String userId;
   final Event event;
 
   EventCard({required this.userId, required this.event});
 
   @override
+  State<EventCard> createState() => _EventCardState();
+}
+
+class _EventCardState extends State<EventCard> {
+  final FirebaseAnalytics analytics = FirebaseAnalytics();
+
+  @override
+  void initState() {
+    analytics.setAnalyticsCollectionEnabled(true);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Formatea la fecha utilizando DateFormat
-    String formattedDate = event.date != null
-        ? DateFormat('dd/MM/yyyy').format(event.date!)
+    String formattedDate = widget.event.date != null
+        ? DateFormat('dd/MM/yyyy').format(widget.event.date!)
         : 'Sin fecha';
 
     return GestureDetector(
-        onTap: () => {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) =>
-                      EventDetail(userId: userId, eventId: event.id!))
+        onTap: () async {
+          print("tapped event ${widget.event.id}");
+          await analytics.logEvent(
+            name: 'select_content',
+            parameters: <String, String>{
+              'id': "item_${widget.event.id!}",
+              'name': "${widget.event.id!}:${widget.event.name!}",
+              'content_type': 'CardView Item (HomePage)',
             },
+          );
+          showDialog(
+              context: context,
+              builder: (BuildContext context) => EventDetail(
+                  userId: widget.userId, eventId: widget.event.id!));
+        },
         child: Card(
           margin: EdgeInsets.only(left: 8.0, right: 8.0, bottom: 10, top: 10),
           shape: RoundedRectangleBorder(
@@ -40,17 +63,17 @@ class EventCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${event.creator ?? "Sin creador"}",
+                        "${widget.event.creator ?? "Sin creador"}",
                         style: TextStyle(fontSize: 12.0),
                       ),
                       Text(
-                        event.name ?? "Sin nombre",
+                        widget.event.name ?? "Sin nombre",
                         style: TextStyle(
                             fontSize: 22.0, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 8.0),
                       Text(
-                        event.description ?? "Sin descripcion",
+                        widget.event.description ?? "Sin descripcion",
                         style: TextStyle(fontSize: 14.0),
                       ),
                       SizedBox(height: 16.0),
