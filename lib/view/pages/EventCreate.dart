@@ -145,8 +145,8 @@ class _EventCreateState extends State<EventCreate> {
                                   if (value!.isEmpty) {
                                     return 'Por favor, ingresa el título del evento';
                                   }
-                                  if (value.length > 15) {
-                                    return 'El título del evento no debe tener más de 15 caracteres';
+                                  if (value.length > 20) {
+                                    return 'El título del evento no debe tener más de 20 caracteres';
                                   }
                                   return null;
                                 },
