@@ -116,19 +116,38 @@ class _ProfileState extends State<Profile> {
                                                 _email != "0" &&
                                                 _timeOnApp != "0" &&
                                                 _eventsJoined != "0") {
-                                              cache.write("time-on-app", formatTime(timeSinceInstallation!));
-                                              cache.write("events-joined",viewModel.participation.data.toString());
-                                              _timeOnApp = cache.read("time-on-app");
-                                              _eventsJoined = cache.read("events-joined");
+                                              cache.write(
+                                                  "time-on-app",
+                                                  formatTime(
+                                                      timeSinceInstallation!));
+                                              cache.write(
+                                                  "events-joined",
+                                                  viewModel.participation.data
+                                                      .toString());
+                                              _timeOnApp =
+                                                  cache.read("time-on-app");
+                                              _eventsJoined =
+                                                  cache.read("events-joined");
                                             } else {
-                                              cache.write("signup-name", viewModel.user.data!.name);
-                                              cache.write("signup-email", viewModel.user.data!.email);
-                                              cache.write("time-on-app",formatTime(timeSinceInstallation!));
-                                              cache.write("events-joined",viewModel.participation.data.toString());
+                                              cache.write("signup-name",
+                                                  viewModel.user.data!.name);
+                                              cache.write("signup-email",
+                                                  viewModel.user.data!.email);
+                                              cache.write(
+                                                  "time-on-app",
+                                                  formatTime(
+                                                      timeSinceInstallation!));
+                                              cache.write(
+                                                  "events-joined",
+                                                  viewModel.participation.data
+                                                      .toString());
                                               _name = cache.read("signup-name");
-                                              _email = cache.read("signup-email");
-                                              _timeOnApp = cache.read("time-on-app");
-                                              _eventsJoined = cache.read("events-joined");
+                                              _email =
+                                                  cache.read("signup-email");
+                                              _timeOnApp =
+                                                  cache.read("time-on-app");
+                                              _eventsJoined =
+                                                  cache.read("events-joined");
                                             }
                                             return Center(
                                               child: Column(
@@ -271,6 +290,8 @@ class _ProfileState extends State<Profile> {
                                                       'Tiempo usado en la App:',
                                                       style: TextStyle(
                                                         fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
                                                     Text(
