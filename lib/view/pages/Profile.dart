@@ -23,10 +23,10 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final SecureStorage secureStorage = SecureStorage();
   final UserVM _userVM = UserVM();
-  String _name = cache.read("signup-name") ?? "";
-  String _email = cache.read("signup-email") ?? "";
-  String _timeOnApp = cache.read("time-on-app") ?? "";
-  String _eventsJoined = cache.read("events-joined") ?? "";
+  String _name = cache.read("signup-name") ?? "0";
+  String _email = cache.read("signup-email") ?? "0";
+  String _timeOnApp = cache.read("time-on-app") ?? "0";
+  String _eventsJoined = cache.read("events-joined") ?? "0";
   
   @override
   void initState() {
@@ -194,11 +194,7 @@ class _ProfileState extends State<Profile> {
                                               style: TextStyle(fontSize: 20),
                                             );
                                           case Status.OFFLINE:
-                                          print(_name);
-                                          print(_email);
-                                          print(_timeOnApp);
-                                          print(_eventsJoined);
-                                            if (_name.length>1 && _email.length>1 && _timeOnApp.length>1 && _eventsJoined.length>1){
+                                            if (_name != "0" && _email != "0" && _timeOnApp != "0"&& _eventsJoined != "0"){
                                               return Center(
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -210,7 +206,7 @@ class _ProfileState extends State<Profile> {
                                                       color: Colors.grey,
                                                     ),
                                                     Text(
-                                                      "Sin conexión a Internet.\nLos datosque ves no\nestán actualizados.",
+                                                      "Sin conexión a Internet.\nLos datos que ves no\nestán actualizados.",
                                                       style: TextStyle(
                                                         fontSize: 20.0,
                                                         color: Colors.grey,
