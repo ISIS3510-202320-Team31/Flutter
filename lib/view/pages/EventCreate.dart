@@ -192,8 +192,8 @@ class _EventCreateState extends State<EventCreate> {
                                   if (intValue < 0) {
                                     return 'La duración del evento no puede ser negativa';
                                   }
-                                  if (intValue > 1440) {
-                                    return 'La duración del evento no puede ser mayor a 1440 minutos (24 horas)';
+                                  if (intValue > 999) {
+                                    return 'La duración del evento no puede ser mayor a 999 minutos';
                                   }
                                   return null;
                                 },
@@ -219,8 +219,8 @@ class _EventCreateState extends State<EventCreate> {
                                   if (intValue < 0) {
                                     return 'La cantidad de participantes no puede ser negativa';
                                   }
-                                  if (intValue > 1000000) {
-                                    return 'La cantidad no puede ser mayor a 1.000.000';
+                                  if (intValue > 999) {
+                                    return 'La cantidad no puede ser mayor a 999';
                                   }
 
                                   return null;
