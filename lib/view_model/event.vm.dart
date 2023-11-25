@@ -64,8 +64,8 @@ class EventVM extends ChangeNotifier {
     if (eventsJSON != null && eventsJSON.isNotEmpty) {
       final eventsRaw = json.decode(eventsJSON);
       final events = json.encode(eventsRaw['events']);
-      final cachedEvents = eventModelFromJson(events).events;
-      return cachedEvents;
+      final storedEvents = eventModelFromJson(events).events;
+      return storedEvents;
     } else {
       return [];
     }
@@ -75,6 +75,7 @@ class EventVM extends ChangeNotifier {
     secureStorage.writeSecureData(
         'feedEvents', eventModelToJson(eventModel.data!));
   }
+
 
   Future<void> saveLocalEventsFutureCalendar() async {
     secureStorage.writeSecureData('futureCalendarEvents',
@@ -97,8 +98,8 @@ class EventVM extends ChangeNotifier {
     if (eventsJSON != null && eventsJSON.isNotEmpty) {
       final eventsRaw = json.decode(eventsJSON);
       final events = json.encode(eventsRaw['events']);
-      final cachedEvents = eventModelFromJson(events).events;
-      return cachedEvents;
+      final storedEvents = eventModelFromJson(events).events;
+      return storedEvents;
     } else {
       return [];
     }
@@ -109,8 +110,8 @@ class EventVM extends ChangeNotifier {
     if (eventsJSON != null && eventsJSON.isNotEmpty) {
       final eventsRaw = json.decode(eventsJSON);
       final events = json.encode(eventsRaw['events']);
-      final cachedEvents = eventModelFromJson(events).events;
-      return cachedEvents;
+      final storedEvents = eventModelFromJson(events).events;
+      return storedEvents;
     } else {
       return [];
     }
@@ -121,8 +122,8 @@ class EventVM extends ChangeNotifier {
     if (eventsJSON != null && eventsJSON.isNotEmpty) {
       final eventsRaw = json.decode(eventsJSON);
       final events = json.encode(eventsRaw['events']);
-      final cachedEvents = eventModelFromJson(events).events;
-      return cachedEvents;
+      final storedEvents = eventModelFromJson(events).events;
+      return storedEvents;
     } else {
       return [];
     }
