@@ -5,7 +5,6 @@ import 'package:hive_app/view/widgets/QRscanner.dart';
 class Search extends StatelessWidget {
   final String userId;
   const Search({required this.userId});
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -27,7 +26,7 @@ class Search extends StatelessWidget {
           },
         ),
         SizedBox(width: MediaQuery.of(context).size.width * 0.25),
-        Text('HIVE!',
+        Text("HIVE !",
             style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold)),
         // Expanded(
         //   child: Container(

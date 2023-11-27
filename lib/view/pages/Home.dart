@@ -20,14 +20,17 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+
     _navOptions = [
       Feed(userId: widget.userId),
       EventCreate(userId: widget.userId),
       Calendar(userId: widget.userId),
       Profile(userId: widget.userId)
+      
     ];
     super.initState();
   }
+
 
   void _onItemTapped(int index) {
     setState(() {
