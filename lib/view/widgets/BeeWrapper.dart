@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_app/utils/Cache.dart';
 
 class BeeWrapper extends StatefulWidget {
   final Widget child;
@@ -20,6 +21,13 @@ class _BeeWrapperState extends State<BeeWrapper>
   @override
   void initState() {
     super.initState();
+    final double cachedBeeX = cache.read('beex') ?? 0;
+    final double cachedBeeY = cache.read('beey') ?? 0;
+    final bool cachedBeeFlipped = cache.read('beeflipped') ?? false;
+    setState(() {
+      _currentPosition = Offset(cachedBeeX, cachedBeeY);
+      _isFlipped = cachedBeeFlipped;
+    });
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 100),
@@ -51,12 +59,17 @@ class _BeeWrapperState extends State<BeeWrapper>
 
       _controller.forward(from: 0.0);
     });
+    cache.write('beex', _targetPosition.dx);
+    cache.write('beey', _targetPosition.dy);
+    cache.write('beeflipped', _isFlipped);
   }
 
   void onPointerMove(PointerEvent details) {
     setState(() {
       _currentPosition = details.localPosition;
     });
+    cache.write('beex', _currentPosition.dx);
+    cache.write('beey', _currentPosition.dy);
   }
 
   @override
