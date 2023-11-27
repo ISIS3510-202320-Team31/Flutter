@@ -38,7 +38,7 @@ class _EventCardState extends State<EventCard> {
             parameters: <String, String>{
               'id': "item_${widget.event.id!}",
               'name': "${widget.event.id!}:${widget.event.name!}",
-              'content_type': 'CardView Item (HomePage)',
+              'content_type': 'CardView Item (${widget.event.name})',
             },
           );
           showDialog(
