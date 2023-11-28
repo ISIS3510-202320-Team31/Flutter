@@ -18,7 +18,7 @@ class _BeeWrapperState extends State<BeeWrapper>
   Offset _currentPosition = const Offset(0, 0);
   Offset _targetPosition = const Offset(0, 0);
   bool _isFlipped = false;
-  bool _followFinger = true;
+  bool _followFinger = false;
 
   void toogleBeeFollowing() {
     setState(() {
