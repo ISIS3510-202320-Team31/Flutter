@@ -12,7 +12,6 @@ Future<void> initNotifications() async {
   );
 
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
 }
 
 Future<void> showNotification(String location) async {
@@ -28,7 +27,6 @@ Future<void> showNotification(String location) async {
   String notificationText =
       'Hemos detectado que estás $location hay muchos eventos esperandote.';
 
-  await flutterLocalNotificationsPlugin.show(1, '¡Eventos cercanos encontrados!',
-      notificationText, notificationDetails);
-      
+  await flutterLocalNotificationsPlugin.show(1,
+      '¡Eventos cercanos encontrados!', notificationText, notificationDetails);
 }
