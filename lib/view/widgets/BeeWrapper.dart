@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hive_app/utils/Cache.dart';
 
 class BeeWrapper extends StatefulWidget {
-  final Widget child;
+  final Widget Function(void Function()) childBuilder;
 
-  const BeeWrapper({Key? key, required this.child}) : super(key: key);
+  const BeeWrapper({Key? key, required this.childBuilder}) : super(key: key);
 
   @override
   _BeeWrapperState createState() => _BeeWrapperState();
@@ -12,22 +11,24 @@ class BeeWrapper extends StatefulWidget {
 
 class _BeeWrapperState extends State<BeeWrapper>
     with SingleTickerProviderStateMixin {
+  final double beeSize = 50.0;
+
   late AnimationController _controller;
   late Animation<Offset> _animation;
   Offset _currentPosition = const Offset(0, 0);
   Offset _targetPosition = const Offset(0, 0);
   bool _isFlipped = false;
+  bool _followFinger = true;
+
+  void toogleBeeFollowing() {
+    setState(() {
+      _followFinger = !_followFinger;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    final double cachedBeeX = cache.read('beex') ?? 0;
-    final double cachedBeeY = cache.read('beey') ?? 0;
-    final bool cachedBeeFlipped = cache.read('beeflipped') ?? false;
-    setState(() {
-      _currentPosition = Offset(cachedBeeX, cachedBeeY);
-      _isFlipped = cachedBeeFlipped;
-    });
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 100),
@@ -47,7 +48,8 @@ class _BeeWrapperState extends State<BeeWrapper>
 
   void onPointerDown(PointerEvent details) {
     setState(() {
-      _targetPosition = details.localPosition;
+      _targetPosition =
+          details.localPosition - Offset(beeSize / 2, beeSize / 2);
       _isFlipped = _targetPosition.dx > _currentPosition.dx;
 
       _animation = Tween<Offset>(
@@ -59,41 +61,41 @@ class _BeeWrapperState extends State<BeeWrapper>
 
       _controller.forward(from: 0.0);
     });
-    cache.write('beex', _targetPosition.dx);
-    cache.write('beey', _targetPosition.dy);
-    cache.write('beeflipped', _isFlipped);
   }
 
   void onPointerMove(PointerEvent details) {
     setState(() {
-      _currentPosition = details.localPosition;
+      _currentPosition =
+          details.localPosition - Offset(beeSize / 2, beeSize / 2);
     });
-    cache.write('beex', _currentPosition.dx);
-    cache.write('beey', _currentPosition.dy);
   }
 
   @override
   Widget build(BuildContext context) {
     return Listener(
-      onPointerDown: onPointerDown,
-      onPointerMove: onPointerMove,
+      onPointerDown: _followFinger ? onPointerDown : null,
+      onPointerMove: _followFinger ? onPointerMove : null,
       child: Stack(
         children: <Widget>[
-          widget.child,
-          Positioned(
-            left: _currentPosition.dx,
-            top: _currentPosition.dy,
-            child: Transform(
-              transform: Matrix4.identity()
-                ..scale(_isFlipped ? -1.0 : 1.0, 1.0),
-              alignment: Alignment.center,
-              child: Image.asset(
-                'assets/images/bee_icon.png',
-                width: 50,
-                height: 50,
-              ),
-            ),
-          ),
+          widget.childBuilder(toogleBeeFollowing),
+          _followFinger
+              ? Positioned(
+                  left: _currentPosition.dx,
+                  top: _currentPosition.dy,
+                  child: IgnorePointer(
+                    child: Transform(
+                      transform: Matrix4.identity()
+                        ..scale(_isFlipped ? -1.0 : 1.0, 1.0),
+                      alignment: Alignment.center,
+                      child: Image.asset(
+                        'assets/images/bee_icon.png',
+                        width: beeSize,
+                        height: beeSize,
+                      ),
+                    ),
+                  ),
+                )
+              : Container(),
         ],
       ),
     );

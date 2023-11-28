@@ -58,7 +58,7 @@ class _ProfileState extends State<Profile> {
           } else {
             final timeSinceInstallation = snapshot.data;
             return BeeWrapper(
-              child: Stack(
+              childBuilder: (toggleBeeFollowing) => Stack(
                 children: <Widget>[
                   Container(
                     decoration: BoxDecoration(
@@ -81,6 +81,7 @@ class _ProfileState extends State<Profile> {
                           children: [
                             ViewsHeader(
                               titleText: "Perfil",
+                              imageCallback: toggleBeeFollowing,
                             ),
                             Card(
                               margin: EdgeInsets.only(
