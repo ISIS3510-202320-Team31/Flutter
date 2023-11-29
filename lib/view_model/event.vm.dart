@@ -71,6 +71,10 @@ class EventVM extends ChangeNotifier {
     }
   }
 
+  Future<List<String>> statsUser() async {
+    return await Future.delayed(1.0 as Duration).then((value) => []);
+  }
+
   Future<void> saveLocalEventsFeed() async {
     secureStorage.writeSecureData(
         'feedEvents', eventModelToJson(eventModel.data!));

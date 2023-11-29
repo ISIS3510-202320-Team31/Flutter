@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_app/utils/Cache.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
+import 'package:hive_app/view/pages/Stats.dart';
 import 'package:hive_app/view/widgets/ViewsHeader.dart';
 import 'package:hive_app/utils/time_calculator.dart';
 import 'package:hive_app/view_model/user.vm.dart';
@@ -344,6 +345,34 @@ class _ProfileState extends State<Profile> {
                             ElevatedButton(
                               onPressed: () {
                                 // remove all the information in local storage
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Stats(),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                shadowColor: Colors.black,
+                                elevation: 6,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(6),
+                                child: Text(
+                                  'Mis estadísticas',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                // remove all the information in local storage
                                 secureStorage.flushSecureData();
                                 sharedPreferences.then((value) {
                                   value.clear();
@@ -357,7 +386,7 @@ class _ProfileState extends State<Profile> {
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
+                                backgroundColor: Colors.red[700],
                                 shadowColor: Colors.black,
                                 elevation: 6,
                               ),
