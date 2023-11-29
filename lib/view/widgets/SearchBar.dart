@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/widgets/QRscanner.dart';
+import 'package:intl/intl.dart';
 
 class Search extends StatelessWidget {
   final String userId;
@@ -26,7 +27,7 @@ class Search extends StatelessWidget {
           },
         ),
         SizedBox(width: MediaQuery.of(context).size.width * 0.25),
-        Text("HIVE !",
+        Text(Intl.message('helloWorld'),
             style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold)),
         // Expanded(
         //   child: Container(
