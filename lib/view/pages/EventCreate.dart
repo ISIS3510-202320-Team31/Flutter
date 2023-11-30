@@ -97,7 +97,7 @@ class _EventCreateState extends State<EventCreate> {
       onWillPop: () async {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Home(userId: widget.userId)),
+          MaterialPageRoute(builder: (context) => Home(userId: widget.userId, initial_index: 0)),
         );
         return true;
       },
@@ -455,7 +455,7 @@ class _EventCreateState extends State<EventCreate> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Home(userId: widget.userId)),
+                    builder: (context) => Home(userId: widget.userId, initial_index: 0)),
               );
             });
             return Container();

@@ -39,6 +39,13 @@ class _ProfileState extends State<Profile> {
       stats = true;
     });
   }
+  void hideStats()
+  {
+      Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home(userId: widget.userId, initial_index: 3)),
+                );
+  }
 
   @override
   void initState() {
@@ -49,15 +56,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Home(userId: widget.userId)),
-        );
-        return true;
-      },
-      child: FutureBuilder<Duration>(
+    return FutureBuilder<Duration>(
         future: calculateTimeSinceInstallation(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -68,11 +67,26 @@ class _ProfileState extends State<Profile> {
             final timeSinceInstallation = snapshot.data;
             if (stats == true)
             {
-              return Stats(userId: widget.userId);
+              return 
+              WillPopScope(child: Stats(userId: widget.userId), 
+              onWillPop: () async {
+              hideStats();
+              return false;
+              },
+              );
             }
             else
             {
-            return BeeWrapper(
+            return 
+            WillPopScope(
+              onWillPop: () async {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home(userId: widget.userId, initial_index: 0)),
+                );
+                return true;
+              },
+          child: BeeWrapper(
               childBuilder: (toggleBeeFollowing) => Stack(
                 children: <Widget>[
                   Container(
@@ -416,11 +430,10 @@ class _ProfileState extends State<Profile> {
                   ),
                 ],
               ),
-            );}
+            ));}
           }
         },
-      ),
-    );
+      );
   }
 }
 
