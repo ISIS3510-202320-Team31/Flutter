@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
 
-class PartnersCard extends StatefulWidget {
-  final partners;
+import '../../view_model/user.vm.dart';
 
-  const PartnersCard({required this.partners});
+class PartnersCard extends StatefulWidget {
+  final userId;
+
+  const PartnersCard({required this.userId});
 
   @override
   _PartnersCardState createState() => _PartnersCardState();
 }
 
 class _PartnersCardState extends State<PartnersCard> {
+  final UserVM userVM = UserVM();
+
+  @override
+  void initState() {
+    super.initState();
+    userVM.getPartners(widget.userId);
+  }
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -25,7 +34,7 @@ class _PartnersCardState extends State<PartnersCard> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              "Personas que más asisten a mis eventos",
+              "Personas que más asisten conmigo a eventos",
               style: TextStyle(
                 color: const Color.fromARGB(255, 0, 0, 0),
                 fontWeight: FontWeight.bold,
@@ -33,21 +42,21 @@ class _PartnersCardState extends State<PartnersCard> {
               ),
               textAlign: TextAlign.center,
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: widget.partners.length,
-              itemBuilder: (context, index) {
-                final person = widget.partners[index];
-                return Container(
-                  child: Center(
-                    child: Text(person,style: TextStyle(
-                color: const Color.fromARGB(255, 0, 0, 0),
-                fontSize: 16.0,
-              ),),
-                  ),
-                );
-              },
-            ),
+            // ListView.builder(
+            //   shrinkWrap: true,
+            //   itemCount: widget.partners.length,
+            //   itemBuilder: (context, index) {
+            //     final person = widget.partners[index];
+            //     return Container(
+            //       child: Center(
+            //         child: Text(person,style: TextStyle(
+            //     color: const Color.fromARGB(255, 0, 0, 0),
+            //     fontSize: 16.0,
+            //   ),),
+            //       ),
+            //     );
+            //   },
+            // ),
             SizedBox(height: 30.0),
           ],
         ),

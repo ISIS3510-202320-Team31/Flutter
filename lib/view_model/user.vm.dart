@@ -15,10 +15,17 @@ class UserVM extends ChangeNotifier {
   ApiResponse<User> user = ApiResponse.none();
   ApiResponse<String> userId = ApiResponse.none();
   ApiResponse<int> participation = ApiResponse.none();
+  ApiResponse<List> partners = ApiResponse.none();
 
   void _setUserMain(ApiResponse<UserModel> response) {
     print("Response: $response");
     userModel = response;
+    notifyListeners();
+  }
+
+ void _setPartnersMain(ApiResponse<List> response) {
+    print("Response: $response");
+    partners = response;
     notifyListeners();
   }
 
@@ -58,6 +65,19 @@ class UserVM extends ChangeNotifier {
     _myRepo
         .getUserById(userId)
         .then((value) => _setUser(ApiResponse.completed(value)))
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setUser(ApiResponse.offline())}
+              else
+                {_setUser(ApiResponse.error(error.toString()))}
+            });
+  }
+
+  Future<void> getPartners(String userId) async {
+    _setPartnersMain(ApiResponse.loading());
+    _myRepo
+        .getPartners(userId)
+        .then((value) => _setPartnersMain(ApiResponse.completed(value)))
         .onError((error, stackTrace) => {
               if (error.toString() == "No Internet Connection")
                 {_setUser(ApiResponse.offline())}
