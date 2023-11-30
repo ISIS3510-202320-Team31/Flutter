@@ -40,6 +40,19 @@ class UserRepoImpl extends UserRepo {
     }
   }
 
+Future<List> getPartners(String userId) async {
+    try {
+      dynamic response = await _apiService
+          .getResponse(ApiEndPoints().usersEndPoint + '$userId/partners');
+      print("Log: $response");
+      final jsonData = response;
+      return jsonData;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+
   Future<Participation?> getParticipationById(String userId) async {
     try {
       dynamic response = await _apiService.getResponse(
