@@ -24,7 +24,8 @@ class EventVM extends ChangeNotifier {
     eventModel = response;
     notifyListeners();
   }
-   void _setStats(ApiResponse<List<dynamic>> response) {
+
+  void _setStats(ApiResponse<List<dynamic>> response) {
     print("Response: $response");
     stats = response;
     notifyListeners();
@@ -79,8 +80,8 @@ class EventVM extends ChangeNotifier {
     }
   }
 
-  Future<void>statsUser(String userId) async {
-     _setStats(ApiResponse.loading());
+  Future<void> statsUser(String userId) async {
+    _setStats(ApiResponse.loading());
     _myRepo
         .getStats(userId)
         .then((value) => _setStats(ApiResponse.completed(value)))
@@ -95,6 +96,10 @@ class EventVM extends ChangeNotifier {
   Future<void> saveLocalEventsFeed() async {
     secureStorage.writeSecureData(
         'feedEvents', eventModelToJson(eventModel.data!));
+  }
+
+  Future<void> saveLocalStats() async {
+    secureStorage.writeSecureData('stats', json.encode(stats.data));
   }
 
   Future<void> saveLocalEventsFutureCalendar() async {
@@ -120,6 +125,16 @@ class EventVM extends ChangeNotifier {
       final events = json.encode(eventsRaw['events']);
       final storedEvents = eventModelFromJson(events).events;
       return storedEvents;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<Event>> getLocalStats() async {
+    final statsJSON = await secureStorage.readSecureData("stats");
+    if (statsJSON != null && statsJSON.isNotEmpty) {
+      final stats = json.decode(statsJSON);
+      return stats;
     } else {
       return [];
     }
