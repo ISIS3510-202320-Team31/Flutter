@@ -21,13 +21,13 @@ class _FeedState extends State<Feed> {
   final EventVM eventVM = EventVM();
   
 
-  Future<List<Event>>? cachedEventsFuture;
+  Future<List<Event>>? storedEventsFuture;
   late final void Function() updateFunction;
 
   @override
   void initState() {
     super.initState();
-    cachedEventsFuture = eventVM.getLocalEventsFeed();
+    storedEventsFuture = eventVM.getLocalEventsFeed();
     eventVM.fetchEventsForUser(widget.userId);
 
     updateFunction = () {
@@ -56,9 +56,9 @@ class _FeedState extends State<Feed> {
                 switch (viewModel.eventModel.status) {
                   case Status.LOADING:
                     print("Log :: LOADING");
-                    cachedEventsFuture = eventVM.getLocalEventsFeed();
+                    storedEventsFuture = eventVM.getLocalEventsFeed();
                     return FutureBuilder<List<Event>>(
-                        future: cachedEventsFuture,
+                        future: storedEventsFuture,
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting)
@@ -83,9 +83,9 @@ class _FeedState extends State<Feed> {
                         });
                   case Status.OFFLINE:
                     print("Log :: OFFLINE");
-                    cachedEventsFuture = eventVM.getLocalEventsFeed();
+                    storedEventsFuture = eventVM.getLocalEventsFeed();
                     return FutureBuilder<List<Event>>(
-                        future: cachedEventsFuture,
+                        future: storedEventsFuture,
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting)
@@ -126,9 +126,9 @@ class _FeedState extends State<Feed> {
                         });
                   case Status.ERROR:
                     print("Log :: ERROR");
-                    cachedEventsFuture = eventVM.getLocalEventsFeed();
+                    storedEventsFuture = eventVM.getLocalEventsFeed();
                     return FutureBuilder<List<Event>>(
-                        future: cachedEventsFuture,
+                        future: storedEventsFuture,
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting)

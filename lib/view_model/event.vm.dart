@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:hive_app/data/remote/response/ApiResponse.dart';
@@ -64,17 +66,30 @@ class EventVM extends ChangeNotifier {
     if (eventsJSON != null && eventsJSON.isNotEmpty) {
       final eventsRaw = json.decode(eventsJSON);
       final events = json.encode(eventsRaw['events']);
-      final cachedEvents = eventModelFromJson(events).events;
-      return cachedEvents;
+      final storedEvents = eventModelFromJson(events).events;
+      return storedEvents;
     } else {
       return [];
     }
+  }
+  Color color(){
+    return Color.fromARGB(
+      255,
+      Random().nextInt(256),
+      Random().nextInt(256),
+      Random().nextInt(256),
+    );
+  }
+  statsUser()  {
+    final percentage = [{"category":"ACADEMICO","value":22.0,"color":color()},{"category":"CULTURAL","value":78.0,"color":color()}];
+    return  percentage;
   }
 
   Future<void> saveLocalEventsFeed() async {
     secureStorage.writeSecureData(
         'feedEvents', eventModelToJson(eventModel.data!));
   }
+
 
   Future<void> saveLocalEventsFutureCalendar() async {
     secureStorage.writeSecureData('futureCalendarEvents',
@@ -97,8 +112,8 @@ class EventVM extends ChangeNotifier {
     if (eventsJSON != null && eventsJSON.isNotEmpty) {
       final eventsRaw = json.decode(eventsJSON);
       final events = json.encode(eventsRaw['events']);
-      final cachedEvents = eventModelFromJson(events).events;
-      return cachedEvents;
+      final storedEvents = eventModelFromJson(events).events;
+      return storedEvents;
     } else {
       return [];
     }
@@ -109,8 +124,8 @@ class EventVM extends ChangeNotifier {
     if (eventsJSON != null && eventsJSON.isNotEmpty) {
       final eventsRaw = json.decode(eventsJSON);
       final events = json.encode(eventsRaw['events']);
-      final cachedEvents = eventModelFromJson(events).events;
-      return cachedEvents;
+      final storedEvents = eventModelFromJson(events).events;
+      return storedEvents;
     } else {
       return [];
     }
@@ -121,8 +136,8 @@ class EventVM extends ChangeNotifier {
     if (eventsJSON != null && eventsJSON.isNotEmpty) {
       final eventsRaw = json.decode(eventsJSON);
       final events = json.encode(eventsRaw['events']);
-      final cachedEvents = eventModelFromJson(events).events;
-      return cachedEvents;
+      final storedEvents = eventModelFromJson(events).events;
+      return storedEvents;
     } else {
       return [];
     }

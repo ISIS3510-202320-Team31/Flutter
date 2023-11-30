@@ -34,11 +34,11 @@ class _CalendarState extends State<Calendar> {
   final UserVM userVM = UserVM();
   int currentSelected = 1;
 
-  late Future<List<Event>> cachedCalendarFuture;
+  late Future<List<Event>> storedCalendarFuture;
   late final void Function() updateFunctionFuture;
-  late Future<List<Event>> cachedCalendarPast;
+  late Future<List<Event>> storedCalendarPast;
   late final void Function() updateFunctionPast;
-  late Future<List<Event>> cachedCalendarByOwner;
+  late Future<List<Event>> storedCalendarByOwner;
   late final void Function() updateFunctionByOwner;
 
   void Function() updateFunctionFunction(
@@ -54,9 +54,9 @@ class _CalendarState extends State<Calendar> {
   @override
   void initState() {
     super.initState();
-    cachedCalendarFuture = eventVM.getLocalCalendarFuture();
-    cachedCalendarPast = eventVM.getLocalCalendarPast();
-    cachedCalendarByOwner = eventVM.getLocalEventsByOwner();
+    storedCalendarFuture = eventVM.getLocalCalendarFuture();
+    storedCalendarPast = eventVM.getLocalCalendarPast();
+    storedCalendarByOwner = eventVM.getLocalEventsByOwner();
 
     actualDate = selectedDate.toLocal().toString().split(' ')[0];
 
@@ -71,7 +71,7 @@ class _CalendarState extends State<Calendar> {
       onWillPop: () async {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Home(userId: widget.userId)),
+          MaterialPageRoute(builder: (context) => Home(userId: widget.userId, initial_index: 0)),
         );
         return true;
       },
@@ -132,11 +132,11 @@ class _CalendarState extends State<Calendar> {
                       print("Log :: LOADING");
                       return FutureBuilder<List<Event>?>(future: () async {
                         if (orderFuture == '0') {
-                          return cachedCalendarPast;
+                          return storedCalendarPast;
                         } else if (orderFuture == '1') {
-                          return cachedCalendarFuture;
+                          return storedCalendarFuture;
                         } else {
-                          return cachedCalendarByOwner;
+                          return storedCalendarByOwner;
                         }
                       }(), builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting)
@@ -161,16 +161,16 @@ class _CalendarState extends State<Calendar> {
                       });
                     case Status.OFFLINE:
                       print("Log :: OFFLINE");
-                      cachedCalendarFuture = eventVM.getLocalCalendarFuture();
-                      cachedCalendarPast = eventVM.getLocalCalendarPast();
-                      cachedCalendarByOwner = eventVM.getLocalEventsByOwner();
+                      storedCalendarFuture = eventVM.getLocalCalendarFuture();
+                      storedCalendarPast = eventVM.getLocalCalendarPast();
+                      storedCalendarByOwner = eventVM.getLocalEventsByOwner();
                       return FutureBuilder<List<Event>>(future: () async {
                         if (orderFuture == '0') {
-                          return cachedCalendarPast;
+                          return storedCalendarPast;
                         } else if (orderFuture == '1') {
-                          return cachedCalendarFuture;
+                          return storedCalendarFuture;
                         } else {
-                          return cachedCalendarByOwner;
+                          return storedCalendarByOwner;
                         }
                       }(), builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting)
@@ -251,16 +251,16 @@ class _CalendarState extends State<Calendar> {
                       });
                     case Status.ERROR:
                       print("Log :: ERROR");
-                      cachedCalendarFuture = eventVM.getLocalCalendarFuture();
-                      cachedCalendarPast = eventVM.getLocalCalendarPast();
-                      cachedCalendarByOwner = eventVM.getLocalEventsByOwner();
+                      storedCalendarFuture = eventVM.getLocalCalendarFuture();
+                      storedCalendarPast = eventVM.getLocalCalendarPast();
+                      storedCalendarByOwner = eventVM.getLocalEventsByOwner();
                       return FutureBuilder<List<Event>>(future: () async {
                         if (orderFuture == '0') {
-                          return cachedCalendarPast;
+                          return storedCalendarPast;
                         } else if (orderFuture == '1') {
-                          return cachedCalendarFuture;
+                          return storedCalendarFuture;
                         } else {
-                          return cachedCalendarByOwner;
+                          return storedCalendarByOwner;
                         }
                       }(), builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting)
@@ -284,11 +284,11 @@ class _CalendarState extends State<Calendar> {
                                     eventVM: eventVM,
                                     updateFunction: () async {
                                       if (orderFuture == '0') {
-                                        return cachedCalendarPast;
+                                        return storedCalendarPast;
                                       } else if (orderFuture == '1') {
-                                        return cachedCalendarFuture;
+                                        return storedCalendarFuture;
                                       } else {
-                                        return cachedCalendarByOwner;
+                                        return storedCalendarByOwner;
                                       }
                                     }))
                           ]));

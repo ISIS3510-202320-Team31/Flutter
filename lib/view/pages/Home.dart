@@ -7,19 +7,21 @@ import 'package:hive_app/view/pages/Feed.dart';
 
 class Home extends StatefulWidget {
   final String userId;
-  const Home({super.key, required this.userId});
+  final int initial_index;
+  const Home({super.key, required this.userId, required this.initial_index});
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
   List<Widget> _navOptions = [];
 
   @override
   void initState() {
+    _selectedIndex=widget.initial_index;
     _navOptions = [
       Feed(userId: widget.userId),
       EventCreate(userId: widget.userId),
