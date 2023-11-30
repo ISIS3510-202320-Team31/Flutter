@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_app/view/widgets/OfflineWidget.dart';
 import 'package:hive_app/view_model/event.vm.dart';
 import 'package:provider/provider.dart';
 
@@ -16,12 +17,14 @@ class PieChartGraph extends StatefulWidget {
 
 class _PieChartGraphState extends State<PieChartGraph> {
   final EventVM eventVM = EventVM();
+  Future<List>? storedStats;
   Color hexToColor(String code) {
     return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
   }
 
   @override
   void initState() {
+    storedStats = eventVM.getLocalStats();
     super.initState();
     eventVM.statsUser(widget.userId);
   }
@@ -42,19 +45,88 @@ class _PieChartGraphState extends State<PieChartGraph> {
               switch (viewModel.stats.status) {
                 case Status.LOADING:
                   print("Log :: LOADING");
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return FutureBuilder<List>(
+                      future: storedStats,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting)
+                          return Container();
+                        else if (snapshot.hasError) {
+                          return Container();
+                        } else if (snapshot.hasData) {
+                          return Column(
+                            children: [
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.02),
+                              Center(
+                                  child: Text(
+                                "Eventos por categoría",
+                                style: TextStyle(
+                                  color: const Color.fromARGB(255, 0, 0,
+                                      0), // Ajusta el color del texto según sea necesario
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0,
+                                ),
+                              )),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.08),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: PieChart(
+                                        PieChartData(
+                                          sectionsSpace: 0,
+                                          centerSpaceRadius: 0,
+                                          sections: List.generate(
+                                            snapshot.data!.length,
+                                            (index) => PieChartSectionData(
+                                              color: hexToColor(snapshot
+                                                  .data?[index]["color"]),
+                                              value: snapshot.data?[index]
+                                                  ["value"],
+                                              title: snapshot.data![index]
+                                                          ["value"]
+                                                      .toString() +
+                                                  "%",
+                                              radius: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.25,
+                                              titleStyle: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.05),
+                              Expanded(
+                                flex: 2,
+                                child: LegendList(data: snapshot.data),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                            ],
+                          );
+                        } else
+                          return Container();
+                      });
                 case Status.OFFLINE:
                   print("Log :: OFFLINE");
-                  return Center(
-                    child: Text(
-                      "Revisa tu conexión y refresca la página",
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
-                  );
+                  return OfflineWidget();
                 case Status.ERROR:
                   print("Log :: ERROR");
                   return Center(
@@ -62,6 +134,7 @@ class _PieChartGraphState extends State<PieChartGraph> {
                         "Estamos presentando errores... Intenta refrescar"),
                   );
                 case Status.COMPLETED:
+                  eventVM.saveLocalStats();
                   print("Log :: COMPLETED");
                   // eventVM.saveLocalEventsFeed();
                   return Column(
@@ -79,7 +152,7 @@ class _PieChartGraphState extends State<PieChartGraph> {
                         ),
                       )),
                       SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.08),
+                          height: MediaQuery.of(context).size.height * 0.1),
                       Expanded(
                         child: Row(
                           children: [
@@ -148,26 +221,31 @@ class LegendList extends StatelessWidget {
       return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
     }
 
-    return ListView.builder(
-      itemCount: data?.length,
-      itemBuilder: (context, index) {
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: MediaQuery.of(context).size.width * 0.02,
-                  backgroundColor: hexToColor(data?[index]["color"]),
-                ),
-                SizedBox(width: 10),
-                Text(data?[index]["category"]),
-              ],
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.2,
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: data?.length,
+        itemBuilder: (context, index) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: MediaQuery.of(context).size.width * 0.02,
+                    backgroundColor: hexToColor(data?[index]["color"]),
+                  ),
+                  SizedBox(width: 10),
+                  Text(data?[index]["category"]),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

@@ -98,6 +98,10 @@ class EventVM extends ChangeNotifier {
         'feedEvents', eventModelToJson(eventModel.data!));
   }
 
+  Future<void> saveLocalStats() async {
+    secureStorage.writeSecureData('stats', json.encode(stats.data));
+  }
+
   Future<void> saveLocalEventsFutureCalendar() async {
     secureStorage.writeSecureData('futureCalendarEvents',
         eventModelToJson(eventModelCalendarFuture.data!));
@@ -121,6 +125,16 @@ class EventVM extends ChangeNotifier {
       final events = json.encode(eventsRaw['events']);
       final storedEvents = eventModelFromJson(events).events;
       return storedEvents;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<Event>> getLocalStats() async {
+    final statsJSON = await secureStorage.readSecureData("stats");
+    if (statsJSON != null && statsJSON.isNotEmpty) {
+      final stats = json.decode(statsJSON);
+      return stats;
     } else {
       return [];
     }

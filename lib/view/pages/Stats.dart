@@ -43,10 +43,6 @@ class _StatsState extends State<Stats> {
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               PartnersCard(userId: widget.userId),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-            ]
-            )
-          )
-        )
-      );
+            ]))));
   }
 }

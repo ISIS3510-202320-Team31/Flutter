@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_app/view/widgets/OfflineWidget.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/remote/response/Status.dart';
@@ -43,14 +44,7 @@ class _PartnersCardState extends State<PartnersCard> {
                 );
               case Status.OFFLINE:
                 print("Log :: OFFLINE");
-                return Center(
-                  child: Text(
-                    "Revisa tu conexión y refresca la página",
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                );
+                return OfflineWidget();
               case Status.ERROR:
                 print("Log :: ERROR");
                 return Center(
@@ -77,6 +71,7 @@ class _PartnersCardState extends State<PartnersCard> {
                       ),
                       ListView.builder(
                         shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
                         itemCount: viewModel.partners.data!.length,
                         itemBuilder: (context, index) {
                           final person = viewModel.partners.data?[index];
