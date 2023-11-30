@@ -16,6 +16,7 @@ class UserVM extends ChangeNotifier {
   ApiResponse<String> userId = ApiResponse.none();
   ApiResponse<int> participation = ApiResponse.none();
   ApiResponse<List> partners = ApiResponse.none();
+  ApiResponse<List> TopCreators = ApiResponse.none();
 
   void _setUserMain(ApiResponse<UserModel> response) {
     print("Response: $response");
@@ -45,6 +46,25 @@ class UserVM extends ChangeNotifier {
     print("Response: $response");
     participation = response;
     notifyListeners();
+  }
+
+  void _setTopCreators(ApiResponse<List> response) {
+    print("Response: $response");
+    TopCreators = response;
+    notifyListeners();
+  }
+
+  Future<void> fetchTopCreators() async {
+    _setTopCreators(ApiResponse.loading());
+    _myRepo
+        .getTopCreators()
+        .then((value) => _setTopCreators(ApiResponse.completed(value)))
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setTopCreators(ApiResponse.offline())}
+              else
+                {_setTopCreators(ApiResponse.error(error.toString()))}
+            });
   }
 
   getUserId() {

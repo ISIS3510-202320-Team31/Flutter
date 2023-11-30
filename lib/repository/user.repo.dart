@@ -40,6 +40,19 @@ class UserRepoImpl extends UserRepo {
     }
   }
 
+  
+  Future<List> getTopCreators() async {
+    try {
+      dynamic response = await _apiService
+          .getResponse('top_creators');
+      print("Log: $response");
+      final jsonData = response;
+      return jsonData;
+    } catch (e) {
+      throw e;
+    }
+  }
+
 Future<List> getPartners(String userId) async {
     try {
       dynamic response = await _apiService

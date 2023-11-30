@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_app/utils/Cache.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
+import 'package:hive_app/view/pages/ListTopCreator.dart';
 import 'package:hive_app/view/pages/Stats.dart';
 import 'package:hive_app/view/widgets/ViewsHeader.dart';
 import 'package:hive_app/utils/time_calculator.dart';
@@ -32,6 +33,7 @@ class _ProfileState extends State<Profile> {
   String _timeOnApp = cache.read("time-on-app") ?? "0";
   String _eventsJoined = cache.read("events-joined") ?? "0";
   bool stats=false;
+  bool topCreators=false;
 
   void showStats()
   {
@@ -44,6 +46,20 @@ class _ProfileState extends State<Profile> {
       Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => Home(userId: widget.userId, initial_index: 3)),
+                );
+  }
+
+  void showTopCreators()
+  {
+    setState(() {
+      topCreators = true;
+    });
+  }
+  void hideTopCreators()
+  {
+      Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home(userId: widget.userId, initial_index: 4)),
                 );
   }
 
@@ -65,17 +81,25 @@ class _ProfileState extends State<Profile> {
             return Text('Error: ${snapshot.error}');
           } else {
             final timeSinceInstallation = snapshot.data;
-            if (stats == true)
-            {
-              return 
-              WillPopScope(child: Stats(userId: widget.userId), 
-              onWillPop: () async {
-              hideStats();
-              return false;
-              },
+            if (stats == true) {
+              return WillPopScope(
+                child: Stats(userId: widget.userId),
+                onWillPop: () async {
+                  hideStats();
+                  return false;
+                },
               );
             }
-            else
+            if (topCreators == true) {
+              return WillPopScope(
+                child: ListTopCreator(userId: widget.userId),  // Replace with your actual widget
+                onWillPop: () async {
+                  hideTopCreators();
+                  return false;
+                },
+              );
+            } 
+            else 
             {
             return 
             WillPopScope(
@@ -383,7 +407,30 @@ class _ProfileState extends State<Profile> {
                               child: Padding(
                                 padding: const EdgeInsets.all(6),
                                 child: Text(
-                                  'Mis estadísticas',
+                                  'Mis estadisticas',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                // remove all the information in local storage
+                                showTopCreators();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color.fromARGB(255, 163, 33, 243),
+                                shadowColor: Colors.black,
+                                elevation: 6,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(6),
+                                child: Text(
+                                  'Mayores Creadores',
                                   style: TextStyle(
                                     fontSize: 20,
                                   ),
