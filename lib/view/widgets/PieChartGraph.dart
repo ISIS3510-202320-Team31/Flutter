@@ -100,7 +100,9 @@ class _PieChartGraphState extends State<PieChartGraph> {
                                               .stats.data![index]["value"]
                                               .toString() +
                                           "%",
-                                      radius: MediaQuery.of(context).size.width *0.25,
+                                      radius:
+                                          MediaQuery.of(context).size.width *
+                                              0.25,
                                       titleStyle: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,

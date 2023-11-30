@@ -24,7 +24,8 @@ class EventVM extends ChangeNotifier {
     eventModel = response;
     notifyListeners();
   }
-   void _setStats(ApiResponse<List<dynamic>> response) {
+
+  void _setStats(ApiResponse<List<dynamic>> response) {
     print("Response: $response");
     stats = response;
     notifyListeners();
@@ -79,8 +80,8 @@ class EventVM extends ChangeNotifier {
     }
   }
 
-  Future<void>statsUser(String userId) async {
-     _setStats(ApiResponse.loading());
+  Future<void> statsUser(String userId) async {
+    _setStats(ApiResponse.loading());
     _myRepo
         .getStats(userId)
         .then((value) => _setStats(ApiResponse.completed(value)))

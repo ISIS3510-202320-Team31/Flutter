@@ -97,7 +97,9 @@ class _EventCreateState extends State<EventCreate> {
       onWillPop: () async {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Home(userId: widget.userId, initial_index: 0)),
+          MaterialPageRoute(
+              builder: (context) =>
+                  Home(userId: widget.userId, initial_index: 0)),
         );
         return true;
       },
@@ -216,8 +218,8 @@ class _EventCreateState extends State<EventCreate> {
                                   if (intValue == null) {
                                     return 'Por favor, ingresa un número válido';
                                   }
-                                  if (intValue < 0) {
-                                    return 'La cantidad de participantes no puede ser negativa';
+                                  if (intValue <= 0) {
+                                    return 'La cantidad de participantes no puede ser negativa o cero';
                                   }
                                   if (intValue > 999) {
                                     return 'La cantidad no puede ser mayor a 999';
@@ -455,7 +457,8 @@ class _EventCreateState extends State<EventCreate> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Home(userId: widget.userId, initial_index: 0)),
+                    builder: (context) =>
+                        Home(userId: widget.userId, initial_index: 0)),
               );
             });
             return Container();
