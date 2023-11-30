@@ -28,43 +28,43 @@ class _PieChartGraphState extends State<PieChartGraph> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<EventVM>(
-      create: (BuildContext context) => eventVM,
-      child: Consumer<EventVM>(
-        builder: (context, viewModel, _) {
-          switch (viewModel.stats.status) {
-            case Status.LOADING:
-              print("Log :: LOADING");
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            case Status.OFFLINE:
-              print("Log :: OFFLINE");
-              return Center(
-                child: Text(
-                  "Revisa tu conexión y refresca la página",
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-              );
-            case Status.ERROR:
-              print("Log :: ERROR");
-              return Center(
-                child: Text("Estamos presentando errores... Intenta refrescar"),
-              );
-            case Status.COMPLETED:
-              print("Log :: COMPLETED");
-              // eventVM.saveLocalEventsFeed();
-              return Expanded(
-                child: Card(
-                  margin: EdgeInsets.only(
-                      left: 8.0, right: 8.0, bottom: 10, top: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
-                  elevation: 8,
-                  child: Column(
+    return Expanded(
+      child: Card(
+        margin: EdgeInsets.all(8.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        elevation: 8,
+        child: ChangeNotifierProvider<EventVM>(
+          create: (BuildContext context) => eventVM,
+          child: Consumer<EventVM>(
+            builder: (context, viewModel, _) {
+              switch (viewModel.stats.status) {
+                case Status.LOADING:
+                  print("Log :: LOADING");
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                case Status.OFFLINE:
+                  print("Log :: OFFLINE");
+                  return Center(
+                    child: Text(
+                      "Revisa tu conexión y refresca la página",
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  );
+                case Status.ERROR:
+                  print("Log :: ERROR");
+                  return Center(
+                    child: Text(
+                        "Estamos presentando errores... Intenta refrescar"),
+                  );
+                case Status.COMPLETED:
+                  print("Log :: COMPLETED");
+                  // eventVM.saveLocalEventsFeed();
+                  return Column(
                     children: [
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02),
@@ -100,7 +100,7 @@ class _PieChartGraphState extends State<PieChartGraph> {
                                               .stats.data![index]["value"]
                                               .toString() +
                                           "%",
-                                      radius: 120,
+                                      radius: MediaQuery.of(context).size.width *0.25,
                                       titleStyle: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
@@ -123,13 +123,13 @@ class _PieChartGraphState extends State<PieChartGraph> {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.01),
                     ],
-                  ),
-                ),
-              );
-            default:
-              return Container();
-          }
-        },
+                  );
+                default:
+                  return Container();
+              }
+            },
+          ),
+        ),
       ),
     );
   }
@@ -156,7 +156,7 @@ class LegendList extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircleAvatar(
-                  radius: 10,
+                  radius: MediaQuery.of(context).size.width * 0.02,
                   backgroundColor: hexToColor(data?[index]["color"]),
                 ),
                 SizedBox(width: 10),

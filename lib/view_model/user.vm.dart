@@ -80,9 +80,9 @@ class UserVM extends ChangeNotifier {
         .then((value) => _setPartnersMain(ApiResponse.completed(value)))
         .onError((error, stackTrace) => {
               if (error.toString() == "No Internet Connection")
-                {_setUser(ApiResponse.offline())}
+                {_setPartnersMain(ApiResponse.offline())}
               else
-                {_setUser(ApiResponse.error(error.toString()))}
+                {_setPartnersMain(ApiResponse.error(error.toString()))}
             });
   }
 
