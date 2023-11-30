@@ -16,7 +16,7 @@ class UserVM extends ChangeNotifier {
   ApiResponse<String> userId = ApiResponse.none();
   ApiResponse<int> participation = ApiResponse.none();
   ApiResponse<List> partners = ApiResponse.none();
-  ApiResponse<List> TopCreators = ApiResponse.none();
+  ApiResponse<List<dynamic>> topCreators = ApiResponse.none();
 
   void _setUserMain(ApiResponse<UserModel> response) {
     print("Response: $response");
@@ -48,9 +48,9 @@ class UserVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _setTopCreators(ApiResponse<List> response) {
+  void _setTopCreators(ApiResponse<List<dynamic>> response) {
     print("Response: $response");
-    TopCreators = response;
+    topCreators = response;
     notifyListeners();
   }
 

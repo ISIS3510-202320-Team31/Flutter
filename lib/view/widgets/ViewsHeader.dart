@@ -26,8 +26,8 @@ class ViewsHeader extends StatelessWidget {
             onTap: imageCallback, // Usa la función proporcionada como callback
             child: Image.asset(
               'assets/images/HIVE_LOGO_small.png',
-              width: 65,
-              height: 65,
+              width: MediaQuery.of(context).size.width * 0.15,
+              height: MediaQuery.of(context).size.width * 0.15,
             ),
           ),
         ],
