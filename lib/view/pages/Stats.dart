@@ -20,14 +20,13 @@ class Stats extends StatefulWidget {
 }
 
 class _StatsState extends State<Stats> {
-  late final statsObject;
   final EventVM eventVM = EventVM();
   final String userId = "1";
 
   @override
   void initState() {
     super.initState();
-    statsObject=eventVM.statsUser();
+    eventVM.statsUser(widget.userId);
   }
 
   @override
@@ -40,25 +39,11 @@ class _StatsState extends State<Stats> {
           colors: [appTheme.primaryColor, appTheme.secondaryHeaderColor],
         ),
       ),
-      child: Column(
-        children: <Widget>[
-          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 40),
-            child: ViewsHeader(
-                              titleText: "Estadisticas",
-                              imageCallback: toggleBeeFollowing,
-                            ),
-          ),
-          PieChartGraph(data: statsObject),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-          PartnersCard(partners: ["Luccas","Tony","Laura"]),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-          ChangeNotifierProvider<EventVM>(
+      child: ChangeNotifierProvider<EventVM>(
             create: (BuildContext context) => eventVM,
             child: Consumer<EventVM>(
               builder: (context, viewModel, _) {
-                switch (viewModel.eventModel.status) {
+                switch (viewModel.stats.status) {
                   case Status.LOADING:
                     print("Log :: LOADING");
                     return Center(
@@ -82,16 +67,29 @@ class _StatsState extends State<Stats> {
                               );
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
-                    eventVM.saveLocalEventsFeed();
-                    return Container();
+                    // eventVM.saveLocalEventsFeed();
+                    return Container(
+                          child:   Column(
+                          children: <Widget>[
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 40),
+                              child: ViewsHeader(
+                                                titleText: "Estadisticas",
+                                                imageCallback: toggleBeeFollowing,
+                                              ),
+                            ),
+                            PieChartGraph(data: viewModel.stats.data),
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                            PartnersCard(partners: ["Luccas","Tony","Laura"]),
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.02),  
+                    ]));
                   default:
                     return Container();
                 }
               },
             ),
           ) // Aquí incluye el EventList
-        ],
-      ),
      )
     );
   }

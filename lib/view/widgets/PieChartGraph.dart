@@ -13,6 +13,9 @@ class PieChartGraph extends StatefulWidget {
 }
 
 class _PieChartGraphState extends State<PieChartGraph> {
+  Color hexToColor(String code) {
+  return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
+  }
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -44,7 +47,7 @@ class _PieChartGraphState extends State<PieChartGraph> {
                         sections: List.generate(
                           widget.data.length,
                           (index) => PieChartSectionData(
-                            color: widget.data[index]["color"],
+                            color: hexToColor(widget.data[index]["color"]),
                             value: widget.data[index]["value"],
                             title: widget.data[index]["value"].toString()+"%",
                             radius: 120,
@@ -80,6 +83,9 @@ class LegendList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color hexToColor(String code) {
+    return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
+    }
     return ListView.builder(
       itemCount: data.length,
       itemBuilder: (context, index) {
@@ -91,7 +97,7 @@ class LegendList extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 12,
-                  backgroundColor: data[index]["color"],
+                  backgroundColor: hexToColor(data[index]["color"]),
                 ),
                 SizedBox(width: 16),
                 Text(data[index]["category"]),

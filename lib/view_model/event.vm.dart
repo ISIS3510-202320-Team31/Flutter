@@ -15,12 +15,18 @@ class EventVM extends ChangeNotifier {
   ApiResponse<EventModel> eventModelCalendarFuture = ApiResponse.none();
   ApiResponse<EventModel> eventModelCalendarPast = ApiResponse.none();
   ApiResponse<EventModel> eventModelByOwner = ApiResponse.none();
+  ApiResponse<List<dynamic>> stats = ApiResponse.none();
   ApiResponse<Event> event = ApiResponse.none();
   final SecureStorage secureStorage = SecureStorage();
 
   void _setEventMain(ApiResponse<EventModel> response) {
     print("Response: $response");
     eventModel = response;
+    notifyListeners();
+  }
+   void _setStats(ApiResponse<List<dynamic>> response) {
+    print("Response: $response");
+    stats = response;
     notifyListeners();
   }
 
@@ -72,24 +78,24 @@ class EventVM extends ChangeNotifier {
       return [];
     }
   }
-  Color color(){
-    return Color.fromARGB(
-      255,
-      Random().nextInt(256),
-      Random().nextInt(256),
-      Random().nextInt(256),
-    );
-  }
-  statsUser()  {
-    final percentage = [{"category":"ACADEMICO","value":22.0,"color":color()},{"category":"CULTURAL","value":78.0,"color":color()}];
-    return  percentage;
+
+  Future<void>statsUser(String userId) async {
+     _setStats(ApiResponse.loading());
+    _myRepo
+        .getStats(userId)
+        .then((value) => _setStats(ApiResponse.completed(value)))
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setEventMain(ApiResponse.offline())}
+              else
+                {_setEventMain(ApiResponse.error(error.toString()))}
+            });
   }
 
   Future<void> saveLocalEventsFeed() async {
     secureStorage.writeSecureData(
         'feedEvents', eventModelToJson(eventModel.data!));
   }
-
 
   Future<void> saveLocalEventsFutureCalendar() async {
     secureStorage.writeSecureData('futureCalendarEvents',
