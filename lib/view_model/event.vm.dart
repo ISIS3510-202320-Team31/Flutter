@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:hive_app/data/remote/response/ApiResponse.dart';
@@ -70,9 +72,17 @@ class EventVM extends ChangeNotifier {
       return [];
     }
   }
-
-  Future<List<String>> statsUser() async {
-    return await Future.delayed(1.0 as Duration).then((value) => []);
+  Color color(){
+    return Color.fromARGB(
+      255,
+      Random().nextInt(256),
+      Random().nextInt(256),
+      Random().nextInt(256),
+    );
+  }
+  statsUser()  {
+    final percentage = [{"category":"ACADEMICO","value":22.0,"color":color()},{"category":"CULTURAL","value":78.0,"color":color()}];
+    return  percentage;
   }
 
   Future<void> saveLocalEventsFeed() async {

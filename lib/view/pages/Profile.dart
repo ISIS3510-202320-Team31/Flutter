@@ -31,6 +31,14 @@ class _ProfileState extends State<Profile> {
   String _email = cache.read("signup-email") ?? "0";
   String _timeOnApp = cache.read("time-on-app") ?? "0";
   String _eventsJoined = cache.read("events-joined") ?? "0";
+  bool stats=false;
+
+  void showStats()
+  {
+    setState(() {
+      stats = true;
+    });
+  }
 
   @override
   void initState() {
@@ -58,6 +66,12 @@ class _ProfileState extends State<Profile> {
             return Text('Error: ${snapshot.error}');
           } else {
             final timeSinceInstallation = snapshot.data;
+            if (stats == true)
+            {
+              return Stats(userId: widget.userId);
+            }
+            else
+            {
             return BeeWrapper(
               childBuilder: (toggleBeeFollowing) => Stack(
                 children: <Widget>[
@@ -345,12 +359,7 @@ class _ProfileState extends State<Profile> {
                             ElevatedButton(
                               onPressed: () {
                                 // remove all the information in local storage
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Stats(),
-                                  ),
-                                );
+                                showStats();
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blue,
@@ -407,7 +416,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ],
               ),
-            );
+            );}
           }
         },
       ),

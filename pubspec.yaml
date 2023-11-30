@@ -33,6 +33,7 @@ dependencies:
   equatable: ^2.0.3
   toggle_switch: ^2.1.0
   firebase_analytics: ^8.3.3
+  fl_chart: ^0.45.0
 
 dev_dependencies:
   flutter_test:
