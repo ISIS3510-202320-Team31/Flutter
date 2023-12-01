@@ -70,7 +70,7 @@ class _LoginFormState extends State<LoginForm> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => Home(userId: userId, initial_index: 0),
+              builder: (context) => Home(userId: userId, initialIndex: 0),
             ),
           );
         });
@@ -337,8 +337,8 @@ class _LoginFormState extends State<LoginForm> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        Home(userId: viewModel.user.data!.id!, initial_index: 0)),
+                    builder: (context) => Home(
+                        userId: viewModel.user.data!.id!, initialIndex: 0)),
               );
             });
             return Container();

@@ -4,11 +4,12 @@ import 'package:hive_app/view/pages/Profile.dart';
 import 'package:hive_app/view/pages/Calendar.dart';
 import 'package:hive_app/view/pages/EventCreate.dart';
 import 'package:hive_app/view/pages/Feed.dart';
+import 'package:hive_app/view/pages/TopCreators.dart';
 
 class Home extends StatefulWidget {
   final String userId;
-  final int initial_index;
-  const Home({super.key, required this.userId, required this.initial_index});
+  final int? initialIndex;
+  const Home({super.key, required this.userId, this.initialIndex});
 
   @override
   State<Home> createState() => _HomeState();
@@ -21,20 +22,15 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    _selectedIndex=widget.initial_index;
+    _selectedIndex = widget.initialIndex ?? 0;
     _navOptions = [
       Feed(userId: widget.userId),
       EventCreate(userId: widget.userId),
       Calendar(userId: widget.userId),
+      TopCreators(),
       Profile(userId: widget.userId)
     ];
     super.initState();
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 
   @override
@@ -73,6 +69,16 @@ class _HomeState extends State<Home> {
                   color: appTheme.unselectedWidgetColor,
                 ),
                 label: "Calendario"),
+            BottomNavigationBarItem(
+                activeIcon: Icon(
+                  Icons.verified_outlined,
+                  color: appTheme.focusColor,
+                ),
+                icon: Icon(
+                  Icons.verified_outlined,
+                  color: appTheme.unselectedWidgetColor,
+                ),
+                label: "Top Creadores"),
             BottomNavigationBarItem(
                 activeIcon: Icon(
                   Icons.account_circle,

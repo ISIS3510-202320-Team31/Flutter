@@ -20,14 +20,15 @@ class ViewsHeader extends StatelessWidget {
               fontFamily: "Montserrat",
               fontWeight: FontWeight.bold,
               color: Colors.black,
+              decoration: TextDecoration.none,
             ),
           ),
           GestureDetector(
             onTap: imageCallback, // Usa la función proporcionada como callback
             child: Image.asset(
               'assets/images/HIVE_LOGO_small.png',
-              width: 65,
-              height: 65,
+              width: MediaQuery.of(context).size.width * 0.15,
+              height: MediaQuery.of(context).size.width * 0.15,
             ),
           ),
         ],

@@ -16,6 +16,7 @@ class UserVM extends ChangeNotifier {
   ApiResponse<String> userId = ApiResponse.none();
   ApiResponse<int> participation = ApiResponse.none();
   ApiResponse<List> partners = ApiResponse.none();
+  ApiResponse<List<dynamic>> topCreators = ApiResponse.none();
 
   void _setUserMain(ApiResponse<UserModel> response) {
     print("Response: $response");
@@ -45,6 +46,25 @@ class UserVM extends ChangeNotifier {
     print("Response: $response");
     participation = response;
     notifyListeners();
+  }
+
+  void _setTopCreators(ApiResponse<List<dynamic>> response) {
+    print("Response: $response");
+    topCreators = response;
+    notifyListeners();
+  }
+
+  Future<void> fetchTopCreators() async {
+    _setTopCreators(ApiResponse.loading());
+    _myRepo
+        .getTopCreators()
+        .then((value) => _setTopCreators(ApiResponse.completed(value)))
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setTopCreators(ApiResponse.offline())}
+              else
+                {_setTopCreators(ApiResponse.error(error.toString()))}
+            });
   }
 
   getUserId() {
@@ -80,9 +100,9 @@ class UserVM extends ChangeNotifier {
         .then((value) => _setPartnersMain(ApiResponse.completed(value)))
         .onError((error, stackTrace) => {
               if (error.toString() == "No Internet Connection")
-                {_setUser(ApiResponse.offline())}
+                {_setPartnersMain(ApiResponse.offline())}
               else
-                {_setUser(ApiResponse.error(error.toString()))}
+                {_setPartnersMain(ApiResponse.error(error.toString()))}
             });
   }
 

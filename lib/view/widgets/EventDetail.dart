@@ -9,6 +9,7 @@ import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:hive_app/view_model/user.vm.dart';
 import 'package:hive_app/view_model/event.vm.dart';
 import 'package:hive_app/view/widgets/OfflineWidget.dart';
+import 'package:hive_app/view/pages/EventCreate.dart';
 
 class EventDetail extends StatefulWidget {
   final String userId;
@@ -94,31 +95,26 @@ class _EventDetailState extends State<EventDetail> {
                   print("Log :: COMPLETED");
                   final event = viewModel.event.data!;
 
-                  int isUserParticipant=0;      
+                  int isUserParticipant = 0;
 
-                  if (event.participants!.contains(widget.userId))
-                  {
+                  if (event.creatorId == widget.userId) {
+                    isUserParticipant = 3;
+                  } else if (event.participants!.contains(widget.userId)) {
                     isUserParticipant = 1;
-                  }
-                  else
-                  {
-                    if (event.numParticipants != null && event.participants != null)
-                    {
-                    if (event.participants!.length >= event.numParticipants!)
-                      {
-                      isUserParticipant = 2;
-                      }
-                      else
-                      {
+                  } else {
+                    if (event.numParticipants != null &&
+                        event.participants != null) {
+                      if (event.participants!.length >=
+                          event.numParticipants!) {
+                        isUserParticipant = 2;
+                      } else {
                         isUserParticipant = 0;
                       }
-                    }
-                    else
-                    {
+                    } else {
                       isUserParticipant = 0;
                     }
-                  }   
-                      
+                  }
+
                   return Container(
                     child: showEventDetail(
                         context, event, widget.userId, isUserParticipant),
@@ -132,8 +128,8 @@ class _EventDetailState extends State<EventDetail> {
   }
 
   // Función para mostrar el cuadro de diálogo de detalles del evento
-  showEventDetail(BuildContext context, Event event, String userId,
-      int isUserParticipant) {
+  showEventDetail(
+      BuildContext context, Event event, String userId, int isUserParticipant) {
     String formattedDate = event.date != null
         ? DateFormat('dd/MM/yyyy').format(event.date!)
         : 'Sin fecha';
@@ -150,23 +146,21 @@ class _EventDetailState extends State<EventDetail> {
       secondHalf = "";
     }
 
-   String texto ;
-   if (isUserParticipant == 2)
-    {
+    String texto;
+    if (isUserParticipant == 3) {
+      texto = "Editar";
+    } else if (isUserParticipant == 2) {
       texto = "Evento lleno";
-    }
-    else
-    {
+    } else {
       texto = isUserParticipant == 1 ? 'No asistiré' : 'Unirse';
     }
 
-    var color;
-    if (isUserParticipant == 2)
-    {
+    Color color;
+    if (isUserParticipant == 3) {
+      color = Colors.green;
+    } else if (isUserParticipant == 2) {
       color = Colors.grey;
-    }
-    else
-    {
+    } else {
       color = isUserParticipant == 1 ? Colors.red : Colors.blue;
     }
 
@@ -408,19 +402,24 @@ class _EventDetailState extends State<EventDetail> {
                 Expanded(
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      backgroundColor: color
-                    ),
-                    onPressed: () {
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        backgroundColor: color),
+                    onPressed: () async {
                       if (isUserParticipant == 1) {
                         eventVM.removeParticipant(eventId, userId);
-                      } else if (isUserParticipant == 0){
+                      } else if (isUserParticipant == 0) {
                         eventVM.addParticipant(eventId, userId);
-                      }
-                      else
-                      {
+                      } else if (isUserParticipant == 3) {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => EventCreate(
+                                  userId: userId, eventEdit: event)),
+                          (Route<dynamic> route) => false,
+                        );
+                        return;
+                      } else {
                         print("Log :: Evento lleno");
                       }
                     },
