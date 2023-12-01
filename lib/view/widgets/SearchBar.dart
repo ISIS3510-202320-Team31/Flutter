@@ -2,16 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/widgets/QRscanner.dart';
 
-class Search extends StatelessWidget {
+class Search extends StatefulWidget {
   final String userId;
+
   const Search({required this.userId});
+
+  @override
+  _SearchState createState() => _SearchState();
+}
+
+class _SearchState extends State<Search> {
+  // Lista de opciones para el menú desplegable
+  final List<String> options = ['Opción 1', 'Opción 2', 'Opción 3'];
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-        // Icono de filtro a la izquierda
         IconButton(
           icon: Icon(
             Icons.center_focus_weak,
@@ -22,61 +30,46 @@ class Search extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => QRscanner(userId: userId)),
+                  builder: (context) => QRscanner(userId: widget.userId)),
             );
           },
         ),
-        SizedBox(width: MediaQuery.of(context).size.width * 0.25),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.24),
         Text('HIVE!',
             style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold)),
-        // Expanded(
-        //   child: Container(
-        //     padding: EdgeInsets.only(left: 10, right: 10),
-        //     decoration: BoxDecoration(
-        //       borderRadius: BorderRadius.circular(30),
-        //       color: Colors.white,
-        //       boxShadow: [
-        //         BoxShadow(
-        //           color: Colors.black.withOpacity(0.1),
-        //           offset: Offset(0, 3),
-        //           blurRadius: 5,
-        //         ),
-        //       ],
-        //     ),
-        //     child: TextField(
-        //       style: TextStyle(
-        //         fontSize: 16.0,
-        //         color: Colors.black,
-        //       ),
-        //       cursorColor: appTheme.primaryColor,
-        //       decoration: InputDecoration(
-        //         border: InputBorder.none,
-        //         hintText: "Buscar...",
-        //         hintStyle: TextStyle(
-        //           color: Colors.grey,
-        //         ),
-        //         prefixIcon: Icon(
-        //               Icons.search,
-        //               color: Color.fromARGB(255, 33, 150, 243),
-        //               size: 25
-        //             ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
-        // SizedBox(width: MediaQuery.of(context).size.width*0.02),
-        // IconButton(
-        //   icon: Icon(
-        //     Icons.filter_list,
-        //     color: appTheme.hintColor,
-        //     size: 30.0,
-        //   ),
-        //   onPressed: () {
-        //     // Acción que deseas ejecutar cuando se presiona el botón izquierdo
-        //   },
-        //   color: appTheme.hintColor
-        // ),
-        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.14),
+        // Menú desplegable
+        PopupMenuButton<String>(
+          offset: Offset(0, 35), // Ajusta el valor según sea necesario
+          onSelected: (String value) {
+            print(value); // Imprimir la opción seleccionada
+          },
+          itemBuilder: (BuildContext context) {
+            return options.map((String choice) {
+              return PopupMenuItem<String>(
+                value: choice,
+                child: Text(choice),
+              );
+            }).toList();
+          },
+          child: Row(
+            children: [
+              Text(
+                'Filtrar',
+                style: TextStyle(
+                  color: appTheme.hintColor,
+                  //fontWeight: FontWeight.bold,
+                  fontSize: 17.0,
+                ),
+              ),
+              Icon(
+                Icons.arrow_drop_down,
+                color: appTheme.hintColor,
+                size: 30.0,
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
