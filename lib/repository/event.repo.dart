@@ -89,7 +89,7 @@ class EventRepoImpl extends EventRepo {
   Future<Event> updateEvent(String eventId, EventCreate event) async {
     try {
       // Construye la URL completa para actualizar un evento
-      final endpoint = ApiEndPoints().eventsEndPoint + '$eventId/';
+      final endpoint = ApiEndPoints().eventsEndPoint + 'edit/$eventId/';
       print("Log: $event");
 
       dynamic response =
