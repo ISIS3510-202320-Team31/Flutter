@@ -86,9 +86,9 @@ class EventVM extends ChangeNotifier {
         .then((value) => _setStats(ApiResponse.completed(value)))
         .onError((error, stackTrace) => {
               if (error.toString() == "No Internet Connection")
-                {_setEventMain(ApiResponse.offline())}
+                {_setStats(ApiResponse.offline())}
               else
-                {_setEventMain(ApiResponse.error(error.toString()))}
+                {_setStats(ApiResponse.error(error.toString()))}
             });
   }
 
