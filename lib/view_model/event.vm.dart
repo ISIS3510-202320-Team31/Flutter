@@ -8,7 +8,7 @@ import 'package:hive_app/repository/event.repo.dart';
 
 class EventVM extends ChangeNotifier {
   final _myRepo = EventRepoImpl();
-
+  
   ApiResponse<EventModel> eventModel = ApiResponse.none();
   ApiResponse<EventModel> eventModelCalendarFuture = ApiResponse.none();
   ApiResponse<EventModel> eventModelCalendarPast = ApiResponse.none();
