@@ -1,3 +1,4 @@
+import 'dart:html';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -7,9 +8,12 @@ import 'package:hive_app/models/event.model.dart';
 import 'package:hive_app/models/requests/event-create.model.dart';
 import 'package:hive_app/utils/SecureStorage.dart';
 import 'package:hive_app/repository/event.repo.dart';
+import 'package:hive_app/view/widgets/SearchBar.dart';
+
 
 class EventVM extends ChangeNotifier {
   final _myRepo = EventRepoImpl();
+  final Search _search;
 
   ApiResponse<EventModel> eventModel = ApiResponse.none();
   ApiResponse<EventModel> eventModelCalendarFuture = ApiResponse.none();
@@ -18,6 +22,8 @@ class EventVM extends ChangeNotifier {
   ApiResponse<List<dynamic>> stats = ApiResponse.none();
   ApiResponse<Event> event = ApiResponse.none();
   final SecureStorage secureStorage = SecureStorage();
+
+  EventVM(this._search);
 
   void _setEventMain(ApiResponse<EventModel> response) {
     print("Response: $response");
@@ -68,10 +74,20 @@ class EventVM extends ChangeNotifier {
   }
 
   Future<List<Event>> getLocalEventsFeed() async {
+    final dropdownValue = _search.getDropdownValue(); // Obtén el valor de dropdownValue
     final eventsJSON = await secureStorage.readSecureData("feedEvents");
     if (eventsJSON != null && eventsJSON.isNotEmpty) {
       final eventsRaw = json.decode(eventsJSON);
       final events = json.encode(eventsRaw['events']);
+
+      List<Event> eventos2 = []; // Asegúrate de tener una lista de eventos adecuada
+
+      for (var event in eventsRaw) {
+        if (dropdownValue == event) {
+          eventos2.add(event);
+        }
+      }
+
       final storedEvents = eventModelFromJson(events).events;
       return storedEvents;
     } else {

@@ -2,9 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:hive_app/utils/ColorPalette.dart';
 import 'package:hive_app/view/widgets/QRscanner.dart';
 
-class Search extends StatelessWidget {
+class Search extends StatefulWidget {
   final String userId;
+
   const Search({required this.userId});
+
+  @override
+  _SearchState createState() => _SearchState(this);
+
+  getDropdownValue() {} // Pasa una instancia de Search
+}
+
+class _SearchState extends State<Search> {
+  final Search _search;
+  _SearchState(this._search);
+  String dropdownValue = "A"; // Valor seleccionado inicialmente
 
   @override
   Widget build(BuildContext context) {
@@ -22,62 +34,41 @@ class Search extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => QRscanner(userId: userId)),
+                builder: (context) => QRscanner(userId: widget.userId),
+              ),
             );
           },
         ),
         SizedBox(width: MediaQuery.of(context).size.width * 0.25),
-        Text('HIVE!',
-            style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold)),
-        // Expanded(
-        //   child: Container(
-        //     padding: EdgeInsets.only(left: 10, right: 10),
-        //     decoration: BoxDecoration(
-        //       borderRadius: BorderRadius.circular(30),
-        //       color: Colors.white,
-        //       boxShadow: [
-        //         BoxShadow(
-        //           color: Colors.black.withOpacity(0.1),
-        //           offset: Offset(0, 3),
-        //           blurRadius: 5,
-        //         ),
-        //       ],
-        //     ),
-        //     child: TextField(
-        //       style: TextStyle(
-        //         fontSize: 16.0,
-        //         color: Colors.black,
-        //       ),
-        //       cursorColor: appTheme.primaryColor,
-        //       decoration: InputDecoration(
-        //         border: InputBorder.none,
-        //         hintText: "Buscar...",
-        //         hintStyle: TextStyle(
-        //           color: Colors.grey,
-        //         ),
-        //         prefixIcon: Icon(
-        //               Icons.search,
-        //               color: Color.fromARGB(255, 33, 150, 243),
-        //               size: 25
-        //             ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
-        // SizedBox(width: MediaQuery.of(context).size.width*0.02),
-        // IconButton(
-        //   icon: Icon(
-        //     Icons.filter_list,
-        //     color: appTheme.hintColor,
-        //     size: 30.0,
-        //   ),
-        //   onPressed: () {
-        //     // Acción que deseas ejecutar cuando se presiona el botón izquierdo
-        //   },
-        //   color: appTheme.hintColor
-        // ),
+        Text(
+          'HIVE!',
+          style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
+        ),
         SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+        DropdownButton(
+          value: dropdownValue,
+          onChanged: (value) {
+            setState(() {
+              dropdownValue = value.toString();
+            });
+            // Aquí puedes realizar acciones adicionales al seleccionar un nuevo valor
+          },
+          iconEnabledColor: Colors.blueAccent,
+          iconSize: 40.0,
+          style: TextStyle(color: Colors.blue, fontSize: 20.0),
+          items: const [
+            DropdownMenuItem(child: Text("All"), value: "A"),
+            DropdownMenuItem(child: Text("Academic"), value: "E"),
+            DropdownMenuItem(child: Text("Cultural"), value: "I"),
+            DropdownMenuItem(child: Text("Sports"), value: "O"),
+            DropdownMenuItem(child: Text("Entertainment"), value: "U"),
+          ],
+        )
       ],
     );
+  }
+
+  String getDropdownValue() {
+    return dropdownValue;
   }
 }

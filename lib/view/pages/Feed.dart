@@ -17,9 +17,9 @@ class Feed extends StatefulWidget {
   _FeedState createState() => _FeedState();
 }
 
+
 class _FeedState extends State<Feed> {
   final EventVM eventVM = EventVM();
-  
 
   Future<List<Event>>? storedEventsFuture;
   late final void Function() updateFunction;
