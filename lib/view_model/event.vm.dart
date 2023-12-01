@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:hive_app/data/remote/response/ApiResponse.dart';
@@ -218,6 +216,44 @@ class EventVM extends ChangeNotifier {
     _setEvent(ApiResponse.loading());
     _myRepo
         .createEvent(event)
+        .then((value) => _setEvent(ApiResponse.completed(value)))
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setEvent(ApiResponse.offline())}
+              else
+                {_setEvent(ApiResponse.error(error.toString()))}
+            });
+  }
+
+  Future<void> updateEvent(
+    String eventId,
+    String name,
+    String place,
+    int duration,
+    int numParticipants,
+    DateTime date,
+    String category,
+    String description,
+    List<String> tags,
+    List<String> links,
+    String creatorId,
+  ) async {
+    EventCreate event = EventCreate(
+      name: name,
+      place: place,
+      duration: duration,
+      numParticipants: numParticipants,
+      date: date,
+      category: category,
+      description: description,
+      tags: tags,
+      links: links,
+      creatorId: creatorId,
+    );
+
+    _setEvent(ApiResponse.loading());
+    _myRepo
+        .updateEvent(eventId, event)
         .then((value) => _setEvent(ApiResponse.completed(value)))
         .onError((error, stackTrace) => {
               if (error.toString() == "No Internet Connection")

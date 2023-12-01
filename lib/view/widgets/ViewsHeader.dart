@@ -20,6 +20,7 @@ class ViewsHeader extends StatelessWidget {
               fontFamily: "Montserrat",
               fontWeight: FontWeight.bold,
               color: Colors.black,
+              decoration: TextDecoration.none,
             ),
           ),
           GestureDetector(

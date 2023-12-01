@@ -7,6 +7,7 @@ import 'package:hive_app/view_model/event.vm.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:hive_app/view/pages/Home.dart';
+import 'package:hive_app/models/event.model.dart';
 
 final Map<int, String> _months = {
   1: "enero",
@@ -33,7 +34,8 @@ final Map<String, String> _categories = {
 
 class EventCreate extends StatefulWidget {
   final String userId;
-  const EventCreate({required this.userId});
+  final Event? eventEdit;
+  const EventCreate({required this.userId, this.eventEdit});
 
   @override
   _EventCreateState createState() => _EventCreateState();
@@ -73,22 +75,35 @@ class _EventCreateState extends State<EventCreate> {
       setState(() {
         _selectedDate = picked;
       });
-      cache.write("eventcreate-date", _selectedDate);
+      if (widget.eventEdit == null)
+        cache.write("eventcreate-date", _selectedDate);
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _title.text = cache.read("eventcreate-title") ?? "";
-    _place.text = cache.read("eventcreate-place") ?? "";
-    _duration.text = cache.read("eventcreate-duration") ?? "";
-    _participants.text = cache.read("eventcreate-participants") ?? "";
-    _selectedDate = cache.read("eventcreate-date") ?? null;
-    _category = cache.read("eventcreate-category") ?? "";
-    _description.text = cache.read("eventcreate-description") ?? "";
-    _links.text = cache.read("eventcreate-links") ?? "";
-    _tags.text = cache.read("eventcreate-tags") ?? "";
+    if (widget.eventEdit != null) {
+      _title.text = widget.eventEdit!.name!;
+      _place.text = widget.eventEdit!.place!;
+      _duration.text = widget.eventEdit!.duration.toString();
+      _participants.text = widget.eventEdit!.numParticipants.toString();
+      _selectedDate = widget.eventEdit!.date;
+      _category = widget.eventEdit!.category!;
+      _description.text = widget.eventEdit!.description!;
+      _links.text = widget.eventEdit!.links!.join(', ');
+      _tags.text = widget.eventEdit!.tags!.join(', ');
+    } else {
+      _title.text = cache.read("eventcreate-title") ?? "";
+      _place.text = cache.read("eventcreate-place") ?? "";
+      _duration.text = cache.read("eventcreate-duration") ?? "";
+      _participants.text = cache.read("eventcreate-participants") ?? "";
+      _selectedDate = cache.read("eventcreate-date") ?? null;
+      _category = cache.read("eventcreate-category") ?? "";
+      _description.text = cache.read("eventcreate-description") ?? "";
+      _links.text = cache.read("eventcreate-links") ?? "";
+      _tags.text = cache.read("eventcreate-tags") ?? "";
+    }
   }
 
   @override
@@ -98,8 +113,9 @@ class _EventCreateState extends State<EventCreate> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  Home(userId: widget.userId, initialIndex: 0)),
+              builder: (context) => Home(
+                  userId: widget.userId,
+                  initialIndex: (widget.eventEdit != null) ? 2 : 0)),
         );
         return true;
       },
@@ -124,7 +140,8 @@ class _EventCreateState extends State<EventCreate> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 15),
                       child: ViewsHeader(
-                        titleText: "Crear evento",
+                        titleText:
+                            "${widget.eventEdit != null ? 'Editar' : 'Crear'} evento",
                       ),
                     ),
                     Card(
@@ -155,7 +172,8 @@ class _EventCreateState extends State<EventCreate> {
                                   return null;
                                 },
                                 onChanged: (value) => {
-                                  cache.write("eventcreate-title", value),
+                                  if (widget.eventEdit == null)
+                                    cache.write("eventcreate-title", value),
                                   titleKey.currentState!.validate(),
                                 },
                               ),
@@ -176,7 +194,8 @@ class _EventCreateState extends State<EventCreate> {
                                   return null;
                                 },
                                 onChanged: (value) => {
-                                  cache.write("eventcreate-place", value),
+                                  if (widget.eventEdit == null)
+                                    cache.write("eventcreate-place", value),
                                   placeKey.currentState!.validate(),
                                 },
                               ),
@@ -206,7 +225,8 @@ class _EventCreateState extends State<EventCreate> {
                                   return null;
                                 },
                                 onChanged: (value) => {
-                                  cache.write("eventcreate-duration", value),
+                                  if (widget.eventEdit == null)
+                                    cache.write("eventcreate-duration", value),
                                   durationKey.currentState!.validate(),
                                 },
                               ),
@@ -236,8 +256,9 @@ class _EventCreateState extends State<EventCreate> {
                                   return null;
                                 },
                                 onChanged: (value) => {
-                                  cache.write(
-                                      "eventcreate-participants", value),
+                                  if (widget.eventEdit == null)
+                                    cache.write(
+                                        "eventcreate-participants", value),
                                   participantsKey.currentState!.validate(),
                                 },
                               ),
@@ -300,8 +321,9 @@ class _EventCreateState extends State<EventCreate> {
                                 onChanged: (value) {
                                   setState(() {
                                     _category = _categories[value]!;
-                                    cache.write(
-                                        "eventcreate-category", _category);
+                                    if (widget.eventEdit == null)
+                                      cache.write(
+                                          "eventcreate-category", _category);
                                   });
                                 },
                               ),
@@ -323,7 +345,9 @@ class _EventCreateState extends State<EventCreate> {
                                   return null;
                                 },
                                 onChanged: (value) => {
-                                  cache.write("eventcreate-description", value),
+                                  if (widget.eventEdit == null)
+                                    cache.write(
+                                        "eventcreate-description", value),
                                   descriptionKey.currentState!.validate(),
                                 },
                               ),
@@ -349,7 +373,8 @@ class _EventCreateState extends State<EventCreate> {
                                   return null;
                                 },
                                 onChanged: (value) => {
-                                  cache.write("eventcreate-links", value),
+                                  if (widget.eventEdit == null)
+                                    cache.write("eventcreate-links", value),
                                   linksKey.currentState!.validate(),
                                 },
                               ),
@@ -374,7 +399,8 @@ class _EventCreateState extends State<EventCreate> {
                                   return null;
                                 },
                                 onChanged: (value) => {
-                                  cache.write("eventcreate-tags", value),
+                                  if (widget.eventEdit == null)
+                                    cache.write("eventcreate-tags", value),
                                   tagsKey.currentState!.validate(),
                                 },
                               ),
@@ -392,11 +418,14 @@ class _EventCreateState extends State<EventCreate> {
                                         ElevatedButton(
                                           onPressed:
                                               _isLoading ? null : onCreateEvent,
-                                          child: Text('CREAR EVENTO'),
+                                          child: Text(
+                                              '${widget.eventEdit != null ? 'EDITAR' : 'CREAR'} EVENTO'),
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: _isLoading
                                                 ? Colors.grey
-                                                : Colors.blue,
+                                                : (widget.eventEdit != null
+                                                    ? Colors.green
+                                                    : Colors.blue),
                                           ),
                                         ),
                                       ],
@@ -530,18 +559,35 @@ class _EventCreateState extends State<EventCreate> {
     links.forEach((element) {
       element.trim();
     });
-    await eventVM.createEvent(
-      _title.text,
-      _place.text,
-      // duration as int: _duration.text,
-      int.parse(_duration.text),
-      _participants.text == "" ? 0 : int.parse(_participants.text),
-      _selectedDate!,
-      _category,
-      _description.text,
-      tags,
-      links,
-      widget.userId,
-    );
+
+    if (widget.eventEdit != null) {
+      await eventVM.updateEvent(
+        widget.eventEdit!.id!,
+        _title.text,
+        _place.text,
+        int.parse(_duration.text),
+        _participants.text == "" ? 0 : int.parse(_participants.text),
+        _selectedDate!,
+        _category,
+        _description.text,
+        tags,
+        links,
+        widget.userId,
+      );
+      return;
+    } else {
+      await eventVM.createEvent(
+        _title.text,
+        _place.text,
+        int.parse(_duration.text),
+        _participants.text == "" ? 0 : int.parse(_participants.text),
+        _selectedDate!,
+        _category,
+        _description.text,
+        tags,
+        links,
+        widget.userId,
+      );
+    }
   }
 }

@@ -9,7 +9,7 @@ import 'package:hive_app/data/remote/response/Status.dart';
 import 'package:hive_app/view_model/user.vm.dart';
 import 'package:hive_app/view_model/event.vm.dart';
 import 'package:hive_app/view/widgets/OfflineWidget.dart';
-import 'package:hive_app/view/pages/Home.dart';
+import 'package:hive_app/view/pages/EventCreate.dart';
 
 class EventDetail extends StatefulWidget {
   final String userId;
@@ -412,11 +412,10 @@ class _EventDetailState extends State<EventDetail> {
                       } else if (isUserParticipant == 0) {
                         eventVM.addParticipant(eventId, userId);
                       } else if (isUserParticipant == 3) {
-                        // This is failing, the new form has blue foreground
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  Home(userId: userId, initialIndex: 1)),
+                              builder: (context) => EventCreate(
+                                  userId: userId, eventEdit: event)),
                           (Route<dynamic> route) => false,
                         );
                         return;
