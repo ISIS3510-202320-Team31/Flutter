@@ -99,7 +99,7 @@ class _EventCreateState extends State<EventCreate> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  Home(userId: widget.userId, initial_index: 0)),
+                  Home(userId: widget.userId, initialIndex: 0)),
         );
         return true;
       },
@@ -142,7 +142,9 @@ class _EventCreateState extends State<EventCreate> {
                                 key: titleKey,
                                 controller: _title,
                                 decoration: InputDecoration(
-                                    labelText: 'Título del evento *'),
+                                    labelText: 'Título del evento *',
+                                    labelStyle:
+                                        TextStyle(color: Colors.black54)),
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return 'Por favor, ingresa el título del evento';
@@ -161,7 +163,9 @@ class _EventCreateState extends State<EventCreate> {
                                 key: placeKey,
                                 controller: _place,
                                 decoration: InputDecoration(
-                                    labelText: 'Lugar del evento *'),
+                                    labelText: 'Lugar del evento *',
+                                    labelStyle:
+                                        TextStyle(color: Colors.black54)),
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return 'Por favor, ingresa el lugar del evento';
@@ -181,7 +185,9 @@ class _EventCreateState extends State<EventCreate> {
                                 controller: _duration,
                                 decoration: InputDecoration(
                                     labelText:
-                                        'Duración del evento (en minutos) *'),
+                                        'Duración del evento (en minutos) *',
+                                    labelStyle:
+                                        TextStyle(color: Colors.black54)),
                                 keyboardType: TextInputType.number,
                                 validator: (value) {
                                   if (value!.isEmpty) {
@@ -191,8 +197,8 @@ class _EventCreateState extends State<EventCreate> {
                                   if (intValue == null) {
                                     return 'Por favor, ingresa un número válido';
                                   }
-                                  if (intValue < 0) {
-                                    return 'La duración del evento no puede ser negativa';
+                                  if (intValue <= 0) {
+                                    return 'La duración del evento no puede ser negativa o cero';
                                   }
                                   if (intValue > 999) {
                                     return 'La duración del evento no puede ser mayor a 999 minutos';
@@ -208,7 +214,9 @@ class _EventCreateState extends State<EventCreate> {
                                 key: participantsKey,
                                 controller: _participants,
                                 decoration: InputDecoration(
-                                    labelText: 'Cantidad de participantes'),
+                                    labelText: 'Cantidad de participantes',
+                                    labelStyle:
+                                        TextStyle(color: Colors.black54)),
                                 keyboardType: TextInputType.number,
                                 validator: (value) {
                                   if (value!.isEmpty) {
@@ -274,6 +282,7 @@ class _EventCreateState extends State<EventCreate> {
                               DropdownButtonFormField(
                                 decoration: InputDecoration(
                                   labelText: 'Tipo de evento *',
+                                  labelStyle: TextStyle(color: Colors.black54),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(20.0),
                                   ),
@@ -301,7 +310,9 @@ class _EventCreateState extends State<EventCreate> {
                                 controller: _description,
                                 maxLines: 5,
                                 decoration: InputDecoration(
-                                    labelText: 'Descripción del evento *'),
+                                    labelText: 'Descripción del evento *',
+                                    labelStyle:
+                                        TextStyle(color: Colors.black54)),
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return 'Por favor, ingresa la descripción del evento';
@@ -321,7 +332,9 @@ class _EventCreateState extends State<EventCreate> {
                                 controller: _links,
                                 decoration: InputDecoration(
                                     labelText:
-                                        'Links de interés (separados por comas)'),
+                                        'Links de interés (separados por comas)',
+                                    labelStyle:
+                                        TextStyle(color: Colors.black54)),
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return null; // optional field
@@ -344,7 +357,9 @@ class _EventCreateState extends State<EventCreate> {
                                 key: tagsKey,
                                 controller: _tags,
                                 decoration: InputDecoration(
-                                    labelText: 'Tags (separados por comas)'),
+                                    labelText: 'Tags (separados por comas)',
+                                    labelStyle:
+                                        TextStyle(color: Colors.black54)),
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return null; // optional field
@@ -458,7 +473,7 @@ class _EventCreateState extends State<EventCreate> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        Home(userId: widget.userId, initial_index: 0)),
+                        Home(userId: widget.userId, initialIndex: 0)),
               );
             });
             return Container();

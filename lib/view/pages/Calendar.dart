@@ -71,7 +71,9 @@ class _CalendarState extends State<Calendar> {
       onWillPop: () async {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Home(userId: widget.userId, initial_index: 0)),
+          MaterialPageRoute(
+              builder: (context) =>
+                  Home(userId: widget.userId, initialIndex: 0)),
         );
         return true;
       },
