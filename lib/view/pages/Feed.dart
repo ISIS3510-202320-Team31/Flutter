@@ -19,9 +19,9 @@ class Feed extends StatefulWidget {
 
 class _FeedState extends State<Feed> {
   final EventVM eventVM = EventVM();
-  
 
   Future<List<Event>>? storedEventsFuture;
+  String _filter = "Sin filtro";
   late final void Function() updateFunction;
 
   @override
@@ -47,7 +47,7 @@ class _FeedState extends State<Feed> {
       child: Column(
         children: <Widget>[
           SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-          Search(userId: widget.userId),
+          Search(userId: widget.userId, callbackFilter: this.callbackFilter),
           SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           ChangeNotifierProvider<EventVM>(
             create: (BuildContext context) => eventVM,
@@ -74,7 +74,7 @@ class _FeedState extends State<Feed> {
                               Expanded(
                                   child: EventList(
                                       userId: widget.userId,
-                                      eventList: snapshot.data!,
+                                      eventList: filterEvents(snapshot.data!),
                                       eventVM: eventVM,
                                       updateFunction: this.updateFunction))
                             ]));
@@ -117,7 +117,7 @@ class _FeedState extends State<Feed> {
                               Expanded(
                                   child: EventList(
                                       userId: widget.userId,
-                                      eventList: snapshot.data!,
+                                      eventList: filterEvents(snapshot.data!),
                                       eventVM: eventVM,
                                       updateFunction: this.updateFunction))
                             ]));
@@ -148,7 +148,7 @@ class _FeedState extends State<Feed> {
                               Expanded(
                                   child: EventList(
                                       userId: widget.userId,
-                                      eventList: snapshot.data!,
+                                      eventList: filterEvents(snapshot.data!),
                                       eventVM: eventVM,
                                       updateFunction: this.updateFunction))
                             ]));
@@ -161,7 +161,8 @@ class _FeedState extends State<Feed> {
                     return Expanded(
                         child: EventList(
                             userId: widget.userId,
-                            eventList: viewModel.eventModel.data!.events,
+                            eventList:
+                                filterEvents(viewModel.eventModel.data!.events),
                             eventVM: eventVM,
                             updateFunction: this.updateFunction));
                   default:
@@ -173,5 +174,28 @@ class _FeedState extends State<Feed> {
         ],
       ),
     );
+  }
+
+  void callbackFilter(String value) {
+    setState(() {
+      _filter = value;
+    });
+  }
+
+  List<Event> filterEvents(List<Event> eventList) {
+    List<Event> filteredList = List.from(eventList);
+    if (_filter == "Académico") {
+      filteredList.removeWhere((element) => element.category != "ACADEMIC");
+    } else if (_filter == "Cultural") {
+      filteredList.removeWhere((element) => element.category != "CULTURAL");
+    } else if (_filter == "Deportivo") {
+      filteredList.removeWhere((element) => element.category != "SPORTS");
+    } else if (_filter == "Entretenimiento") {
+      filteredList
+          .removeWhere((element) => element.category != "ENTERTAINMENT");
+    } else if (_filter == "Otros") {
+      filteredList.removeWhere((element) => element.category != "OTHER");
+    }
+    return filteredList;
   }
 }

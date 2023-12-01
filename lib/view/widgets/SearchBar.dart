@@ -4,16 +4,22 @@ import 'package:hive_app/view/widgets/QRscanner.dart';
 
 class Search extends StatefulWidget {
   final String userId;
-
-  const Search({required this.userId});
+  final Function callbackFilter;
+  const Search({required this.userId, required this.callbackFilter});
 
   @override
   _SearchState createState() => _SearchState();
 }
 
 class _SearchState extends State<Search> {
-  // Lista de opciones para el menú desplegable
-  final List<String> options = ['Opción 1', 'Opción 2', 'Opción 3'];
+  final List<String> options = [
+    'Académico',
+    'Cultural',
+    'Deportivo',
+    'Entretenimiento',
+    'Otros',
+    'Sin filtro'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +44,10 @@ class _SearchState extends State<Search> {
         Text('HIVE!',
             style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold)),
         SizedBox(width: MediaQuery.of(context).size.width * 0.14),
-        // Menú desplegable
         PopupMenuButton<String>(
-          offset: Offset(0, 35), // Ajusta el valor según sea necesario
+          offset: Offset(0, 35),
           onSelected: (String value) {
-            print(value); // Imprimir la opción seleccionada
+            widget.callbackFilter(value);
           },
           itemBuilder: (BuildContext context) {
             return options.map((String choice) {
