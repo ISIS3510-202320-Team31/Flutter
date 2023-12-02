@@ -130,6 +130,7 @@ class _TopCreatorsCardState extends State<TopCreatorsCard> {
                 left: 30.0, right: 30.0, top: 5.0, bottom: 5.0),
             child: Text(
               "Top Creadores",
+              textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black, fontSize: 30.0),
             ),
           ),

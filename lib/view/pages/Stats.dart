@@ -13,8 +13,6 @@ class Stats extends StatefulWidget {
 }
 
 class _StatsState extends State<Stats> {
-  final String userId = "1";
-
   @override
   void initState() {
     super.initState();

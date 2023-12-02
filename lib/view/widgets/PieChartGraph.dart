@@ -60,8 +60,7 @@ class _PieChartGraphState extends State<PieChartGraph> {
                                   child: Text(
                                 "Eventos por categoría",
                                 style: TextStyle(
-                                  color: const Color.fromARGB(255, 0, 0,
-                                      0), // Ajusta el color del texto según sea necesario
+                                  color: const Color.fromARGB(255, 0, 0, 0),
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16.0,
                                 ),
@@ -188,7 +187,7 @@ class _PieChartGraphState extends State<PieChartGraph> {
                         ),
                       ),
                       SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.05),
+                          height: MediaQuery.of(context).size.height * 0.1),
                       Expanded(
                         flex: 2,
                         child: LegendList(data: viewModel.stats.data),
@@ -219,30 +218,64 @@ class LegendList extends StatelessWidget {
       return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
     }
 
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.2,
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: data?.length,
-        itemBuilder: (context, index) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: MediaQuery.of(context).size.width * 0.02,
-                    backgroundColor: hexToColor(data?[index]["color"]),
-                  ),
-                  SizedBox(width: 10),
-                  Text(data?[index]["category"]),
-                ],
+    Widget buildLegendItem(Map<String, dynamic> item) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircleAvatar(
+              radius: MediaQuery.of(context).size.width * 0.02,
+              backgroundColor: hexToColor(item["color"]),
+            ),
+            SizedBox(width: 10),
+            Text(
+              item["category"].toString().substring(0, 1).toUpperCase() +
+                  item["category"].toString().substring(1).toLowerCase(),
+              style: TextStyle(
+                fontSize: 12,
+                color: Color.fromARGB(255, 0, 0, 0),
               ),
             ),
-          );
-        },
+          ],
+        ),
+      );
+    }
+
+    List<Widget> buildRows() {
+      List<Widget> rows = [];
+      int length = data?.length ?? 0;
+
+      int firstRowItemCount = length >= 3 ? 3 : length;
+      List<Widget> firstRowItems = [];
+      for (int i = 0; i < firstRowItemCount; i++) {
+        firstRowItems.add(buildLegendItem(data![i]));
+      }
+      rows.add(Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: firstRowItems,
+      ));
+
+      if (length > 3) {
+        rows.add(SizedBox(height: 10));
+
+        List<Widget> secondRowItems = [];
+        for (int i = 3; i < length; i++) {
+          secondRowItems.add(buildLegendItem(data![i]));
+        }
+        rows.add(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: secondRowItems,
+        ));
+      }
+      return rows;
+    }
+
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.2,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: buildRows(),
       ),
     );
   }

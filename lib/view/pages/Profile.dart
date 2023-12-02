@@ -43,7 +43,7 @@ class _ProfileState extends State<Profile> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-          builder: (context) => Home(userId: widget.userId, initialIndex: 3)),
+          builder: (context) => Home(userId: widget.userId, initialIndex: 4)),
     );
   }
 
@@ -297,6 +297,8 @@ class _ProfileState extends State<Profile> {
                                                           ),
                                                           Text(
                                                             "Sin conexión a Internet.\nLos datos que ves no\nestán actualizados.",
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
                                                               fontSize: 20.0,
                                                               color:
