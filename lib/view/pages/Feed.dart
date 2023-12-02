@@ -158,19 +158,34 @@ class _FeedState extends State<Feed> {
                   case Status.COMPLETED:
                     print("Log :: COMPLETED");
                     eventVM.saveLocalEventsFeed();
-                    return Expanded(
-                        child: EventList(
-                            userId: widget.userId,
-                            eventList:
-                                filterEvents(viewModel.eventModel.data!.events),
-                            eventVM: eventVM,
-                            updateFunction: this.updateFunction));
+                    storedEventsFuture = eventVM.getLocalEventsFeed();
+                    return FutureBuilder<List<Event>>(
+                        future: storedEventsFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting)
+                            return Container();
+                          else if (snapshot.hasError) {
+                            return Container();
+                          } else if (snapshot.hasData) {
+                            return Expanded(
+                                child: Column(children: [
+                              Expanded(
+                                  child: EventList(
+                                      userId: widget.userId,
+                                      eventList: filterEvents(snapshot.data!),
+                                      eventVM: eventVM,
+                                      updateFunction: this.updateFunction))
+                            ]));
+                          } else
+                            return Container();
+                        });
                   default:
                     return Container();
                 }
               },
             ),
-          ) // Aquí incluye el EventList
+          )
         ],
       ),
     );

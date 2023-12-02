@@ -20,6 +20,7 @@ class _SearchState extends State<Search> {
     'Otros',
     'Sin filtro'
   ];
+  String selection = 'Filtrar';
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +48,19 @@ class _SearchState extends State<Search> {
         PopupMenuButton<String>(
           offset: Offset(0, 35),
           onSelected: (String value) {
+            setState(() {
+              if (value == 'Sin filtro') {
+                selection = 'Filtrar';
+              } else if (value == 'Entretenimiento') {
+                selection = 'Entret.';
+              } else if (value == 'Académico') {
+                selection = 'Acad.';
+              } else if (value == 'Deportivo') {
+                selection = 'Deport.';
+              } else {
+                selection = value;
+              }
+            });
             widget.callbackFilter(value);
           },
           itemBuilder: (BuildContext context) {
@@ -60,7 +74,7 @@ class _SearchState extends State<Search> {
           child: Row(
             children: [
               Text(
-                'Filtrar',
+                selection,
                 style: TextStyle(
                   color: appTheme.hintColor,
                   //fontWeight: FontWeight.bold,
