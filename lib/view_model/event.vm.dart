@@ -8,7 +8,7 @@ import 'package:hive_app/repository/event.repo.dart';
 
 class EventVM extends ChangeNotifier {
   final _myRepo = EventRepoImpl();
-  
+
   ApiResponse<EventModel> eventModel = ApiResponse.none();
   ApiResponse<EventModel> eventModelCalendarFuture = ApiResponse.none();
   ApiResponse<EventModel> eventModelCalendarPast = ApiResponse.none();
@@ -128,10 +128,11 @@ class EventVM extends ChangeNotifier {
     }
   }
 
-  Future<List<Event>> getLocalStats() async {
+  Future<List> getLocalStats() async {
     final statsJSON = await secureStorage.readSecureData("stats");
     if (statsJSON != null && statsJSON.isNotEmpty) {
       final stats = json.decode(statsJSON);
+      print("Log: $stats");
       return stats;
     } else {
       return [];

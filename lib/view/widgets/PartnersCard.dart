@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive_app/view/widgets/OfflineWidget.dart';
 import 'package:provider/provider.dart';
 import '../../data/remote/response/Status.dart';
 import '../../view_model/user.vm.dart';
