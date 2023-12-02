@@ -60,11 +60,25 @@ class UserVM extends ChangeNotifier {
     secureStorage.writeSecureData('topCreators', json.encode(topCreators.data));
   }
 
+  Future<void> saveLocalPartners() async {
+    secureStorage.writeSecureData('partners', json.encode(partners.data));
+  }
+
    Future<List<dynamic>> getLocalTopCreators() async {
     final eventsJSON = await secureStorage.readSecureData("topCreators");
     if (eventsJSON != null && eventsJSON.isNotEmpty) {
       final topCreators = json.decode(eventsJSON);
       return topCreators  ;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List> getLocalPartners() async {
+    final eventsJSON = await secureStorage.readSecureData("partners");
+    if (eventsJSON != null && eventsJSON.isNotEmpty) {
+      final partners = json.decode(eventsJSON);
+      return partners;
     } else {
       return [];
     }

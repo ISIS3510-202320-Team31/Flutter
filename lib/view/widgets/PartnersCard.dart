@@ -15,7 +15,7 @@ class PartnersCard extends StatefulWidget {
 
 class _PartnersCardState extends State<PartnersCard> {
   final UserVM userVM = UserVM();
-
+  Future<List>? localPartners;
   @override
   void initState() {
     super.initState();
@@ -36,20 +36,166 @@ class _PartnersCardState extends State<PartnersCard> {
           builder: (context, viewModel, _) {
             switch (viewModel.partners.status) {
               case Status.LOADING:
+                localPartners = userVM.getLocalPartners();
                 print("Log :: LOADING");
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                return FutureBuilder<List>(
+                    future: localPartners,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting)
+                        return Container();
+                      else if (snapshot.hasError) {
+                        return Container();
+                      } else if (snapshot.hasData) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                "Personas que más asisten conmigo a eventos",
+                                style: TextStyle(
+                                  color: const Color.fromARGB(255, 0, 0, 0),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  final person = snapshot.data?[index];
+                                  return Container(
+                                    child: Center(
+                                      child: Text(
+                                        person,
+                                        style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 0, 0, 0),
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              SizedBox(height: 30.0),
+                            ],
+                          ),
+                        );
+                      } else
+                        return Container();
+                    });
               case Status.OFFLINE:
+                localPartners = userVM.getLocalPartners();
                 print("Log :: OFFLINE");
-                return OfflineWidget();
+                return FutureBuilder<List>(
+                    future: localPartners,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting)
+                        return Container();
+                      else if (snapshot.hasError) {
+                        return Container();
+                      } else if (snapshot.hasData) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                "Personas que más asisten conmigo a eventos",
+                                style: TextStyle(
+                                  color: const Color.fromARGB(255, 0, 0, 0),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  final person = snapshot.data?[index];
+                                  return Container(
+                                    child: Center(
+                                      child: Text(
+                                        person,
+                                        style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 0, 0, 0),
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              SizedBox(height: 30.0),
+                            ],
+                          ),
+                        );
+                      } else
+                        return Container();
+                    });
               case Status.ERROR:
+                localPartners = userVM.getLocalPartners();
                 print("Log :: ERROR");
-                return Center(
-                  child:
-                      Text("Estamos presentando errores... Intenta refrescar"),
-                );
+                return FutureBuilder<List>(
+                    future: localPartners,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting)
+                        return Container();
+                      else if (snapshot.hasError) {
+                        return Container();
+                      } else if (snapshot.hasData) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                "Personas que más asisten conmigo a eventos",
+                                style: TextStyle(
+                                  color: const Color.fromARGB(255, 0, 0, 0),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  final person = snapshot.data?[index];
+                                  return Container(
+                                    child: Center(
+                                      child: Text(
+                                        person,
+                                        style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 0, 0, 0),
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              SizedBox(height: 30.0),
+                            ],
+                          ),
+                        );
+                      } else
+                        return Container();
+                    });
               case Status.COMPLETED:
+                userVM.saveLocalPartners();
                 print("Log :: COMPLETED");
                 // eventVM.saveLocalEventsFeed();
                 return Padding(
