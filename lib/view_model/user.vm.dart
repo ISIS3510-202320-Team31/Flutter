@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hive_app/data/remote/response/ApiResponse.dart';
 import 'package:hive_app/models/user.model.dart';
@@ -52,6 +54,20 @@ class UserVM extends ChangeNotifier {
     print("Response: $response");
     topCreators = response;
     notifyListeners();
+  }
+
+  Future<void> saveLocalTopCreators() async {
+    secureStorage.writeSecureData('topCreators', json.encode(topCreators.data));
+  }
+
+   Future<List<dynamic>> getLocalTopCreators() async {
+    final eventsJSON = await secureStorage.readSecureData("topCreators");
+    if (eventsJSON != null && eventsJSON.isNotEmpty) {
+      final topCreators = json.decode(eventsJSON);
+      return topCreators  ;
+    } else {
+      return [];
+    }
   }
 
   Future<void> fetchTopCreators() async {

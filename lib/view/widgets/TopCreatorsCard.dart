@@ -12,6 +12,7 @@ class TopCreatorsCard extends StatefulWidget {
 
 class _TopCreatorsCardState extends State<TopCreatorsCard> {
   UserVM userVM = UserVM();
+  Future<List<dynamic>>? localTopCreators;
   @override
   void initState() {
     userVM.fetchTopCreators();
@@ -32,25 +33,67 @@ class _TopCreatorsCardState extends State<TopCreatorsCard> {
             builder: (context, viewModel, _) {
               switch (viewModel.topCreators.status) {
                 case Status.LOADING:
+                  localTopCreators = userVM.getLocalTopCreators();
                   print("Log :: LOADING");
-                  return Container(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    height: MediaQuery.of(context).size.height * 0.7,
-                  );
+                  if (localTopCreators == []) {
+                    return OfflineWidget();
+                  }
+                  return FutureBuilder<List<dynamic>>(
+                      future: localTopCreators,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting)
+                          return Container();
+                        else if (snapshot.hasError) {
+                          return Container();
+                        } else if (snapshot.hasData) {
+                          return Container(
+                            child: showTopCreatorsCard(context, snapshot.data!),
+                          );
+                        } else
+                          return Container();
+                      });
                 case Status.ERROR:
+                  localTopCreators = userVM.getLocalTopCreators();
                   print("Log :: ERROR");
-                  return Container(
-                    child: Center(
-                      child: Text(
-                          "Estamos presentando errores... Intenta refrescar"),
-                    ),
-                  );
+                  if (localTopCreators == []) {
+                    return OfflineWidget();
+                  }
+                  return FutureBuilder<List<dynamic>>(
+                      future: localTopCreators,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting)
+                          return Container();
+                        else if (snapshot.hasError) {
+                          return Container();
+                        } else if (snapshot.hasData) {
+                          return Container(
+                            child: showTopCreatorsCard(context, snapshot.data!),
+                          );
+                        } else
+                          return Container();
+                      });
                 case Status.OFFLINE:
+                  localTopCreators = userVM.getLocalTopCreators();
                   print("Log :: OFFLINE");
-                  return OfflineWidget();
+                  if (localTopCreators == []) {
+                    return OfflineWidget();
+                  }
+                  return FutureBuilder<List<dynamic>>(
+                      future: localTopCreators,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting)
+                          return Container();
+                        else if (snapshot.hasError) {
+                          return Container();
+                        } else if (snapshot.hasData) {
+                          return Container(
+                            child: showTopCreatorsCard(context, snapshot.data!),
+                          );
+                        } else
+                          return Container();
+                      });
                 case Status.COMPLETED:
+                  userVM.saveLocalTopCreators();
                   print("Log :: COMPLETED");
                   final topCreators = viewModel.topCreators.data!;
                   return Container(
@@ -83,7 +126,8 @@ class _TopCreatorsCardState extends State<TopCreatorsCard> {
               backgroundColor: appTheme.unselectedWidgetColor),
           onPressed: () {},
           child: Padding(
-            padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 5.0, bottom: 5.0),
+            padding: const EdgeInsets.only(
+                left: 30.0, right: 30.0, top: 5.0, bottom: 5.0),
             child: Text(
               "Top Creadores",
               style: TextStyle(color: Colors.black, fontSize: 30.0),
