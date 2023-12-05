@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:hive_app/data/remote/response/ApiResponse.dart';
@@ -24,7 +22,8 @@ class EventVM extends ChangeNotifier {
     eventModel = response;
     notifyListeners();
   }
-   void _setStats(ApiResponse<List<dynamic>> response) {
+
+  void _setStats(ApiResponse<List<dynamic>> response) {
     print("Response: $response");
     stats = response;
     notifyListeners();
@@ -79,8 +78,8 @@ class EventVM extends ChangeNotifier {
     }
   }
 
-  Future<void>statsUser(String userId) async {
-     _setStats(ApiResponse.loading());
+  Future<void> statsUser(String userId) async {
+    _setStats(ApiResponse.loading());
     _myRepo
         .getStats(userId)
         .then((value) => _setStats(ApiResponse.completed(value)))
@@ -95,6 +94,10 @@ class EventVM extends ChangeNotifier {
   Future<void> saveLocalEventsFeed() async {
     secureStorage.writeSecureData(
         'feedEvents', eventModelToJson(eventModel.data!));
+  }
+
+  Future<void> saveLocalStats() async {
+    secureStorage.writeSecureData('stats', json.encode(stats.data));
   }
 
   Future<void> saveLocalEventsFutureCalendar() async {
@@ -120,6 +123,17 @@ class EventVM extends ChangeNotifier {
       final events = json.encode(eventsRaw['events']);
       final storedEvents = eventModelFromJson(events).events;
       return storedEvents;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List> getLocalStats() async {
+    final statsJSON = await secureStorage.readSecureData("stats");
+    if (statsJSON != null && statsJSON.isNotEmpty) {
+      final stats = json.decode(statsJSON);
+      print("Log: $stats");
+      return stats;
     } else {
       return [];
     }
@@ -203,6 +217,44 @@ class EventVM extends ChangeNotifier {
     _setEvent(ApiResponse.loading());
     _myRepo
         .createEvent(event)
+        .then((value) => _setEvent(ApiResponse.completed(value)))
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setEvent(ApiResponse.offline())}
+              else
+                {_setEvent(ApiResponse.error(error.toString()))}
+            });
+  }
+
+  Future<void> updateEvent(
+    String eventId,
+    String name,
+    String place,
+    int duration,
+    int numParticipants,
+    DateTime date,
+    String category,
+    String description,
+    List<String> tags,
+    List<String> links,
+    String creatorId,
+  ) async {
+    EventCreate event = EventCreate(
+      name: name,
+      place: place,
+      duration: duration,
+      numParticipants: numParticipants,
+      date: date,
+      category: category,
+      description: description,
+      tags: tags,
+      links: links,
+      creatorId: creatorId,
+    );
+
+    _setEvent(ApiResponse.loading());
+    _myRepo
+        .updateEvent(eventId, event)
         .then((value) => _setEvent(ApiResponse.completed(value)))
         .onError((error, stackTrace) => {
               if (error.toString() == "No Internet Connection")

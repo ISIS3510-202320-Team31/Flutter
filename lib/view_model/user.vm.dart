@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hive_app/data/remote/response/ApiResponse.dart';
 import 'package:hive_app/models/user.model.dart';
@@ -16,6 +18,7 @@ class UserVM extends ChangeNotifier {
   ApiResponse<String> userId = ApiResponse.none();
   ApiResponse<int> participation = ApiResponse.none();
   ApiResponse<List> partners = ApiResponse.none();
+  ApiResponse<List<dynamic>> topCreators = ApiResponse.none();
 
   void _setUserMain(ApiResponse<UserModel> response) {
     print("Response: $response");
@@ -45,6 +48,53 @@ class UserVM extends ChangeNotifier {
     print("Response: $response");
     participation = response;
     notifyListeners();
+  }
+
+  void _setTopCreators(ApiResponse<List<dynamic>> response) {
+    print("Response: $response");
+    topCreators = response;
+    notifyListeners();
+  }
+
+  Future<void> saveLocalTopCreators() async {
+    secureStorage.writeSecureData('topCreators', json.encode(topCreators.data));
+  }
+
+  Future<void> saveLocalPartners() async {
+    secureStorage.writeSecureData('partners', json.encode(partners.data));
+  }
+
+   Future<List<dynamic>> getLocalTopCreators() async {
+    final eventsJSON = await secureStorage.readSecureData("topCreators");
+    if (eventsJSON != null && eventsJSON.isNotEmpty) {
+      final topCreators = json.decode(eventsJSON);
+      return topCreators  ;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List> getLocalPartners() async {
+    final eventsJSON = await secureStorage.readSecureData("partners");
+    if (eventsJSON != null && eventsJSON.isNotEmpty) {
+      final partners = json.decode(eventsJSON);
+      return partners;
+    } else {
+      return [];
+    }
+  }
+
+  Future<void> fetchTopCreators() async {
+    _setTopCreators(ApiResponse.loading());
+    _myRepo
+        .getTopCreators()
+        .then((value) => _setTopCreators(ApiResponse.completed(value)))
+        .onError((error, stackTrace) => {
+              if (error.toString() == "No Internet Connection")
+                {_setTopCreators(ApiResponse.offline())}
+              else
+                {_setTopCreators(ApiResponse.error(error.toString()))}
+            });
   }
 
   getUserId() {

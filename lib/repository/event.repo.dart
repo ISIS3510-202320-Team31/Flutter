@@ -26,8 +26,8 @@ class EventRepoImpl extends EventRepo {
 
   Future<List<dynamic>> getStats(String userId) async {
     try {
-      dynamic response = await _apiService.getResponse(
-          ApiEndPoints().usersEndPoint + '$userId/stats');
+      dynamic response = await _apiService
+          .getResponse(ApiEndPoints().usersEndPoint + '$userId/stats');
       print("Log: $response");
       final jsonData = response;
       return jsonData;
@@ -78,6 +78,22 @@ class EventRepoImpl extends EventRepo {
     try {
       dynamic response = await _apiService.postResponse(
           ApiEndPoints().eventsEndPoint, jsonEncode(event.toJson()));
+      print("Log: $response");
+      final jsonData = Event.fromJson(response);
+      return jsonData;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Event> updateEvent(String eventId, EventCreate event) async {
+    try {
+      // Construye la URL completa para actualizar un evento
+      final endpoint = ApiEndPoints().eventsEndPoint + 'edit/$eventId/';
+      print("Log: $event");
+
+      dynamic response =
+          await _apiService.putResponse(endpoint, jsonEncode(event.toJson()));
       print("Log: $response");
       final jsonData = Event.fromJson(response);
       return jsonData;

@@ -71,7 +71,9 @@ class _CalendarState extends State<Calendar> {
       onWillPop: () async {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Home(userId: widget.userId, initial_index: 0)),
+          MaterialPageRoute(
+              builder: (context) =>
+                  Home(userId: widget.userId, initialIndex: 0)),
         );
         return true;
       },
@@ -98,6 +100,7 @@ class _CalendarState extends State<Calendar> {
               totalSwitches: 3,
               minWidth: MediaQuery.of(context).size.width * 0.9,
               inactiveBgColor: Color.fromARGB(100, 255, 255, 255),
+              activeBgColor: [Colors.blue],
               labels: ['Historial', 'Actividades', 'Tus Eventos'],
               onToggle: (index) {
                 if (index == 0) {
